@@ -1,0 +1,6 @@
+== Django-phpBB3 ==
+
+Django-phpBB3 provides the database models of a existing phpBB3 installation for easy migration into a other forum software.
+It's not a phpBB clone or a forum!
+
+| Homepage | https://github.com/jedie/django-phpBB3
