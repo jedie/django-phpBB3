@@ -1,27 +1,175 @@
 # coding: utf-8
 
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#     * Rearrange models' order
-#     * Make sure each model has one field with primary_key=True
-# Feel free to rename the models, but don't rename db_table values or field names.
-#
-# Also note: You'll have to insert the output of 'django-admin.py sqlcustom [appname]'
-# into your database.
+"""
+    models
+    ~~~~~~
+    
+    References:
+        http://wiki.phpbb.com/Tables
+        https://github.com/phpbb/phpbb3/tree/master/phpBB/install/schemas
+
+    :copyleft: 2012 by the django-phpBB3 team, see AUTHORS for more details.
+    :license: GNU GPL v3 or above, see LICENSE for more details.
+"""
 
 from django.db import models
 
-class AclGroups(models.Model):
+
+#
+#These classes would need Django to support composite keys:
+#
+#class AclGroups(models.Model):
+#    """
+#    Permission roles and/or individual permissions assigned to groups
+#    """
+#    group_id = models.IntegerField()
+#    forum_id = models.IntegerField()
+#    auth_option_id = models.IntegerField()
+#    auth_role_id = models.IntegerField()
+#    auth_setting = models.IntegerField()
+#    class Meta:
+#        db_table = u'phpbb3_acl_groups'
+#
+
+
+class User(models.Model):
     """
-    Permission roles and/or individual permissions assigned to groups
+    Registered users
     """
-    group_id = models.IntegerField()
-    forum_id = models.IntegerField()
-    auth_option_id = models.IntegerField()
-    auth_role_id = models.IntegerField()
-    auth_setting = models.IntegerField()
+    user_id = models.IntegerField(primary_key=True)
+    user_type = models.IntegerField(
+        help_text="Defines what type the user is. 0 is normal user, 1 is inactive and needs to activate their account through an activation link sent in an email, 2 is a pre-defined type to ignore user (i.e. bot), 3 is Founder."
+    )
+    group_id = models.ForeignKey("Group", db_column="group_id", to_field="group_id")
+    user_permissions = models.TextField(
+        help_text="A cached copy of the user's computed permissions."
+    )
+    user_perm_from = models.ForeignKey(
+        "self", db_column="user_perm_from", to_field="user_id",
+        help_text="The id of the user whose permissions are being tested."
+    )
+    user_ip = models.CharField(max_length=40)
+    user_regdate = models.IntegerField()
+    username = models.CharField(max_length=255)
+    username_clean = models.CharField(max_length=255, unique=True)
+    user_password = models.CharField(max_length=40)
+    user_passchg = models.IntegerField()
+    user_pass_convert = models.IntegerField()
+    user_email = models.CharField(max_length=100)
+    user_email_hash = models.BigIntegerField()
+    user_birthday = models.CharField(max_length=10)
+    user_lastvisit = models.IntegerField()
+    user_lastmark = models.IntegerField()
+    user_lastpost_time = models.IntegerField()
+    user_lastpage = models.CharField(max_length=200)
+    user_last_confirm_key = models.CharField(max_length=10)
+    user_last_search = models.IntegerField()
+    user_warnings = models.IntegerField()
+    user_last_warning = models.IntegerField()
+    user_login_attempts = models.IntegerField()
+    user_inactive_reason = models.IntegerField()
+    user_inactive_time = models.IntegerField()
+    user_posts = models.IntegerField()
+    user_lang = models.CharField(max_length=30)
+    user_timezone = models.DecimalField(max_digits=7, decimal_places=2)
+    user_dst = models.IntegerField()
+    user_dateformat = models.CharField(max_length=30)
+    user_style = models.IntegerField()
+    user_rank = models.IntegerField()
+    user_colour = models.CharField(max_length=6)
+    user_new_privmsg = models.IntegerField()
+    user_unread_privmsg = models.IntegerField()
+    user_last_privmsg = models.IntegerField()
+    user_message_rules = models.IntegerField()
+    user_full_folder = models.IntegerField()
+    user_emailtime = models.IntegerField()
+    user_topic_show_days = models.IntegerField()
+    user_topic_sortby_type = models.CharField(max_length=1)
+    user_topic_sortby_dir = models.CharField(max_length=1)
+    user_post_show_days = models.IntegerField()
+    user_post_sortby_type = models.CharField(max_length=1)
+    user_post_sortby_dir = models.CharField(max_length=1)
+    user_notify = models.IntegerField()
+    user_notify_pm = models.IntegerField()
+    user_notify_type = models.IntegerField()
+    user_allow_pm = models.IntegerField()
+    user_allow_viewonline = models.IntegerField()
+    user_allow_viewemail = models.IntegerField()
+    user_allow_massemail = models.IntegerField()
+    user_options = models.IntegerField()
+    user_avatar = models.CharField(max_length=255)
+    user_avatar_type = models.IntegerField()
+    user_avatar_width = models.IntegerField()
+    user_avatar_height = models.IntegerField()
+    user_sig = models.TextField()
+    user_sig_bbcode_uid = models.CharField(max_length=8)
+    user_sig_bbcode_bitfield = models.CharField(max_length=255)
+    user_from = models.CharField(max_length=100)
+    user_icq = models.CharField(max_length=15)
+    user_aim = models.CharField(max_length=255)
+    user_yim = models.CharField(max_length=255)
+    user_msnm = models.CharField(max_length=255)
+    user_jabber = models.CharField(max_length=255)
+    user_website = models.CharField(max_length=200)
+    user_occ = models.TextField()
+    user_interests = models.TextField()
+    user_actkey = models.CharField(max_length=32)
+    user_newpasswd = models.CharField(max_length=40)
+    user_form_salt = models.CharField(max_length=32)
+    user_new = models.IntegerField()
+    user_reminded = models.IntegerField()
+    user_reminded_time = models.IntegerField()
+    def __unicode__(self):
+            return self.username
     class Meta:
-        db_table = u'phpbb3_acl_groups'
+        db_table = u'phpbb3_users'
+
+
+class Group(models.Model):
+    """
+    Usergroups
+    """
+    group_id = models.IntegerField(primary_key=True)
+    group_type = models.IntegerField()
+    group_founder_manage = models.IntegerField()
+    group_skip_auth = models.IntegerField()
+    group_name = models.CharField(max_length=255)
+    group_desc = models.TextField()
+    group_desc_bitfield = models.CharField(max_length=255)
+    group_desc_options = models.IntegerField()
+    group_desc_uid = models.CharField(max_length=8)
+    group_display = models.IntegerField()
+    group_avatar = models.CharField(max_length=255)
+    group_avatar_type = models.IntegerField()
+    group_avatar_width = models.IntegerField()
+    group_avatar_height = models.IntegerField()
+    group_rank = models.IntegerField()
+    group_colour = models.CharField(max_length=6)
+    group_sig_chars = models.IntegerField()
+    group_receive_pm = models.IntegerField()
+    group_message_limit = models.IntegerField()
+    group_max_recipients = models.IntegerField()
+    group_legend = models.IntegerField()
+    def __unicode__(self):
+            return self.group_name
+    class Meta:
+        db_table = u'phpbb3_groups'
+
+
+class Config(models.Model):
+    """
+    Configuration information ($config table)
+    """
+    config_name = models.CharField(max_length=255, primary_key=True)
+    config_value = models.CharField(max_length=255)
+    is_dynamic = models.IntegerField()
+    def __unicode__(self):
+            return u"%s: %s" % (self.config_name, self.config_value)
+    class Meta:
+        db_table = u'phpbb3_config'
+
+#______________________________________________________________________________
+# untouched models:
 
 class AclOptions(models.Model):
     """
@@ -160,16 +308,6 @@ class CaptchaQuestions(models.Model):
     question_text = models.TextField()
     class Meta:
         db_table = u'phpbb3_captcha_questions'
-
-class Config(models.Model):
-    """
-    Configuration information ($config table)
-    """
-    config_name = models.CharField(max_length=255, primary_key=True)
-    config_value = models.CharField(max_length=255)
-    is_dynamic = models.IntegerField()
-    class Meta:
-        db_table = u'phpbb3_config'
 
 class Confirm(models.Model):
     """
@@ -311,34 +449,6 @@ class ForumsWatch(models.Model):
     notify_status = models.IntegerField()
     class Meta:
         db_table = u'phpbb3_forums_watch'
-
-class Groups(models.Model):
-    """
-    Usergroups
-    """
-    group_id = models.IntegerField(primary_key=True)
-    group_type = models.IntegerField()
-    group_founder_manage = models.IntegerField()
-    group_skip_auth = models.IntegerField()
-    group_name = models.CharField(max_length=255)
-    group_desc = models.TextField()
-    group_desc_bitfield = models.CharField(max_length=255)
-    group_desc_options = models.IntegerField()
-    group_desc_uid = models.CharField(max_length=8)
-    group_display = models.IntegerField()
-    group_avatar = models.CharField(max_length=255)
-    group_avatar_type = models.IntegerField()
-    group_avatar_width = models.IntegerField()
-    group_avatar_height = models.IntegerField()
-    group_rank = models.IntegerField()
-    group_colour = models.CharField(max_length=6)
-    group_sig_chars = models.IntegerField()
-    group_receive_pm = models.IntegerField()
-    group_message_limit = models.IntegerField()
-    group_max_recipients = models.IntegerField()
-    group_legend = models.IntegerField()
-    class Meta:
-        db_table = u'phpbb3_groups'
 
 class Icons(models.Model):
     """
@@ -913,89 +1023,6 @@ class UserGroup(models.Model):
     user_pending = models.IntegerField()
     class Meta:
         db_table = u'phpbb3_user_group'
-
-class Users(models.Model):
-    """
-    Registered users
-    """
-    user_id = models.IntegerField(primary_key=True)
-    user_type = models.IntegerField()
-    group_id = models.IntegerField()
-    user_permissions = models.TextField()
-    user_perm_from = models.IntegerField()
-    user_ip = models.CharField(max_length=40)
-    user_regdate = models.IntegerField()
-    username = models.CharField(max_length=255)
-    username_clean = models.CharField(max_length=255, unique=True)
-    user_password = models.CharField(max_length=40)
-    user_passchg = models.IntegerField()
-    user_pass_convert = models.IntegerField()
-    user_email = models.CharField(max_length=100)
-    user_email_hash = models.BigIntegerField()
-    user_birthday = models.CharField(max_length=10)
-    user_lastvisit = models.IntegerField()
-    user_lastmark = models.IntegerField()
-    user_lastpost_time = models.IntegerField()
-    user_lastpage = models.CharField(max_length=200)
-    user_last_confirm_key = models.CharField(max_length=10)
-    user_last_search = models.IntegerField()
-    user_warnings = models.IntegerField()
-    user_last_warning = models.IntegerField()
-    user_login_attempts = models.IntegerField()
-    user_inactive_reason = models.IntegerField()
-    user_inactive_time = models.IntegerField()
-    user_posts = models.IntegerField()
-    user_lang = models.CharField(max_length=30)
-    user_timezone = models.DecimalField(max_digits=7, decimal_places=2)
-    user_dst = models.IntegerField()
-    user_dateformat = models.CharField(max_length=30)
-    user_style = models.IntegerField()
-    user_rank = models.IntegerField()
-    user_colour = models.CharField(max_length=6)
-    user_new_privmsg = models.IntegerField()
-    user_unread_privmsg = models.IntegerField()
-    user_last_privmsg = models.IntegerField()
-    user_message_rules = models.IntegerField()
-    user_full_folder = models.IntegerField()
-    user_emailtime = models.IntegerField()
-    user_topic_show_days = models.IntegerField()
-    user_topic_sortby_type = models.CharField(max_length=1)
-    user_topic_sortby_dir = models.CharField(max_length=1)
-    user_post_show_days = models.IntegerField()
-    user_post_sortby_type = models.CharField(max_length=1)
-    user_post_sortby_dir = models.CharField(max_length=1)
-    user_notify = models.IntegerField()
-    user_notify_pm = models.IntegerField()
-    user_notify_type = models.IntegerField()
-    user_allow_pm = models.IntegerField()
-    user_allow_viewonline = models.IntegerField()
-    user_allow_viewemail = models.IntegerField()
-    user_allow_massemail = models.IntegerField()
-    user_options = models.IntegerField()
-    user_avatar = models.CharField(max_length=255)
-    user_avatar_type = models.IntegerField()
-    user_avatar_width = models.IntegerField()
-    user_avatar_height = models.IntegerField()
-    user_sig = models.TextField()
-    user_sig_bbcode_uid = models.CharField(max_length=8)
-    user_sig_bbcode_bitfield = models.CharField(max_length=255)
-    user_from = models.CharField(max_length=100)
-    user_icq = models.CharField(max_length=15)
-    user_aim = models.CharField(max_length=255)
-    user_yim = models.CharField(max_length=255)
-    user_msnm = models.CharField(max_length=255)
-    user_jabber = models.CharField(max_length=255)
-    user_website = models.CharField(max_length=200)
-    user_occ = models.TextField()
-    user_interests = models.TextField()
-    user_actkey = models.CharField(max_length=32)
-    user_newpasswd = models.CharField(max_length=40)
-    user_form_salt = models.CharField(max_length=32)
-    user_new = models.IntegerField()
-    user_reminded = models.IntegerField()
-    user_reminded_time = models.IntegerField()
-    class Meta:
-        db_table = u'phpbb3_users'
 
 class Warnings(models.Model):
     """

@@ -2,25 +2,47 @@
 
 from django.contrib import admin
 
-from django_phpBB3.models import AclGroups, AclOptions, AclRoles, AclRolesData, \
+from django_phpBB3.models import AclOptions, AclRoles, AclRolesData, \
     AclUsers, Attachments, Banlist, Bbcodes, Bookmarks, Bots, CaptchaAnswers, \
     CaptchaQuestions, Config, Confirm, Disallow, Drafts, ExtensionGroups, Extensions, \
-    Forums, ForumsAccess, ForumsTrack, ForumsWatch, Groups, Icons, Lang, Log, \
+    Forums, ForumsAccess, ForumsTrack, ForumsWatch, Group, Icons, Lang, Log, \
     LoginAttempts, ModeratorCache, Modules, PollOptions, PollVotes, Posts, Privmsgs, \
     PrivmsgsFolder, PrivmsgsRules, PrivmsgsTo, ProfileFields, ProfileFieldsData, \
     ProfileFieldsLang, ProfileLang, QaConfirm, Ranks, Reports, ReportsReasons, \
     SearchResults, SearchWordlist, SearchWordmatch, Sessions, SessionsKeys, Sitelist, \
     Smilies, Styles, StylesImageset, StylesImagesetData, StylesTemplate, \
     StylesTemplateData, StylesTheme, Topics, TopicsPosted, TopicsTrack, TopicsWatch, \
-    UserGroup, Users, Warnings, Words, Zebra
+    UserGroup, User, Warnings, Words, Zebra
 
 
-class AclGroupsAdmin(admin.ModelAdmin):
+#
+#These classes would need Django to support composite keys:
+#
+#class AclGroupsAdmin(admin.ModelAdmin):
+#    """
+#    Permission roles and/or individual permissions assigned to groups
+#    """
+#    pass
+#admin.site.register(AclGroups, AclGroupsAdmin)
+#
+
+
+class UserAdmin(admin.ModelAdmin):
     """
-    Permission roles and/or individual permissions assigned to groups
+    Registered users
+    """
+    list_display = ('username','user_id','user_regdate','user_posts','user_email')
+admin.site.register(User, UserAdmin)
+
+class GroupAdmin(admin.ModelAdmin):
+    """
+    Usergroups
     """
     pass
-admin.site.register(AclGroups, AclGroupsAdmin)
+admin.site.register(Group, GroupAdmin)
+
+#_______________________________________________________________________________
+# default Admin classes:
 
 class AclOptionsAdmin(admin.ModelAdmin):
     """
@@ -162,13 +184,6 @@ class ForumsWatchAdmin(admin.ModelAdmin):
     """
     pass
 admin.site.register(ForumsWatch, ForumsWatchAdmin)
-
-class GroupsAdmin(admin.ModelAdmin):
-    """
-    Usergroups
-    """
-    pass
-admin.site.register(Groups, GroupsAdmin)
 
 class IconsAdmin(admin.ModelAdmin):
     """
@@ -439,13 +454,6 @@ class UserGroupAdmin(admin.ModelAdmin):
     """
     pass
 admin.site.register(UserGroup, UserGroupAdmin)
-
-class UsersAdmin(admin.ModelAdmin):
-    """
-    Registered users
-    """
-    pass
-admin.site.register(Users, UsersAdmin)
 
 class WarningsAdmin(admin.ModelAdmin):
     """
