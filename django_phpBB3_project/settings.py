@@ -70,7 +70,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'm^g--)trle-#f6(ieq_rtusl-7!@tp1ojf_q7!3f&amp;opgtz_$kx'
+SECRET_KEY = 'please change in local_settings.py'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -89,10 +89,10 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'django_phpBB3.urls'
+ROOT_URLCONF = 'django_phpBB3_project.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'django_phpBB3.wsgi.application'
+WSGI_APPLICATION = 'django_phpBB3_project.wsgi.application'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -110,6 +110,8 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    
+    'django_phpBB3',
 )
 
 # A sample logging configuration. The only tangible logging
