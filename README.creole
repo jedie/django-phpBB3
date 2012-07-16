@@ -3,4 +3,15 @@
 Django-phpBB3 provides the database models of a existing phpBB3 installation for easy migration into a other forum software.
 It's not a phpBB clone or a forum!
 
+== phpBB3 links ==
+
+Here some links for phpBB documentations:
+* http://wiki.phpbb.com/Tables
+* http://www.phpbbdoctor.com/doc_tables.php
+
+The SQL schema files from phpBB can be found here:
+* https://github.com/phpbb/phpbb3/tree/develop/phpBB/install/schemas
+
+== Project links ==
+
 | Homepage | https://github.com/jedie/django-phpBB3
