@@ -1,3 +1,5 @@
+# coding: utf-8
+
 # This is an auto-generated Django model module.
 # You'll have to do the following manually to clean this up:
 #     * Rearrange models' order
@@ -9,7 +11,7 @@
 
 from django.db import models
 
-class Phpbb3AclGroups(models.Model):
+class AclGroups(models.Model):
     group_id = models.IntegerField()
     forum_id = models.IntegerField()
     auth_option_id = models.IntegerField()
@@ -18,7 +20,7 @@ class Phpbb3AclGroups(models.Model):
     class Meta:
         db_table = u'phpbb3_acl_groups'
 
-class Phpbb3AclOptions(models.Model):
+class AclOptions(models.Model):
     auth_option_id = models.IntegerField(primary_key=True)
     auth_option = models.CharField(max_length=150, unique=True)
     is_global = models.IntegerField()
@@ -27,7 +29,7 @@ class Phpbb3AclOptions(models.Model):
     class Meta:
         db_table = u'phpbb3_acl_options'
 
-class Phpbb3AclRoles(models.Model):
+class AclRoles(models.Model):
     role_id = models.IntegerField(primary_key=True)
     role_name = models.CharField(max_length=765)
     role_description = models.TextField()
@@ -36,14 +38,14 @@ class Phpbb3AclRoles(models.Model):
     class Meta:
         db_table = u'phpbb3_acl_roles'
 
-class Phpbb3AclRolesData(models.Model):
+class AclRolesData(models.Model):
     role_id = models.IntegerField(primary_key=True)
     auth_option_id = models.IntegerField()
     auth_setting = models.IntegerField()
     class Meta:
         db_table = u'phpbb3_acl_roles_data'
 
-class Phpbb3AclUsers(models.Model):
+class AclUsers(models.Model):
     user_id = models.IntegerField()
     forum_id = models.IntegerField()
     auth_option_id = models.IntegerField()
@@ -52,7 +54,7 @@ class Phpbb3AclUsers(models.Model):
     class Meta:
         db_table = u'phpbb3_acl_users'
 
-class Phpbb3Attachments(models.Model):
+class Attachments(models.Model):
     attach_id = models.IntegerField(primary_key=True)
     post_msg_id = models.IntegerField()
     topic_id = models.IntegerField()
@@ -71,7 +73,7 @@ class Phpbb3Attachments(models.Model):
     class Meta:
         db_table = u'phpbb3_attachments'
 
-class Phpbb3Banlist(models.Model):
+class Banlist(models.Model):
     ban_id = models.IntegerField(primary_key=True)
     ban_userid = models.IntegerField()
     ban_ip = models.CharField(max_length=120)
@@ -84,7 +86,7 @@ class Phpbb3Banlist(models.Model):
     class Meta:
         db_table = u'phpbb3_banlist'
 
-class Phpbb3Bbcodes(models.Model):
+class Bbcodes(models.Model):
     bbcode_id = models.IntegerField(primary_key=True)
     bbcode_tag = models.CharField(max_length=48)
     bbcode_helpline = models.CharField(max_length=765)
@@ -98,13 +100,13 @@ class Phpbb3Bbcodes(models.Model):
     class Meta:
         db_table = u'phpbb3_bbcodes'
 
-class Phpbb3Bookmarks(models.Model):
+class Bookmarks(models.Model):
     topic_id = models.IntegerField(primary_key=True)
     user_id = models.IntegerField(primary_key=True)
     class Meta:
         db_table = u'phpbb3_bookmarks'
 
-class Phpbb3Bots(models.Model):
+class Bots(models.Model):
     bot_id = models.IntegerField(primary_key=True)
     bot_active = models.IntegerField()
     bot_name = models.CharField(max_length=765)
@@ -114,13 +116,13 @@ class Phpbb3Bots(models.Model):
     class Meta:
         db_table = u'phpbb3_bots'
 
-class Phpbb3CaptchaAnswers(models.Model):
+class CaptchaAnswers(models.Model):
     question_id = models.IntegerField()
     answer_text = models.CharField(max_length=765)
     class Meta:
         db_table = u'phpbb3_captcha_answers'
 
-class Phpbb3CaptchaQuestions(models.Model):
+class CaptchaQuestions(models.Model):
     question_id = models.IntegerField(primary_key=True)
     strict = models.IntegerField()
     lang_id = models.IntegerField()
@@ -129,14 +131,14 @@ class Phpbb3CaptchaQuestions(models.Model):
     class Meta:
         db_table = u'phpbb3_captcha_questions'
 
-class Phpbb3Config(models.Model):
+class Config(models.Model):
     config_name = models.CharField(max_length=765, primary_key=True)
     config_value = models.CharField(max_length=765)
     is_dynamic = models.IntegerField()
     class Meta:
         db_table = u'phpbb3_config'
 
-class Phpbb3Confirm(models.Model):
+class Confirm(models.Model):
     confirm_id = models.CharField(max_length=96, primary_key=True)
     session_id = models.CharField(max_length=96, primary_key=True)
     confirm_type = models.IntegerField()
@@ -146,13 +148,13 @@ class Phpbb3Confirm(models.Model):
     class Meta:
         db_table = u'phpbb3_confirm'
 
-class Phpbb3Disallow(models.Model):
+class Disallow(models.Model):
     disallow_id = models.IntegerField(primary_key=True)
     disallow_username = models.CharField(max_length=765)
     class Meta:
         db_table = u'phpbb3_disallow'
 
-class Phpbb3Drafts(models.Model):
+class Drafts(models.Model):
     draft_id = models.IntegerField(primary_key=True)
     user_id = models.IntegerField()
     topic_id = models.IntegerField()
@@ -163,7 +165,7 @@ class Phpbb3Drafts(models.Model):
     class Meta:
         db_table = u'phpbb3_drafts'
 
-class Phpbb3ExtensionGroups(models.Model):
+class ExtensionGroups(models.Model):
     group_id = models.IntegerField(primary_key=True)
     group_name = models.CharField(max_length=765)
     cat_id = models.IntegerField()
@@ -176,14 +178,14 @@ class Phpbb3ExtensionGroups(models.Model):
     class Meta:
         db_table = u'phpbb3_extension_groups'
 
-class Phpbb3Extensions(models.Model):
+class Extensions(models.Model):
     extension_id = models.IntegerField(primary_key=True)
     group_id = models.IntegerField()
     extension = models.CharField(max_length=300)
     class Meta:
         db_table = u'phpbb3_extensions'
 
-class Phpbb3Forums(models.Model):
+class Forums(models.Model):
     forum_id = models.IntegerField(primary_key=True)
     parent_id = models.IntegerField()
     left_id = models.IntegerField()
@@ -229,28 +231,28 @@ class Phpbb3Forums(models.Model):
     class Meta:
         db_table = u'phpbb3_forums'
 
-class Phpbb3ForumsAccess(models.Model):
+class ForumsAccess(models.Model):
     forum_id = models.IntegerField(primary_key=True)
     user_id = models.IntegerField(primary_key=True)
     session_id = models.CharField(max_length=96, primary_key=True)
     class Meta:
         db_table = u'phpbb3_forums_access'
 
-class Phpbb3ForumsTrack(models.Model):
+class ForumsTrack(models.Model):
     user_id = models.IntegerField(primary_key=True)
     forum_id = models.IntegerField(primary_key=True)
     mark_time = models.IntegerField()
     class Meta:
         db_table = u'phpbb3_forums_track'
 
-class Phpbb3ForumsWatch(models.Model):
+class ForumsWatch(models.Model):
     forum_id = models.IntegerField()
     user_id = models.IntegerField()
     notify_status = models.IntegerField()
     class Meta:
         db_table = u'phpbb3_forums_watch'
 
-class Phpbb3Groups(models.Model):
+class Groups(models.Model):
     group_id = models.IntegerField(primary_key=True)
     group_type = models.IntegerField()
     group_founder_manage = models.IntegerField()
@@ -275,7 +277,7 @@ class Phpbb3Groups(models.Model):
     class Meta:
         db_table = u'phpbb3_groups'
 
-class Phpbb3Icons(models.Model):
+class Icons(models.Model):
     icons_id = models.IntegerField(primary_key=True)
     icons_url = models.CharField(max_length=765)
     icons_width = models.IntegerField()
@@ -285,7 +287,7 @@ class Phpbb3Icons(models.Model):
     class Meta:
         db_table = u'phpbb3_icons'
 
-class Phpbb3Lang(models.Model):
+class Lang(models.Model):
     lang_id = models.IntegerField(primary_key=True)
     lang_iso = models.CharField(max_length=90)
     lang_dir = models.CharField(max_length=90)
@@ -295,7 +297,7 @@ class Phpbb3Lang(models.Model):
     class Meta:
         db_table = u'phpbb3_lang'
 
-class Phpbb3Log(models.Model):
+class Log(models.Model):
     log_id = models.IntegerField(primary_key=True)
     log_type = models.IntegerField()
     user_id = models.IntegerField()
@@ -309,7 +311,7 @@ class Phpbb3Log(models.Model):
     class Meta:
         db_table = u'phpbb3_log'
 
-class Phpbb3LoginAttempts(models.Model):
+class LoginAttempts(models.Model):
     attempt_ip = models.CharField(max_length=120)
     attempt_browser = models.CharField(max_length=450)
     attempt_forwarded_for = models.CharField(max_length=765)
@@ -320,7 +322,7 @@ class Phpbb3LoginAttempts(models.Model):
     class Meta:
         db_table = u'phpbb3_login_attempts'
 
-class Phpbb3ModeratorCache(models.Model):
+class ModeratorCache(models.Model):
     forum_id = models.IntegerField()
     user_id = models.IntegerField()
     username = models.CharField(max_length=765)
@@ -330,7 +332,7 @@ class Phpbb3ModeratorCache(models.Model):
     class Meta:
         db_table = u'phpbb3_moderator_cache'
 
-class Phpbb3Modules(models.Model):
+class Modules(models.Model):
     module_id = models.IntegerField(primary_key=True)
     module_enabled = models.IntegerField()
     module_display = models.IntegerField()
@@ -345,7 +347,7 @@ class Phpbb3Modules(models.Model):
     class Meta:
         db_table = u'phpbb3_modules'
 
-class Phpbb3PollOptions(models.Model):
+class PollOptions(models.Model):
     poll_option_id = models.IntegerField()
     topic_id = models.IntegerField()
     poll_option_text = models.TextField()
@@ -353,7 +355,7 @@ class Phpbb3PollOptions(models.Model):
     class Meta:
         db_table = u'phpbb3_poll_options'
 
-class Phpbb3PollVotes(models.Model):
+class PollVotes(models.Model):
     topic_id = models.IntegerField()
     poll_option_id = models.IntegerField()
     vote_user_id = models.IntegerField()
@@ -361,7 +363,7 @@ class Phpbb3PollVotes(models.Model):
     class Meta:
         db_table = u'phpbb3_poll_votes'
 
-class Phpbb3Posts(models.Model):
+class Posts(models.Model):
     post_id = models.IntegerField(primary_key=True)
     topic_id = models.IntegerField()
     forum_id = models.IntegerField()
@@ -391,7 +393,7 @@ class Phpbb3Posts(models.Model):
     class Meta:
         db_table = u'phpbb3_posts'
 
-class Phpbb3Privmsgs(models.Model):
+class Privmsgs(models.Model):
     msg_id = models.IntegerField(primary_key=True)
     root_level = models.IntegerField()
     author_id = models.IntegerField()
@@ -417,7 +419,7 @@ class Phpbb3Privmsgs(models.Model):
     class Meta:
         db_table = u'phpbb3_privmsgs'
 
-class Phpbb3PrivmsgsFolder(models.Model):
+class PrivmsgsFolder(models.Model):
     folder_id = models.IntegerField(primary_key=True)
     user_id = models.IntegerField()
     folder_name = models.CharField(max_length=765)
@@ -425,7 +427,7 @@ class Phpbb3PrivmsgsFolder(models.Model):
     class Meta:
         db_table = u'phpbb3_privmsgs_folder'
 
-class Phpbb3PrivmsgsRules(models.Model):
+class PrivmsgsRules(models.Model):
     rule_id = models.IntegerField(primary_key=True)
     user_id = models.IntegerField()
     rule_check = models.IntegerField()
@@ -438,7 +440,7 @@ class Phpbb3PrivmsgsRules(models.Model):
     class Meta:
         db_table = u'phpbb3_privmsgs_rules'
 
-class Phpbb3PrivmsgsTo(models.Model):
+class PrivmsgsTo(models.Model):
     msg_id = models.IntegerField()
     user_id = models.IntegerField()
     author_id = models.IntegerField()
@@ -452,7 +454,7 @@ class Phpbb3PrivmsgsTo(models.Model):
     class Meta:
         db_table = u'phpbb3_privmsgs_to'
 
-class Phpbb3ProfileFields(models.Model):
+class ProfileFields(models.Model):
     field_id = models.IntegerField(primary_key=True)
     field_name = models.CharField(max_length=765)
     field_type = models.IntegerField()
@@ -474,12 +476,12 @@ class Phpbb3ProfileFields(models.Model):
     class Meta:
         db_table = u'phpbb3_profile_fields'
 
-class Phpbb3ProfileFieldsData(models.Model):
+class ProfileFieldsData(models.Model):
     user_id = models.IntegerField(primary_key=True)
     class Meta:
         db_table = u'phpbb3_profile_fields_data'
 
-class Phpbb3ProfileFieldsLang(models.Model):
+class ProfileFieldsLang(models.Model):
     field_id = models.IntegerField(primary_key=True)
     lang_id = models.IntegerField(primary_key=True)
     option_id = models.IntegerField(primary_key=True)
@@ -488,7 +490,7 @@ class Phpbb3ProfileFieldsLang(models.Model):
     class Meta:
         db_table = u'phpbb3_profile_fields_lang'
 
-class Phpbb3ProfileLang(models.Model):
+class ProfileLang(models.Model):
     field_id = models.IntegerField(primary_key=True)
     lang_id = models.IntegerField(primary_key=True)
     lang_name = models.CharField(max_length=765)
@@ -497,7 +499,7 @@ class Phpbb3ProfileLang(models.Model):
     class Meta:
         db_table = u'phpbb3_profile_lang'
 
-class Phpbb3QaConfirm(models.Model):
+class QaConfirm(models.Model):
     session_id = models.CharField(max_length=96)
     confirm_id = models.CharField(max_length=96)
     lang_iso = models.CharField(max_length=90)
@@ -507,7 +509,7 @@ class Phpbb3QaConfirm(models.Model):
     class Meta:
         db_table = u'phpbb3_qa_confirm'
 
-class Phpbb3Ranks(models.Model):
+class Ranks(models.Model):
     rank_id = models.IntegerField(primary_key=True)
     rank_title = models.CharField(max_length=765)
     rank_min = models.IntegerField()
@@ -516,7 +518,7 @@ class Phpbb3Ranks(models.Model):
     class Meta:
         db_table = u'phpbb3_ranks'
 
-class Phpbb3Reports(models.Model):
+class Reports(models.Model):
     report_id = models.IntegerField(primary_key=True)
     reason_id = models.IntegerField()
     post_id = models.IntegerField()
@@ -529,7 +531,7 @@ class Phpbb3Reports(models.Model):
     class Meta:
         db_table = u'phpbb3_reports'
 
-class Phpbb3ReportsReasons(models.Model):
+class ReportsReasons(models.Model):
     reason_id = models.IntegerField(primary_key=True)
     reason_title = models.CharField(max_length=765)
     reason_description = models.TextField()
@@ -537,7 +539,7 @@ class Phpbb3ReportsReasons(models.Model):
     class Meta:
         db_table = u'phpbb3_reports_reasons'
 
-class Phpbb3SearchResults(models.Model):
+class SearchResults(models.Model):
     search_key = models.CharField(max_length=96, primary_key=True)
     search_time = models.IntegerField()
     search_keywords = models.TextField()
@@ -545,7 +547,7 @@ class Phpbb3SearchResults(models.Model):
     class Meta:
         db_table = u'phpbb3_search_results'
 
-class Phpbb3SearchWordlist(models.Model):
+class SearchWordlist(models.Model):
     word_id = models.IntegerField(primary_key=True)
     word_text = models.CharField(max_length=765, unique=True)
     word_common = models.IntegerField()
@@ -553,14 +555,14 @@ class Phpbb3SearchWordlist(models.Model):
     class Meta:
         db_table = u'phpbb3_search_wordlist'
 
-class Phpbb3SearchWordmatch(models.Model):
+class SearchWordmatch(models.Model):
     post_id = models.IntegerField()
     word_id = models.IntegerField()
     title_match = models.IntegerField(unique=True)
     class Meta:
         db_table = u'phpbb3_search_wordmatch'
 
-class Phpbb3Sessions(models.Model):
+class Sessions(models.Model):
     session_id = models.CharField(max_length=96, primary_key=True)
     session_user_id = models.IntegerField()
     session_forum_id = models.IntegerField()
@@ -577,7 +579,7 @@ class Phpbb3Sessions(models.Model):
     class Meta:
         db_table = u'phpbb3_sessions'
 
-class Phpbb3SessionsKeys(models.Model):
+class SessionsKeys(models.Model):
     key_id = models.CharField(max_length=96, primary_key=True)
     user_id = models.IntegerField(primary_key=True)
     last_ip = models.CharField(max_length=120)
@@ -585,7 +587,7 @@ class Phpbb3SessionsKeys(models.Model):
     class Meta:
         db_table = u'phpbb3_sessions_keys'
 
-class Phpbb3Sitelist(models.Model):
+class Sitelist(models.Model):
     site_id = models.IntegerField(primary_key=True)
     site_ip = models.CharField(max_length=120)
     site_hostname = models.CharField(max_length=765)
@@ -593,7 +595,7 @@ class Phpbb3Sitelist(models.Model):
     class Meta:
         db_table = u'phpbb3_sitelist'
 
-class Phpbb3Smilies(models.Model):
+class Smilies(models.Model):
     smiley_id = models.IntegerField(primary_key=True)
     code = models.CharField(max_length=150)
     emotion = models.CharField(max_length=150)
@@ -605,7 +607,7 @@ class Phpbb3Smilies(models.Model):
     class Meta:
         db_table = u'phpbb3_smilies'
 
-class Phpbb3Styles(models.Model):
+class Styles(models.Model):
     style_id = models.IntegerField(primary_key=True)
     style_name = models.CharField(max_length=765, unique=True)
     style_copyright = models.CharField(max_length=765)
@@ -616,7 +618,7 @@ class Phpbb3Styles(models.Model):
     class Meta:
         db_table = u'phpbb3_styles'
 
-class Phpbb3StylesImageset(models.Model):
+class StylesImageset(models.Model):
     imageset_id = models.IntegerField(primary_key=True)
     imageset_name = models.CharField(max_length=765, unique=True)
     imageset_copyright = models.CharField(max_length=765)
@@ -624,7 +626,7 @@ class Phpbb3StylesImageset(models.Model):
     class Meta:
         db_table = u'phpbb3_styles_imageset'
 
-class Phpbb3StylesImagesetData(models.Model):
+class StylesImagesetData(models.Model):
     image_id = models.IntegerField(primary_key=True)
     image_name = models.CharField(max_length=600)
     image_filename = models.CharField(max_length=600)
@@ -635,7 +637,7 @@ class Phpbb3StylesImagesetData(models.Model):
     class Meta:
         db_table = u'phpbb3_styles_imageset_data'
 
-class Phpbb3StylesTemplate(models.Model):
+class StylesTemplate(models.Model):
     template_id = models.IntegerField(primary_key=True)
     template_name = models.CharField(max_length=765, unique=True)
     template_copyright = models.CharField(max_length=765)
@@ -647,7 +649,7 @@ class Phpbb3StylesTemplate(models.Model):
     class Meta:
         db_table = u'phpbb3_styles_template'
 
-class Phpbb3StylesTemplateData(models.Model):
+class StylesTemplateData(models.Model):
     template_id = models.IntegerField()
     template_filename = models.CharField(max_length=300)
     template_included = models.TextField()
@@ -656,7 +658,7 @@ class Phpbb3StylesTemplateData(models.Model):
     class Meta:
         db_table = u'phpbb3_styles_template_data'
 
-class Phpbb3StylesTheme(models.Model):
+class StylesTheme(models.Model):
     theme_id = models.IntegerField(primary_key=True)
     theme_name = models.CharField(max_length=765, unique=True)
     theme_copyright = models.CharField(max_length=765)
@@ -667,7 +669,7 @@ class Phpbb3StylesTheme(models.Model):
     class Meta:
         db_table = u'phpbb3_styles_theme'
 
-class Phpbb3Topics(models.Model):
+class Topics(models.Model):
     topic_id = models.IntegerField(primary_key=True)
     forum_id = models.IntegerField()
     icon_id = models.IntegerField()
@@ -705,14 +707,14 @@ class Phpbb3Topics(models.Model):
     class Meta:
         db_table = u'phpbb3_topics'
 
-class Phpbb3TopicsPosted(models.Model):
+class TopicsPosted(models.Model):
     user_id = models.IntegerField(primary_key=True)
     topic_id = models.IntegerField(primary_key=True)
     topic_posted = models.IntegerField()
     class Meta:
         db_table = u'phpbb3_topics_posted'
 
-class Phpbb3TopicsTrack(models.Model):
+class TopicsTrack(models.Model):
     user_id = models.IntegerField(primary_key=True)
     topic_id = models.IntegerField()
     forum_id = models.IntegerField()
@@ -720,14 +722,14 @@ class Phpbb3TopicsTrack(models.Model):
     class Meta:
         db_table = u'phpbb3_topics_track'
 
-class Phpbb3TopicsWatch(models.Model):
+class TopicsWatch(models.Model):
     topic_id = models.IntegerField()
     user_id = models.IntegerField()
     notify_status = models.IntegerField()
     class Meta:
         db_table = u'phpbb3_topics_watch'
 
-class Phpbb3UserGroup(models.Model):
+class UserGroup(models.Model):
     group_id = models.IntegerField()
     user_id = models.IntegerField()
     group_leader = models.IntegerField()
@@ -735,7 +737,7 @@ class Phpbb3UserGroup(models.Model):
     class Meta:
         db_table = u'phpbb3_user_group'
 
-class Phpbb3Users(models.Model):
+class Users(models.Model):
     user_id = models.IntegerField(primary_key=True)
     user_type = models.IntegerField()
     group_id = models.IntegerField()
@@ -815,7 +817,7 @@ class Phpbb3Users(models.Model):
     class Meta:
         db_table = u'phpbb3_users'
 
-class Phpbb3Warnings(models.Model):
+class Warnings(models.Model):
     warning_id = models.IntegerField(primary_key=True)
     user_id = models.IntegerField()
     post_id = models.IntegerField()
@@ -824,14 +826,14 @@ class Phpbb3Warnings(models.Model):
     class Meta:
         db_table = u'phpbb3_warnings'
 
-class Phpbb3Words(models.Model):
+class Words(models.Model):
     word_id = models.IntegerField(primary_key=True)
     word = models.CharField(max_length=765)
     replacement = models.CharField(max_length=765)
     class Meta:
         db_table = u'phpbb3_words'
 
-class Phpbb3Zebra(models.Model):
+class Zebra(models.Model):
     user_id = models.IntegerField(primary_key=True)
     zebra_id = models.IntegerField(primary_key=True)
     friend = models.IntegerField()
