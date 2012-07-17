@@ -34,6 +34,16 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ('username','user_id','user_regdate','user_posts','user_email')
 admin.site.register(User, UserAdmin)
 
+
+class ForumAdmin(admin.ModelAdmin):
+    """
+    Forum (Name, description, rules...)
+    """
+    list_display = ('forum_id', "forum_name", "forum_desc", "forum_posts", "forum_topics_real")
+    list_display_links = ("forum_name",)
+admin.site.register(Forum, ForumAdmin)
+
+
 class GroupAdmin(admin.ModelAdmin):
     """
     Usergroups
@@ -156,13 +166,6 @@ class ExtensionAdmin(admin.ModelAdmin):
     """
     pass
 admin.site.register(Extension, ExtensionAdmin)
-
-class ForumAdmin(admin.ModelAdmin):
-    """
-    Forum (Name, description, rules...)
-    """
-    pass
-admin.site.register(Forum, ForumAdmin)
 
 class ForumAccessAdmin(admin.ModelAdmin):
     """
