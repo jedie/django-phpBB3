@@ -1,6 +1,7 @@
 # coding: utf-8
 
 from django.contrib import admin
+from django.utils.translation import ugettext_lazy as _
 
 from django_phpBB3.models import AclOption, AclRole, AclRoleData, \
     AclUser, Attachment, Banlist, Bbcode, Bookmark, Bot, CaptchaAnswers, \
@@ -42,6 +43,20 @@ class ForumAdmin(admin.ModelAdmin):
     list_display = ('forum_id', "forum_name", "forum_desc", "forum_posts", "forum_topics_real")
     list_display_links = ("forum_name",)
 admin.site.register(Forum, ForumAdmin)
+
+
+class PostAdmin(admin.ModelAdmin):
+    """
+    Topic posts
+    """
+    def first_line(self, obj):
+        return obj.post_text.strip().splitlines()[0]
+    first_line.short_description = _("first line")
+
+    list_display = ('post_id', "first_line")
+    list_filter = ("forum", "poster")
+    search_fields = ("post_text",)
+admin.site.register(Post, PostAdmin)
 
 
 class GroupAdmin(admin.ModelAdmin):
@@ -243,13 +258,6 @@ class PollVoteAdmin(admin.ModelAdmin):
     """
     pass
 admin.site.register(PollVote, PollVoteAdmin)
-
-class PostAdmin(admin.ModelAdmin):
-    """
-    Topic posts
-    """
-    pass
-admin.site.register(Post, PostAdmin)
 
 class PrivmsgAdmin(admin.ModelAdmin):
     """

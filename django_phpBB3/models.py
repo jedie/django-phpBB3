@@ -541,6 +541,113 @@ class Forum(models.Model):
         db_table = u'phpbb3_forums'
 
 
+class Post(models.Model):
+    """
+    Topic posts
+    """
+    post_id = models.PositiveIntegerField(primary_key=True,
+        # mediumint(8) unsigned
+        help_text="primary key"
+    )
+    topic = models.ForeignKey("Topic",
+        # mediumint(8) unsigned
+        default=0,
+    )
+    forum = models.ForeignKey("Forum",
+        # mediumint(8) unsigned
+        default=0,
+    )
+    poster = models.ForeignKey("User",
+        # mediumint(8) unsigned
+        default=0,
+    )
+    icon = models.ForeignKey("Icon",
+        # mediumint(8) unsigned
+        default=0,
+    )
+    poster_ip = models.CharField(max_length=40,
+        # varchar(40)
+    )
+    post_time = models.PositiveIntegerField(
+        # int(11) unsigned
+        default=0,
+    )
+    post_approved = models.PositiveSmallIntegerField(
+        # tinyint(1) unsigned
+        default=1,
+    )
+    post_reported = models.PositiveSmallIntegerField(
+        # tinyint(1) unsigned
+        default=0,
+    )
+    enable_bbcode = models.PositiveSmallIntegerField(
+        # tinyint(1) unsigned
+        default=1,
+    )
+    enable_smilies = models.PositiveSmallIntegerField(
+        # tinyint(1) unsigned
+        default=1,
+    )
+    enable_magic_url = models.PositiveSmallIntegerField(
+        # tinyint(1) unsigned
+        default=1,
+    )
+    enable_sig = models.PositiveSmallIntegerField(
+        # tinyint(1) unsigned
+        default=1,
+    )
+    post_username = models.CharField(max_length=255,
+        # varchar(255)
+    )
+    post_subject = models.CharField(max_length=255,
+        # varchar(100)
+    )
+    post_text = models.TextField(
+        # mediumtext
+    )
+    post_checksum = models.CharField(max_length=32,
+        # varchar(32)
+    )
+    post_attachment = models.PositiveSmallIntegerField(
+        # tinyint(1) unsigned
+        default=0,
+        help_text="| 1=This post has at least one attachment&lt;br/>0=no attachments in this post"
+    )
+    bbcode_bitfield = models.CharField(max_length=255,
+        # varchar(255)
+        help_text="see [[Parsing text]]"
+    )
+    bbcode_uid = models.CharField(max_length=8,
+        # varchar(5)
+        help_text="see [[Parsing text]]"
+    )
+    post_postcount = models.PositiveSmallIntegerField(
+        # tinyint(1) unsigned
+        default=1,
+    )
+    post_edit_time = models.PositiveIntegerField(
+        # int(11) unsigned
+        default=0,
+    )
+    post_edit_reason = models.CharField(max_length=255,
+        # varchar(255)
+    )
+    post_edit_user = models.PositiveIntegerField(
+        # mediumint(8) unsigned
+        default=0,
+    )
+    post_edit_count = models.PositiveIntegerField(
+        # smallint(4) unsigned
+        default=0,
+    )
+    post_edit_locked = models.PositiveSmallIntegerField(
+        # tinyint(1) unsigned
+        default=0,
+    )
+    class Meta:
+        db_table = u'phpbb3_posts'
+
+
 #------------------------------------------------------------------------------
 # more uninportand models:
 
@@ -1210,6 +1317,8 @@ class Icon(models.Model):
         # tinyint(1) unsigned
         default=1,
     )
+    def __unicode__(self):
+        return self.icons_url
     class Meta:
         db_table = u'phpbb3_icons'
 
@@ -1415,112 +1524,6 @@ class PollVote(models.Model):
     )
     class Meta:
         db_table = u'phpbb3_poll_votes'
-
-class Post(models.Model):
-    """
-    Topic posts
-    """
-    post_id = models.PositiveIntegerField(primary_key=True,
-        # mediumint(8) unsigned
-        help_text="primary key"
-    )
-    topic_id = models.PositiveIntegerField(
-        # mediumint(8) unsigned
-        default=0,
-    )
-    forum_id = models.PositiveIntegerField(
-        # mediumint(8) unsigned
-        default=0,
-    )
-    poster_id = models.PositiveIntegerField(
-        # mediumint(8) unsigned
-        default=0,
-    )
-    icon_id = models.PositiveIntegerField(
-        # mediumint(8) unsigned
-        default=0,
-    )
-    poster_ip = models.CharField(max_length=40,
-        # varchar(40)
-    )
-    post_time = models.PositiveIntegerField(
-        # int(11) unsigned
-        default=0,
-    )
-    post_approved = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=1,
-    )
-    post_reported = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=0,
-    )
-    enable_bbcode = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=1,
-    )
-    enable_smilies = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=1,
-    )
-    enable_magic_url = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=1,
-    )
-    enable_sig = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=1,
-    )
-    post_username = models.CharField(max_length=255,
-        # varchar(255)
-    )
-    post_subject = models.CharField(max_length=255,
-        # varchar(100)
-    )
-    post_text = models.TextField(
-        # mediumtext
-    )
-    post_checksum = models.CharField(max_length=32,
-        # varchar(32)
-    )
-    post_attachment = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=0,
-        help_text="| 1=This post has at least one attachment&lt;br/>0=no attachments in this post"
-    )
-    bbcode_bitfield = models.CharField(max_length=255,
-        # varchar(255)
-        help_text="see [[Parsing text]]"
-    )
-    bbcode_uid = models.CharField(max_length=8,
-        # varchar(5)
-        help_text="see [[Parsing text]]"
-    )
-    post_postcount = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=1,
-    )
-    post_edit_time = models.PositiveIntegerField(
-        # int(11) unsigned
-        default=0,
-    )
-    post_edit_reason = models.CharField(max_length=255,
-        # varchar(255)
-    )
-    post_edit_user = models.PositiveIntegerField(
-        # mediumint(8) unsigned
-        default=0,
-    )
-    post_edit_count = models.PositiveIntegerField(
-        # smallint(4) unsigned
-        default=0,
-    )
-    post_edit_locked = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=0,
-    )
-    class Meta:
-        db_table = u'phpbb3_posts'
 
 class Privmsg(models.Model):
     """
@@ -2489,6 +2492,8 @@ class Topic(models.Model):
         default=0,
         help_text="Are users allowed to change their vote(s)? 1 (yes), 0(no)"
     )
+    def __unicode__(self):
+        return self.topic_title
     class Meta:
         db_table = u'phpbb3_topics'
 
