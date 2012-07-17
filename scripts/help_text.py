@@ -35,9 +35,7 @@ TABLE_RE = re.compile(
 HEADINGS_RE = re.compile(
     r'^\! (.*?)$', re.IGNORECASE | re.UNICODE | re.MULTILINE
 )
-COLUMN_BLOCK_RE = re.compile(
-    r'(?:\-)([^-]*)', re.UNICODE | re.DOTALL
-)
+
 
 COLUMN_RE = re.compile(
     r'\| (.+)', re.UNICODE
@@ -102,6 +100,20 @@ def get_table_data(content):
     return table_data
 
 
+def _parse_table(content):
+    column_blocks = [""]
+    for line in content.splitlines():
+        if not line.startswith("|"):
+            continue
+        if line.startswith("|}"):
+            break
+        if line.startswith("|-"):
+            column_blocks.append("")
+        else:
+            column_blocks[-1] += line + "\n"
+    return column_blocks[1:]
+
+
 def fill_table_data(table_data):
     for table_name in table_data:
         print "_"*79
@@ -121,11 +133,11 @@ def fill_table_data(table_data):
             print " *** Error with:", table_name
             continue
     
-#        print table_info
+        print table_info
         headings = HEADINGS_RE.findall(table_info)
         
-        for column_block in COLUMN_BLOCK_RE.findall(table_info):
-#            print "***", column_block
+        for column_block in _parse_table(table_info):
+            print "***", column_block
             column_info = COLUMN_RE.findall(column_block)
 #            print column_info
             column_data = {}
@@ -152,15 +164,17 @@ if __name__=="__main__":
 #    print "="*79
     content = get_textarea(content)
     table_data = get_table_data(content)
-    pprint.pprint(table_data)
+#    pprint.pprint(table_data)
 
 #    table_data = {'PhpbbUsers':table_data['PhpbbUsers']}
 
 #    print "="*79    
-    fill_table_data(table_data)
-#    print table_data    
-
+    fill_table_data(table_data)   
 #    pprint.pprint(table_data)
+    
+#    print table_data['PhpbbUsers']['user_type']['content']
+    
+    
     with file(OUT_FILE, "w") as f:
         f.write("# Auto generated with '%s'\n" % os.path.basename(__file__))
         f.write("data=%s" % pprint.pformat(table_data))
