@@ -21,6 +21,11 @@ DATABASES = {
     }
 }
 }}}
+optional settings, that you can change in your {{{local_settings.py}}} are:
+{{{
+# The prefix of the phpBB3 installation - default: u"phpbb3_"
+PHPBB_TABLE_PREFIX = u"phpbb3_"
+}}}
 
 You must create the django tables with: {{{./manage.py syncdb}}} and create a superuser.
 

@@ -13,6 +13,7 @@
 """
 
 from django.db import models
+from django.conf import settings
 
 
 #------------------------------------------------------------------------------
@@ -366,7 +367,7 @@ class User(models.Model):
     def __unicode__(self):
         return self.username
     class Meta:
-        db_table = u'phpbb3_users'
+        db_table = u"%susers" % settings.PHPBB_TABLE_PREFIX
         ordering = ['-user_posts']
 
 
@@ -538,7 +539,7 @@ class Forum(models.Model):
     def __unicode__(self):
         return self.forum_name
     class Meta:
-        db_table = u'phpbb3_forums'
+        db_table = u"%sforums" % settings.PHPBB_TABLE_PREFIX
 
 
 class Post(models.Model):
@@ -645,7 +646,7 @@ class Post(models.Model):
         default=0,
     )
     class Meta:
-        db_table = u'phpbb3_posts'
+        db_table = u"%sposts" % settings.PHPBB_TABLE_PREFIX
 
 
 #------------------------------------------------------------------------------
@@ -731,7 +732,7 @@ class Group(models.Model):
     def __unicode__(self):
             return self.group_name
     class Meta:
-        db_table = u'phpbb3_groups'
+        db_table = u"%sgroups" % settings.PHPBB_TABLE_PREFIX
 
 
 class Config(models.Model):
@@ -754,7 +755,7 @@ class Config(models.Model):
     def __unicode__(self):
             return u"%s: %s" % (self.config_name, self.config_value)
     class Meta:
-        db_table = u'phpbb3_config'
+        db_table = u"%sconfig" % settings.PHPBB_TABLE_PREFIX
 
 #______________________________________________________________________________
 # untouched models:
@@ -787,7 +788,7 @@ class AclOption(models.Model):
         help_text="only founders can have this permission"
     )
     class Meta:
-        db_table = u'phpbb3_acl_options'
+        db_table = u"%sacl_options" % settings.PHPBB_TABLE_PREFIX
 
 class AclRole(models.Model):
     """
@@ -813,7 +814,7 @@ class AclRole(models.Model):
         default=0,
     )
     class Meta:
-        db_table = u'phpbb3_acl_roles'
+        db_table = u"%sacl_roles" % settings.PHPBB_TABLE_PREFIX
 
 class AclRoleData(models.Model):
     """
@@ -835,7 +836,7 @@ class AclRoleData(models.Model):
         help_text="ACL_YES, ACL_NO or ACL_NEVER"
     )
     class Meta:
-        db_table = u'phpbb3_acl_roles_data'
+        db_table = u"%sacl_roles_data" % settings.PHPBB_TABLE_PREFIX
 
 class AclUser(models.Model):
     """
@@ -871,7 +872,7 @@ class AclUser(models.Model):
         help_text="ACL_YES, ACL_NO or ACL_NEVER "
     )
     class Meta:
-        db_table = u'phpbb3_acl_users'
+        db_table = u"%sacl_users" % settings.PHPBB_TABLE_PREFIX
 
 class Attachment(models.Model):
     """
@@ -950,7 +951,7 @@ class Attachment(models.Model):
         help_text="has this attachment a thumbnail (1/0)? The thumbnails physical filename is prefixed with thumb_"
     )
     class Meta:
-        db_table = u'phpbb3_attachments'
+        db_table = u"%sattachments" % settings.PHPBB_TABLE_PREFIX
 
 class Banlist(models.Model):
     """
@@ -989,7 +990,7 @@ class Banlist(models.Model):
         # text
     )
     class Meta:
-        db_table = u'phpbb3_banlist'
+        db_table = u"%sbanlist" % settings.PHPBB_TABLE_PREFIX
 
 class Bbcode(models.Model):
     """
@@ -1029,7 +1030,7 @@ class Bbcode(models.Model):
         # mediumtext
     )
     class Meta:
-        db_table = u'phpbb3_bbcodes'
+        db_table = u"%sbbcodes" % settings.PHPBB_TABLE_PREFIX
 
 class Bookmark(models.Model):
     """
@@ -1044,7 +1045,7 @@ class Bookmark(models.Model):
         default=0,
     )
     class Meta:
-        db_table = u'phpbb3_bookmarks'
+        db_table = u"%sbookmarks" % settings.PHPBB_TABLE_PREFIX
 
 class Bot(models.Model):
     """
@@ -1072,13 +1073,13 @@ class Bot(models.Model):
         # varchar(255)
     )
     class Meta:
-        db_table = u'phpbb3_bots'
+        db_table = u"%sbots" % settings.PHPBB_TABLE_PREFIX
 
 class CaptchaAnswers(models.Model):
     question_id = models.IntegerField()
     answer_text = models.CharField(max_length=255)
     class Meta:
-        db_table = u'phpbb3_captcha_answers'
+        db_table = u"%scaptcha_answers" % settings.PHPBB_TABLE_PREFIX
 
 class CaptchaQuestions(models.Model):
     question_id = models.IntegerField(primary_key=True)
@@ -1087,7 +1088,7 @@ class CaptchaQuestions(models.Model):
     lang_iso = models.CharField(max_length=30)
     question_text = models.TextField()
     class Meta:
-        db_table = u'phpbb3_captcha_questions'
+        db_table = u"%scaptcha_questions" % settings.PHPBB_TABLE_PREFIX
 
 class Confirm(models.Model):
     """
@@ -1121,7 +1122,7 @@ class Confirm(models.Model):
         help_text="The number of attempts that have been made at solving the CAPTCHA"
     )
     class Meta:
-        db_table = u'phpbb3_confirm'
+        db_table = u"%sconfirm" % settings.PHPBB_TABLE_PREFIX
 
 class Disallow(models.Model):
     """
@@ -1135,7 +1136,7 @@ class Disallow(models.Model):
         # varchar(255)
     )
     class Meta:
-        db_table = u'phpbb3_disallow'
+        db_table = u"%sdisallow" % settings.PHPBB_TABLE_PREFIX
 
 class Draft(models.Model):
     """
@@ -1168,7 +1169,7 @@ class Draft(models.Model):
         # mediumtext
     )
     class Meta:
-        db_table = u'phpbb3_drafts'
+        db_table = u"%sdrafts" % settings.PHPBB_TABLE_PREFIX
 
 class ExtensionGroup(models.Model):
     """
@@ -1208,7 +1209,7 @@ class ExtensionGroup(models.Model):
         default=0,
     )
     class Meta:
-        db_table = u'phpbb3_extension_groups'
+        db_table = u"%sextension_groups" % settings.PHPBB_TABLE_PREFIX
 
 class Extension(models.Model):
     """
@@ -1226,7 +1227,7 @@ class Extension(models.Model):
         # varchar(100)
     )
     class Meta:
-        db_table = u'phpbb3_extensions'
+        db_table = u"%sextensions" % settings.PHPBB_TABLE_PREFIX
 
 
 class ForumAccess(models.Model):
@@ -1248,7 +1249,7 @@ class ForumAccess(models.Model):
         help_text="primary key"
     )
     class Meta:
-        db_table = u'phpbb3_forums_access'
+        db_table = u"%sforums_access" % settings.PHPBB_TABLE_PREFIX
 
 class ForumTrack(models.Model):
     """
@@ -1269,7 +1270,7 @@ class ForumTrack(models.Model):
         default=0,
     )
     class Meta:
-        db_table = u'phpbb3_forums_track'
+        db_table = u"%sforums_track" % settings.PHPBB_TABLE_PREFIX
 
 class ForumWatch(models.Model):
     """
@@ -1288,7 +1289,7 @@ class ForumWatch(models.Model):
         default=0,
     )
     class Meta:
-        db_table = u'phpbb3_forums_watch'
+        db_table = u"%sforums_watch" % settings.PHPBB_TABLE_PREFIX
 
 class Icon(models.Model):
     """
@@ -1320,7 +1321,7 @@ class Icon(models.Model):
     def __unicode__(self):
         return self.icons_url
     class Meta:
-        db_table = u'phpbb3_icons'
+        db_table = u"%sicons" % settings.PHPBB_TABLE_PREFIX
 
 class Lang(models.Model):
     """
@@ -1346,7 +1347,7 @@ class Lang(models.Model):
         # varchar(255)
     )
     class Meta:
-        db_table = u'phpbb3_lang'
+        db_table = u"%slang" % settings.PHPBB_TABLE_PREFIX
 
 class Log(models.Model):
     """
@@ -1390,7 +1391,7 @@ class Log(models.Model):
         # mediumtext
     )
     class Meta:
-        db_table = u'phpbb3_log'
+        db_table = u"%slog" % settings.PHPBB_TABLE_PREFIX
 
 class LoginAttempt(models.Model):
     """
@@ -1404,7 +1405,7 @@ class LoginAttempt(models.Model):
     username = models.CharField(max_length=255)
     username_clean = models.CharField(max_length=255)
     class Meta:
-        db_table = u'phpbb3_login_attempts'
+        db_table = u"%slogin_attempts" % settings.PHPBB_TABLE_PREFIX
 
 class ModeratorCache(models.Model):
     """
@@ -1433,7 +1434,7 @@ class ModeratorCache(models.Model):
         default=1,
     )
     class Meta:
-        db_table = u'phpbb3_moderator_cache'
+        db_table = u"%smoderator_cache" % settings.PHPBB_TABLE_PREFIX
 
 class Module(models.Model):
     """
@@ -1479,7 +1480,7 @@ class Module(models.Model):
         # varchar(255)
     )
     class Meta:
-        db_table = u'phpbb3_modules'
+        db_table = u"%smodules" % settings.PHPBB_TABLE_PREFIX
 
 class PollOption(models.Model):
     """
@@ -1501,7 +1502,7 @@ class PollOption(models.Model):
         default=0,
     )
     class Meta:
-        db_table = u'phpbb3_poll_options'
+        db_table = u"%spoll_options" % settings.PHPBB_TABLE_PREFIX
 
 class PollVote(models.Model):
     """
@@ -1523,7 +1524,7 @@ class PollVote(models.Model):
         # varchar(40)
     )
     class Meta:
-        db_table = u'phpbb3_poll_votes'
+        db_table = u"%spoll_votes" % settings.PHPBB_TABLE_PREFIX
 
 class Privmsg(models.Model):
     """
@@ -1627,7 +1628,7 @@ class Privmsg(models.Model):
     )
     message_reported = models.IntegerField()
     class Meta:
-        db_table = u'phpbb3_privmsgs'
+        db_table = u"%sprivmsgs" % settings.PHPBB_TABLE_PREFIX
 
 class PrivmsgFolder(models.Model):
     """
@@ -1649,7 +1650,7 @@ class PrivmsgFolder(models.Model):
         default=0,
     )
     class Meta:
-        db_table = u'phpbb3_privmsgs_folder'
+        db_table = u"%sprivmsgs_folder" % settings.PHPBB_TABLE_PREFIX
 
 class PrivmsgRules(models.Model):
     """
@@ -1691,7 +1692,7 @@ class PrivmsgRules(models.Model):
         default=0,
     )
     class Meta:
-        db_table = u'phpbb3_privmsgs_rules'
+        db_table = u"%sprivmsgs_rules" % settings.PHPBB_TABLE_PREFIX
 
 class PrivmsgTo(models.Model):
     """
@@ -1743,7 +1744,7 @@ class PrivmsgTo(models.Model):
         default=0,
     )
     class Meta:
-        db_table = u'phpbb3_privmsgs_to'
+        db_table = u"%sprivmsgs_to" % settings.PHPBB_TABLE_PREFIX
 
 class ProfileField(models.Model):
     """
@@ -1808,7 +1809,7 @@ class ProfileField(models.Model):
         default=0,
     )
     class Meta:
-        db_table = u'phpbb3_profile_fields'
+        db_table = u"%sprofile_fields" % settings.PHPBB_TABLE_PREFIX
 
 class ProfileFieldData(models.Model):
     """
@@ -1820,7 +1821,7 @@ class ProfileFieldData(models.Model):
         help_text="primary key"
     )
     class Meta:
-        db_table = u'phpbb3_profile_fields_data'
+        db_table = u"%sprofile_fields_data" % settings.PHPBB_TABLE_PREFIX
 
 class ProfileFieldLang(models.Model):
     """
@@ -1849,7 +1850,7 @@ class ProfileFieldLang(models.Model):
         # varchar(255)
     )
     class Meta:
-        db_table = u'phpbb3_profile_fields_lang'
+        db_table = u"%sprofile_fields_lang" % settings.PHPBB_TABLE_PREFIX
 
 class ProfileLang(models.Model):
     """
@@ -1875,7 +1876,7 @@ class ProfileLang(models.Model):
         # varchar(255)
     )
     class Meta:
-        db_table = u'phpbb3_profile_lang'
+        db_table = u"%sprofile_lang" % settings.PHPBB_TABLE_PREFIX
 
 class QaConfirm(models.Model):
     session_id = models.CharField(max_length=96)
@@ -1885,7 +1886,7 @@ class QaConfirm(models.Model):
     attempts = models.IntegerField()
     confirm_type = models.IntegerField()
     class Meta:
-        db_table = u'phpbb3_qa_confirm'
+        db_table = u"%sqa_confirm" % settings.PHPBB_TABLE_PREFIX
 
 class Rank(models.Model):
     """
@@ -1912,7 +1913,7 @@ class Rank(models.Model):
     def __unicode__(self):
         return self.rank_title
     class Meta:
-        db_table = u'phpbb3_ranks'
+        db_table = u"%sranks" % settings.PHPBB_TABLE_PREFIX
 
 class Report(models.Model):
     """
@@ -1951,7 +1952,7 @@ class Report(models.Model):
         # mediumtext
     )
     class Meta:
-        db_table = u'phpbb3_reports'
+        db_table = u"%sreports" % settings.PHPBB_TABLE_PREFIX
 
 class ReportReasons(models.Model):
     """
@@ -1972,7 +1973,7 @@ class ReportReasons(models.Model):
         default=0,
     )
     class Meta:
-        db_table = u'phpbb3_reports_reasons'
+        db_table = u"%sreports_reasons" % settings.PHPBB_TABLE_PREFIX
 
 class SearchResult(models.Model):
     """
@@ -1993,7 +1994,7 @@ class SearchResult(models.Model):
         # mediumtext
     )
     class Meta:
-        db_table = u'phpbb3_search_results'
+        db_table = u"%ssearch_results" % settings.PHPBB_TABLE_PREFIX
 
 class SearchWordlist(models.Model):
     """
@@ -2015,7 +2016,7 @@ class SearchWordlist(models.Model):
         default=0,
     )
     class Meta:
-        db_table = u'phpbb3_search_wordlist'
+        db_table = u"%ssearch_wordlist" % settings.PHPBB_TABLE_PREFIX
 
 class SearchWordmatch(models.Model):
     """
@@ -2034,7 +2035,7 @@ class SearchWordmatch(models.Model):
         default=0,
     )
     class Meta:
-        db_table = u'phpbb3_search_wordmatch'
+        db_table = u"%ssearch_wordmatch" % settings.PHPBB_TABLE_PREFIX
 
 class Session(models.Model):
     """
@@ -2084,7 +2085,7 @@ class Session(models.Model):
         default=0,
     )
     class Meta:
-        db_table = u'phpbb3_sessions'
+        db_table = u"%ssessions" % settings.PHPBB_TABLE_PREFIX
 
 class SessionKey(models.Model):
     """
@@ -2107,7 +2108,7 @@ class SessionKey(models.Model):
         default=0,
     )
     class Meta:
-        db_table = u'phpbb3_sessions_keys'
+        db_table = u"%ssessions_keys" % settings.PHPBB_TABLE_PREFIX
 
 class Sitelist(models.Model):
     """
@@ -2128,7 +2129,7 @@ class Sitelist(models.Model):
         default=0,
     )
     class Meta:
-        db_table = u'phpbb3_sitelist'
+        db_table = u"%ssitelist" % settings.PHPBB_TABLE_PREFIX
 
 class Smilie(models.Model):
     """
@@ -2164,7 +2165,7 @@ class Smilie(models.Model):
         default=1,
     )
     class Meta:
-        db_table = u'phpbb3_smilies'
+        db_table = u"%ssmilies" % settings.PHPBB_TABLE_PREFIX
 
 class Style(models.Model):
     """
@@ -2199,7 +2200,7 @@ class Style(models.Model):
     def __unicode__(self):
         return self.style_name
     class Meta:
-        db_table = u'phpbb3_styles'
+        db_table = u"%sstyles" % settings.PHPBB_TABLE_PREFIX
 
 class StyleImageset(models.Model):
     """
@@ -2219,7 +2220,7 @@ class StyleImageset(models.Model):
         # varchar(100)
     )
     class Meta:
-        db_table = u'phpbb3_styles_imageset'
+        db_table = u"%sstyles_imageset" % settings.PHPBB_TABLE_PREFIX
 
 class StyleImagesetData(models.Model):
     """
@@ -2233,7 +2234,7 @@ class StyleImagesetData(models.Model):
     image_width = models.IntegerField()
     imageset_id = models.IntegerField()
     class Meta:
-        db_table = u'phpbb3_styles_imageset_data'
+        db_table = u"%sstyles_imageset_data" % settings.PHPBB_TABLE_PREFIX
 
 class StyleTemplate(models.Model):
     """
@@ -2263,7 +2264,7 @@ class StyleTemplate(models.Model):
     template_inherits_id = models.IntegerField()
     template_inherit_path = models.CharField(max_length=255)
     class Meta:
-        db_table = u'phpbb3_styles_template'
+        db_table = u"%sstyles_template" % settings.PHPBB_TABLE_PREFIX
 
 class StyleTemplateData(models.Model):
     """
@@ -2286,7 +2287,7 @@ class StyleTemplateData(models.Model):
         # mediumtext
     )
     class Meta:
-        db_table = u'phpbb3_styles_template_data'
+        db_table = u"%sstyles_template_data" % settings.PHPBB_TABLE_PREFIX
 
 class StyleTheme(models.Model):
     """
@@ -2317,7 +2318,7 @@ class StyleTheme(models.Model):
         # mediumtext
     )
     class Meta:
-        db_table = u'phpbb3_styles_theme'
+        db_table = u"%sstyles_theme" % settings.PHPBB_TABLE_PREFIX
 
 class Topic(models.Model):
     """
@@ -2495,7 +2496,7 @@ class Topic(models.Model):
     def __unicode__(self):
         return self.topic_title
     class Meta:
-        db_table = u'phpbb3_topics'
+        db_table = u"%stopics" % settings.PHPBB_TABLE_PREFIX
 
 class TopicPosted(models.Model):
     """
@@ -2516,7 +2517,7 @@ class TopicPosted(models.Model):
         default=0,
     )
     class Meta:
-        db_table = u'phpbb3_topics_posted'
+        db_table = u"%stopics_posted" % settings.PHPBB_TABLE_PREFIX
 
 class TopicTrack(models.Model):
     """
@@ -2538,7 +2539,7 @@ class TopicTrack(models.Model):
         default=0,
     )
     class Meta:
-        db_table = u'phpbb3_topics_track'
+        db_table = u"%stopics_track" % settings.PHPBB_TABLE_PREFIX
 
 class TopicWatch(models.Model):
     """
@@ -2557,7 +2558,7 @@ class TopicWatch(models.Model):
         default=0,
     )
     class Meta:
-        db_table = u'phpbb3_topics_watch'
+        db_table = u"%stopics_watch" % settings.PHPBB_TABLE_PREFIX
 
 class UserGroup(models.Model):
     """
@@ -2586,7 +2587,7 @@ class UserGroup(models.Model):
         help_text="1 (true) if the user is waiting for approval"
     )
     class Meta:
-        db_table = u'phpbb3_user_group'
+        db_table = u"%suser_group" % settings.PHPBB_TABLE_PREFIX
 
 class Warning(models.Model):
     """
@@ -2613,7 +2614,7 @@ class Warning(models.Model):
         default=0,
     )
     class Meta:
-        db_table = u'phpbb3_warnings'
+        db_table = u"%swarnings" % settings.PHPBB_TABLE_PREFIX
 
 class Word(models.Model):
     """
@@ -2630,7 +2631,7 @@ class Word(models.Model):
         # varchar(255)
     )
     class Meta:
-        db_table = u'phpbb3_words'
+        db_table = u"%swords" % settings.PHPBB_TABLE_PREFIX
 
 class Zebra(models.Model):
     """
@@ -2653,7 +2654,7 @@ class Zebra(models.Model):
         default=0,
     )
     class Meta:
-        db_table = u'phpbb3_zebra'
+        db_table = u"%szebra" % settings.PHPBB_TABLE_PREFIX
 
 
 #------------------------------------------------------------------------------
@@ -2696,4 +2697,4 @@ class Zebra(models.Model):
 #        help_text="ACL_YES, ACL_NO or ACL_NEVER"
 #    )
 #    class Meta:
-#        db_table = u'phpbb3_acl_groups'
+        db_table = u"%sacl_groups" % settings.PHPBB_TABLE_PREFIX
