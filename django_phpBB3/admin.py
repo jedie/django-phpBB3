@@ -2,28 +2,28 @@
 
 from django.contrib import admin
 
-from django_phpBB3.models import AclOptions, AclRoles, AclRolesData, \
-    AclUsers, Attachments, Banlist, Bbcodes, Bookmarks, Bots, CaptchaAnswers, \
-    CaptchaQuestions, Config, Confirm, Disallow, Drafts, ExtensionGroups, Extensions, \
-    Forums, ForumsAccess, ForumsTrack, ForumsWatch, Group, Icons, Lang, Log, \
-    LoginAttempts, ModeratorCache, Modules, PollOptions, PollVotes, Posts, Privmsgs, \
-    PrivmsgsFolder, PrivmsgsRules, PrivmsgsTo, ProfileFields, ProfileFieldsData, \
-    ProfileFieldsLang, ProfileLang, QaConfirm, Ranks, Reports, ReportsReasons, \
-    SearchResults, SearchWordlist, SearchWordmatch, Sessions, SessionsKeys, Sitelist, \
-    Smilies, Styles, StylesImageset, StylesImagesetData, StylesTemplate, \
-    StylesTemplateData, StylesTheme, Topics, TopicsPosted, TopicsTrack, TopicsWatch, \
-    UserGroup, User, Warnings, Words, Zebra
+from django_phpBB3.models import AclOption, AclRole, AclRoleData, \
+    AclUser, Attachment, Banlist, Bbcode, Bookmark, Bot, CaptchaAnswers, \
+    CaptchaQuestions, Config, Confirm, Disallow, Draft, ExtensionGroup, Extension, \
+    Forum, ForumAccess, ForumTrack, ForumWatch, Group, Icon, Lang, Log, \
+    LoginAttempt, ModeratorCache, Module, PollOption, PollVote, Post, Privmsg, \
+    PrivmsgFolder, PrivmsgRules, PrivmsgTo, ProfileField, ProfileFieldData, \
+    ProfileFieldLang, ProfileLang, QaConfirm, Rank, Report, ReportReasons, \
+    SearchResult, SearchWordlist, SearchWordmatch, Session, SessionKey, Sitelist, \
+    Smilie, Style, StyleImageset, StyleImagesetData, StyleTemplate, \
+    StyleTemplateData, StyleTheme, Topic, TopicPosted, TopicTrack, TopicWatch, \
+    UserGroup, User, Warning, Word, Zebra
 
 
 #
 #These classes would need Django to support composite keys:
 #
-#class AclGroupsAdmin(admin.ModelAdmin):
+#class AclGroupAdmin(admin.ModelAdmin):
 #    """
 #    Permission roles and/or individual permissions assigned to groups
 #    """
 #    pass
-#admin.site.register(AclGroups, AclGroupsAdmin)
+#admin.site.register(AclGroup, AclGroupAdmin)
 #
 
 
@@ -44,40 +44,40 @@ admin.site.register(Group, GroupAdmin)
 #_______________________________________________________________________________
 # default Admin classes:
 
-class AclOptionsAdmin(admin.ModelAdmin):
+class AclOptionAdmin(admin.ModelAdmin):
     """
     List of possible permissions
     """
     pass
-admin.site.register(AclOptions, AclOptionsAdmin)
+admin.site.register(AclOption, AclOptionAdmin)
 
-class AclRolesAdmin(admin.ModelAdmin):
+class AclRoleAdmin(admin.ModelAdmin):
     """
     Permission roles (Standard Moderator, Simple Moderator etc.)
     """
     pass
-admin.site.register(AclRoles, AclRolesAdmin)
+admin.site.register(AclRole, AclRoleAdmin)
 
-class AclRolesDataAdmin(admin.ModelAdmin):
+class AclRoleDataAdmin(admin.ModelAdmin):
     """
     Permissions each role contains
     """
     pass
-admin.site.register(AclRolesData, AclRolesDataAdmin)
+admin.site.register(AclRoleData, AclRoleDataAdmin)
 
-class AclUsersAdmin(admin.ModelAdmin):
+class AclUserAdmin(admin.ModelAdmin):
     """
     Permission roles and/or individual permissions assigned to users
     """
     pass
-admin.site.register(AclUsers, AclUsersAdmin)
+admin.site.register(AclUser, AclUserAdmin)
 
-class AttachmentsAdmin(admin.ModelAdmin):
+class AttachmentAdmin(admin.ModelAdmin):
     """
     Information on attachments (Post, physical filename, original filename, MIME type...)
     """
     pass
-admin.site.register(Attachments, AttachmentsAdmin)
+admin.site.register(Attachment, AttachmentAdmin)
 
 class BanlistAdmin(admin.ModelAdmin):
     """
@@ -86,26 +86,26 @@ class BanlistAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Banlist, BanlistAdmin)
 
-class BbcodesAdmin(admin.ModelAdmin):
+class BbcodeAdmin(admin.ModelAdmin):
     """
     Custom BBCodes
     """
     pass
-admin.site.register(Bbcodes, BbcodesAdmin)
+admin.site.register(Bbcode, BbcodeAdmin)
 
-class BookmarksAdmin(admin.ModelAdmin):
+class BookmarkAdmin(admin.ModelAdmin):
     """
     Bookmarked topics
     """
     pass
-admin.site.register(Bookmarks, BookmarksAdmin)
+admin.site.register(Bookmark, BookmarkAdmin)
 
-class BotsAdmin(admin.ModelAdmin):
+class BotAdmin(admin.ModelAdmin):
     """
     Spiders/Robots
     """
     pass
-admin.site.register(Bots, BotsAdmin)
+admin.site.register(Bot, BotAdmin)
 
 class CaptchaAnswersAdmin(admin.ModelAdmin):
     pass
@@ -136,61 +136,61 @@ class DisallowAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Disallow, DisallowAdmin)
 
-class DraftsAdmin(admin.ModelAdmin):
+class DraftAdmin(admin.ModelAdmin):
     """
-    Drafts of future posts/private messages
-    """
-    pass
-admin.site.register(Drafts, DraftsAdmin)
-
-class ExtensionGroupsAdmin(admin.ModelAdmin):
-    """
-    Extensions Groups (associate extensions with a file type - Images, text...)
+    Draft of future posts/private messages
     """
     pass
-admin.site.register(ExtensionGroups, ExtensionGroupsAdmin)
+admin.site.register(Draft, DraftAdmin)
 
-class ExtensionsAdmin(admin.ModelAdmin):
+class ExtensionGroupAdmin(admin.ModelAdmin):
     """
-    Extensions (.xxx) allowed for attachments
+    Extension Group (associate extensions with a file type - Images, text...)
     """
     pass
-admin.site.register(Extensions, ExtensionsAdmin)
+admin.site.register(ExtensionGroup, ExtensionGroupAdmin)
 
-class ForumsAdmin(admin.ModelAdmin):
+class ExtensionAdmin(admin.ModelAdmin):
     """
-    Forums (Name, description, rules...)
+    Extension (.xxx) allowed for attachments
     """
     pass
-admin.site.register(Forums, ForumsAdmin)
+admin.site.register(Extension, ExtensionAdmin)
 
-class ForumsAccessAdmin(admin.ModelAdmin):
+class ForumAdmin(admin.ModelAdmin):
+    """
+    Forum (Name, description, rules...)
+    """
+    pass
+admin.site.register(Forum, ForumAdmin)
+
+class ForumAccessAdmin(admin.ModelAdmin):
     """
     Stores who is logged in to password protected forums
     """
     pass
-admin.site.register(ForumsAccess, ForumsAccessAdmin)
+admin.site.register(ForumAccess, ForumAccessAdmin)
 
-class ForumsTrackAdmin(admin.ModelAdmin):
+class ForumTrackAdmin(admin.ModelAdmin):
     """
     Unread post information is stored here
     """
     pass
-admin.site.register(ForumsTrack, ForumsTrackAdmin)
+admin.site.register(ForumTrack, ForumTrackAdmin)
 
-class ForumsWatchAdmin(admin.ModelAdmin):
+class ForumWatchAdmin(admin.ModelAdmin):
     """
     Subscribed forums
     """
     pass
-admin.site.register(ForumsWatch, ForumsWatchAdmin)
+admin.site.register(ForumWatch, ForumWatchAdmin)
 
-class IconsAdmin(admin.ModelAdmin):
+class IconAdmin(admin.ModelAdmin):
     """
     Post icons
     """
     pass
-admin.site.register(Icons, IconsAdmin)
+admin.site.register(Icon, IconAdmin)
 
 class LangAdmin(admin.ModelAdmin):
     """
@@ -206,12 +206,12 @@ class LogAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Log, LogAdmin)
 
-class LoginAttemptsAdmin(admin.ModelAdmin):
+class LoginAttemptAdmin(admin.ModelAdmin):
     """
     tbd
     """
     pass
-admin.site.register(LoginAttempts, LoginAttemptsAdmin)
+admin.site.register(LoginAttempt, LoginAttemptAdmin)
 
 class ModeratorCacheAdmin(admin.ModelAdmin):
     """
@@ -220,82 +220,82 @@ class ModeratorCacheAdmin(admin.ModelAdmin):
     pass
 admin.site.register(ModeratorCache, ModeratorCacheAdmin)
 
-class ModulesAdmin(admin.ModelAdmin):
+class ModuleAdmin(admin.ModelAdmin):
     """
     Configuration of acp, mcp and ucp modules
     """
     pass
-admin.site.register(Modules, ModulesAdmin)
+admin.site.register(Module, ModuleAdmin)
 
-class PollOptionsAdmin(admin.ModelAdmin):
+class PollOptionAdmin(admin.ModelAdmin):
     """
     Options text of all votes ("Yes", "No", "Maybe"...)
     """
     pass
-admin.site.register(PollOptions, PollOptionsAdmin)
+admin.site.register(PollOption, PollOptionAdmin)
 
-class PollVotesAdmin(admin.ModelAdmin):
+class PollVoteAdmin(admin.ModelAdmin):
     """
-    Users which have voted on a poll
+    User which have voted on a poll
     """
     pass
-admin.site.register(PollVotes, PollVotesAdmin)
+admin.site.register(PollVote, PollVoteAdmin)
 
-class PostsAdmin(admin.ModelAdmin):
+class PostAdmin(admin.ModelAdmin):
     """
-    Topics posts
+    Topic posts
     """
     pass
-admin.site.register(Posts, PostsAdmin)
+admin.site.register(Post, PostAdmin)
 
-class PrivmsgsAdmin(admin.ModelAdmin):
+class PrivmsgAdmin(admin.ModelAdmin):
     """
     Private messages text
     """
     pass
-admin.site.register(Privmsgs, PrivmsgsAdmin)
+admin.site.register(Privmsg, PrivmsgAdmin)
 
-class PrivmsgsFolderAdmin(admin.ModelAdmin):
+class PrivmsgFolderAdmin(admin.ModelAdmin):
     """
     Custom privates messages folders (for each user)
     """
     pass
-admin.site.register(PrivmsgsFolder, PrivmsgsFolderAdmin)
+admin.site.register(PrivmsgFolder, PrivmsgFolderAdmin)
 
-class PrivmsgsRulesAdmin(admin.ModelAdmin):
+class PrivmsgRulesAdmin(admin.ModelAdmin):
     """
     Messages rules, e.g. "if the username of the sender is ..., move the message to this folder".
     """
     pass
-admin.site.register(PrivmsgsRules, PrivmsgsRulesAdmin)
+admin.site.register(PrivmsgRules, PrivmsgRulesAdmin)
 
-class PrivmsgsToAdmin(admin.ModelAdmin):
+class PrivmsgToAdmin(admin.ModelAdmin):
     """
     Information (sender, new, replied...) on private messages.
     """
     pass
-admin.site.register(PrivmsgsTo, PrivmsgsToAdmin)
+admin.site.register(PrivmsgTo, PrivmsgToAdmin)
 
-class ProfileFieldsAdmin(admin.ModelAdmin):
+class ProfileFieldAdmin(admin.ModelAdmin):
     """
     Custom profile fields (name, min/max number of characters, allowed characters...)
     """
     pass
-admin.site.register(ProfileFields, ProfileFieldsAdmin)
+admin.site.register(ProfileField, ProfileFieldAdmin)
 
-class ProfileFieldsDataAdmin(admin.ModelAdmin):
+class ProfileFieldDataAdmin(admin.ModelAdmin):
     """
     Data that users enter in custom profile fields
     """
     pass
-admin.site.register(ProfileFieldsData, ProfileFieldsDataAdmin)
+admin.site.register(ProfileFieldData, ProfileFieldDataAdmin)
 
-class ProfileFieldsLangAdmin(admin.ModelAdmin):
+class ProfileFieldLangAdmin(admin.ModelAdmin):
     """
     tbd (empty on my forum with some custom profile fields)
     """
     pass
-admin.site.register(ProfileFieldsLang, ProfileFieldsLangAdmin)
+admin.site.register(ProfileFieldLang, ProfileFieldLangAdmin)
 
 class ProfileLangAdmin(admin.ModelAdmin):
     """
@@ -308,33 +308,33 @@ class QaConfirmAdmin(admin.ModelAdmin):
     pass
 admin.site.register(QaConfirm, QaConfirmAdmin)
 
-class RanksAdmin(admin.ModelAdmin):
+class RankAdmin(admin.ModelAdmin):
     """
-    Ranks (Name, image, minimal # of posts)
+    Rank (Name, image, minimal # of posts)
     """
     pass
-admin.site.register(Ranks, RanksAdmin)
+admin.site.register(Rank, RankAdmin)
 
-class ReportsAdmin(admin.ModelAdmin):
+class ReportAdmin(admin.ModelAdmin):
     """
     Reported posts
     """
     pass
-admin.site.register(Reports, ReportsAdmin)
+admin.site.register(Report, ReportAdmin)
 
-class ReportsReasonsAdmin(admin.ModelAdmin):
+class ReportReasonsAdmin(admin.ModelAdmin):
     """
     Reasons for reported posts and disapprovals
     """
     pass
-admin.site.register(ReportsReasons, ReportsReasonsAdmin)
+admin.site.register(ReportReasons, ReportReasonsAdmin)
 
-class SearchResultsAdmin(admin.ModelAdmin):
+class SearchResultAdmin(admin.ModelAdmin):
     """
     Last searches
     """
     pass
-admin.site.register(SearchResults, SearchResultsAdmin)
+admin.site.register(SearchResult, SearchResultAdmin)
 
 class SearchWordlistAdmin(admin.ModelAdmin):
     """
@@ -350,19 +350,19 @@ class SearchWordmatchAdmin(admin.ModelAdmin):
     pass
 admin.site.register(SearchWordmatch, SearchWordmatchAdmin)
 
-class SessionsAdmin(admin.ModelAdmin):
+class SessionAdmin(admin.ModelAdmin):
     """
-    Sessions (to identify users browsing the forum)
+    Session (to identify users browsing the forum)
     """
     pass
-admin.site.register(Sessions, SessionsAdmin)
+admin.site.register(Session, SessionAdmin)
 
-class SessionsKeysAdmin(admin.ModelAdmin):
+class SessionKeyAdmin(admin.ModelAdmin):
     """
     Autologin feature
     """
     pass
-admin.site.register(SessionsKeys, SessionsKeysAdmin)
+admin.site.register(SessionKey, SessionKeyAdmin)
 
 class SitelistAdmin(admin.ModelAdmin):
     """
@@ -371,103 +371,103 @@ class SitelistAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Sitelist, SitelistAdmin)
 
-class SmiliesAdmin(admin.ModelAdmin):
+class SmilieAdmin(admin.ModelAdmin):
     """
-    Smilies (text => image)
+    Smilie (text => image)
     """
     pass
-admin.site.register(Smilies, SmiliesAdmin)
+admin.site.register(Smilie, SmilieAdmin)
 
-class StylesAdmin(admin.ModelAdmin):
+class StyleAdmin(admin.ModelAdmin):
     """
     Style = template + theme + imageset
     """
     pass
-admin.site.register(Styles, StylesAdmin)
+admin.site.register(Style, StyleAdmin)
 
-class StylesImagesetAdmin(admin.ModelAdmin):
+class StyleImagesetAdmin(admin.ModelAdmin):
     """
     [[Templating_Tutorial#Customizing_the_Imageset|Imagesets]]
     """
     pass
-admin.site.register(StylesImageset, StylesImagesetAdmin)
+admin.site.register(StyleImageset, StyleImagesetAdmin)
 
-class StylesImagesetDataAdmin(admin.ModelAdmin):
+class StyleImagesetDataAdmin(admin.ModelAdmin):
     """
     tbd
     """
     pass
-admin.site.register(StylesImagesetData, StylesImagesetDataAdmin)
+admin.site.register(StyleImagesetData, StyleImagesetDataAdmin)
 
-class StylesTemplateAdmin(admin.ModelAdmin):
+class StyleTemplateAdmin(admin.ModelAdmin):
     """
     tbd
     """
     pass
-admin.site.register(StylesTemplate, StylesTemplateAdmin)
+admin.site.register(StyleTemplate, StyleTemplateAdmin)
 
-class StylesTemplateDataAdmin(admin.ModelAdmin):
+class StyleTemplateDataAdmin(admin.ModelAdmin):
     """
     tbd
     """
     pass
-admin.site.register(StylesTemplateData, StylesTemplateDataAdmin)
+admin.site.register(StyleTemplateData, StyleTemplateDataAdmin)
 
-class StylesThemeAdmin(admin.ModelAdmin):
+class StyleThemeAdmin(admin.ModelAdmin):
     """
     theme = css file
     """
     pass
-admin.site.register(StylesTheme, StylesThemeAdmin)
+admin.site.register(StyleTheme, StyleThemeAdmin)
 
-class TopicsAdmin(admin.ModelAdmin):
+class TopicAdmin(admin.ModelAdmin):
     """
-    Topics in forums
+    Topic in forums
     """
     pass
-admin.site.register(Topics, TopicsAdmin)
+admin.site.register(Topic, TopicAdmin)
 
-class TopicsPostedAdmin(admin.ModelAdmin):
+class TopicPostedAdmin(admin.ModelAdmin):
     """
     Who posted to which topic (used for the small dots in viewforum)
     """
     pass
-admin.site.register(TopicsPosted, TopicsPostedAdmin)
+admin.site.register(TopicPosted, TopicPostedAdmin)
 
-class TopicsTrackAdmin(admin.ModelAdmin):
+class TopicTrackAdmin(admin.ModelAdmin):
     """
     Unread post information is stored here
     """
     pass
-admin.site.register(TopicsTrack, TopicsTrackAdmin)
+admin.site.register(TopicTrack, TopicTrackAdmin)
 
-class TopicsWatchAdmin(admin.ModelAdmin):
+class TopicWatchAdmin(admin.ModelAdmin):
     """
     "notify me upon replies"
     """
     pass
-admin.site.register(TopicsWatch, TopicsWatchAdmin)
+admin.site.register(TopicWatch, TopicWatchAdmin)
 
 class UserGroupAdmin(admin.ModelAdmin):
     """
-    Users groups
+    User groups
     """
     pass
 admin.site.register(UserGroup, UserGroupAdmin)
 
-class WarningsAdmin(admin.ModelAdmin):
+class WarningAdmin(admin.ModelAdmin):
     """
-    Warnings given to users
+    Warning given to users
     """
     pass
-admin.site.register(Warnings, WarningsAdmin)
+admin.site.register(Warning, WarningAdmin)
 
-class WordsAdmin(admin.ModelAdmin):
+class WordAdmin(admin.ModelAdmin):
     """
     censored words
     """
     pass
-admin.site.register(Words, WordsAdmin)
+admin.site.register(Word, WordAdmin)
 
 class ZebraAdmin(admin.ModelAdmin):
     """

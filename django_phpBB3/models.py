@@ -18,18 +18,18 @@ from django.db import models
 #
 #These classes would need Django to support composite keys:
 #
-#class AclGroups(models.Model):
+#class AclGroup(models.Model):
 #    """
 #    Permission roles and/or individual permissions assigned to groups
 #    """
 #    # group_id = models.IntegerField()
-#    group_id = models.ForeignKey("Groups", db_column="group_id", to_field="group_id",
+#    group_id = models.ForeignKey("Group", db_column="group_id", to_field="group_id",
 #        # mediumint(8) unsigned
 #        default=0,
 #        help_text="{{fk|groups|group_id}}"
 #    )
 #    # forum_id = models.IntegerField()
-#    forum_id = models.ForeignKey("Forums", db_column="forum_id", to_field="forum_id",
+#    forum_id = models.ForeignKey("Forum", db_column="forum_id", to_field="forum_id",
 #        # mediumint(8) unsigned
 #        default=0,
 #        help_text="{{fk|forums|forum_id}}"
@@ -70,7 +70,7 @@ class User(models.Model):
         help_text="Defines what type the user is. 0 is normal user, 1 is inactive and needs to activate their account through an activation link sent in an email, 2 is a pre-defined type to ignore user (i.e. bot), 3 is Founder."
     )
     # group_id = models.ForeignKey("Group", db_column="group_id", to_field="group_id")
-    group_id = models.ForeignKey("Groups", db_column="group_id", to_field="group_id",
+    group_id = models.ForeignKey("Group", db_column="group_id", to_field="group_id",
         # mediumint(8) unsigned
         default=3,
         help_text="The user's default group. {{fk|groups|group_id}}"
@@ -80,7 +80,7 @@ class User(models.Model):
         help_text="A cached copy of the user's computed permissions."
     )
     # user_perm_from = models.ForeignKey(
-    user_perm_from = models.ForeignKey("Users", db_column="user_id", to_field="user_id",
+    user_perm_from = models.ForeignKey("User", db_column="user_id", to_field="user_id",
         # mediumint(8) unsigned
         default=0,
         help_text="The id of the user whose permissions are being tested. {{fk|users|user_id}}"
@@ -207,13 +207,13 @@ class User(models.Model):
         help_text="The user's desired date [http://www.php.net/function.date.php format]"
     )
     # user_style = models.IntegerField()
-    user_style = models.ForeignKey("Styles", db_column="style_id", to_field="style_id",
+    user_style = models.ForeignKey("Style", db_column="style_id", to_field="style_id",
         # tinyint(4)
         default=0,
         help_text="Style the user uses to browse the board. {{fk|styles|style_id}}"
     )
     # user_rank = models.IntegerField()
-    user_rank = models.ForeignKey("Ranks", db_column="rank_id", to_field="rank_id",
+    user_rank = models.ForeignKey("Rank", db_column="rank_id", to_field="rank_id",
         # mediumint(8) unsigned
         default=0,
         help_text="User's rank. {{fk|ranks|rank_id}}"
@@ -514,7 +514,7 @@ class Config(models.Model):
 #______________________________________________________________________________
 # untouched models:
 
-class AclOptions(models.Model):
+class AclOption(models.Model):
     """
     List of possible permissions
     """
@@ -544,7 +544,7 @@ class AclOptions(models.Model):
     class Meta:
         db_table = u'phpbb3_acl_options'
 
-class AclRoles(models.Model):
+class AclRole(models.Model):
     """
     Permission roles (Standard Moderator, Simple Moderator etc.)
     """
@@ -570,7 +570,7 @@ class AclRoles(models.Model):
     class Meta:
         db_table = u'phpbb3_acl_roles'
 
-class AclRolesData(models.Model):
+class AclRoleData(models.Model):
     """
     Permissions each role contains
     """
@@ -592,18 +592,18 @@ class AclRolesData(models.Model):
     class Meta:
         db_table = u'phpbb3_acl_roles_data'
 
-class AclUsers(models.Model):
+class AclUser(models.Model):
     """
     Permission roles and/or individual permissions assigned to users
     """
     # user_id = models.IntegerField()
-    user_id = models.ForeignKey("Users", db_column="user_id", to_field="user_id",
+    user_id = models.ForeignKey("User", db_column="user_id", to_field="user_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
     )
     # forum_id = models.IntegerField()
-    forum_id = models.ForeignKey("Forums", db_column="forum_id", to_field="forum_id",
+    forum_id = models.ForeignKey("Forum", db_column="forum_id", to_field="forum_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|forums|forum_id}}"
@@ -628,7 +628,7 @@ class AclUsers(models.Model):
     class Meta:
         db_table = u'phpbb3_acl_users'
 
-class Attachments(models.Model):
+class Attachment(models.Model):
     """
     Information on attachments (Post, physical filename, original filename, MIME type...)
     """
@@ -637,13 +637,13 @@ class Attachments(models.Model):
         help_text="primary key"
     )
     # post_msg_id = models.IntegerField()
-    post_msg_id = models.ForeignKey("Posts", db_column="post_id", to_field="post_id",
+    post_msg_id = models.ForeignKey("Post", db_column="post_id", to_field="post_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|posts|post_id}}"
     )
     # topic_id = models.IntegerField()
-    topic_id = models.ForeignKey("Topics", db_column="topic_id", to_field="topic_id",
+    topic_id = models.ForeignKey("Topic", db_column="topic_id", to_field="topic_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|topics|topic_id}}"
@@ -654,7 +654,7 @@ class Attachments(models.Model):
         help_text="1 if attachment is used inside private message, 0 if used inside post"
     )
     # poster_id = models.IntegerField()
-    poster_id = models.ForeignKey("Users", db_column="user_id", to_field="user_id",
+    poster_id = models.ForeignKey("User", db_column="user_id", to_field="user_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
@@ -746,7 +746,7 @@ class Banlist(models.Model):
     class Meta:
         db_table = u'phpbb3_banlist'
 
-class Bbcodes(models.Model):
+class Bbcode(models.Model):
     """
     Custom BBCodes
     """
@@ -786,7 +786,7 @@ class Bbcodes(models.Model):
     class Meta:
         db_table = u'phpbb3_bbcodes'
 
-class Bookmarks(models.Model):
+class Bookmark(models.Model):
     """
     Bookmarked topics
     """
@@ -801,7 +801,7 @@ class Bookmarks(models.Model):
     class Meta:
         db_table = u'phpbb3_bookmarks'
 
-class Bots(models.Model):
+class Bot(models.Model):
     """
     Spiders/Robots
     """
@@ -892,9 +892,9 @@ class Disallow(models.Model):
     class Meta:
         db_table = u'phpbb3_disallow'
 
-class Drafts(models.Model):
+class Draft(models.Model):
     """
-    Drafts of future posts/private messages
+    Draft of future posts/private messages
     """
     draft_id = models.PositiveIntegerField(primary_key=True,
         # mediumint(8) unsigned
@@ -925,9 +925,9 @@ class Drafts(models.Model):
     class Meta:
         db_table = u'phpbb3_drafts'
 
-class ExtensionGroups(models.Model):
+class ExtensionGroup(models.Model):
     """
-    Extensions Groups (associate extensions with a file type - Images, text...)
+    Extension Group (associate extensions with a file type - Images, text...)
     """
     group_id = models.PositiveIntegerField(primary_key=True,
         # mediumint(8) unsigned
@@ -965,9 +965,9 @@ class ExtensionGroups(models.Model):
     class Meta:
         db_table = u'phpbb3_extension_groups'
 
-class Extensions(models.Model):
+class Extension(models.Model):
     """
-    Extensions (.xxx) allowed for attachments
+    Extension (.xxx) allowed for attachments
     """
     extension_id = models.PositiveIntegerField(primary_key=True,
         # mediumint(8) unsigned
@@ -983,9 +983,9 @@ class Extensions(models.Model):
     class Meta:
         db_table = u'phpbb3_extensions'
 
-class Forums(models.Model):
+class Forum(models.Model):
     """
-    Forums (Name, description, rules...)
+    Forum (Name, description, rules...)
     """
     forum_id = models.PositiveIntegerField(primary_key=True,
         # mediumint(8) unsigned
@@ -1150,7 +1150,7 @@ class Forums(models.Model):
     class Meta:
         db_table = u'phpbb3_forums'
 
-class ForumsAccess(models.Model):
+class ForumAccess(models.Model):
     """
     Stores who is logged in to password protected forums
     """
@@ -1171,7 +1171,7 @@ class ForumsAccess(models.Model):
     class Meta:
         db_table = u'phpbb3_forums_access'
 
-class ForumsTrack(models.Model):
+class ForumTrack(models.Model):
     """
     Unread post information is stored here
     """
@@ -1192,7 +1192,7 @@ class ForumsTrack(models.Model):
     class Meta:
         db_table = u'phpbb3_forums_track'
 
-class ForumsWatch(models.Model):
+class ForumWatch(models.Model):
     """
     Subscribed forums
     """
@@ -1211,7 +1211,7 @@ class ForumsWatch(models.Model):
     class Meta:
         db_table = u'phpbb3_forums_watch'
 
-class Icons(models.Model):
+class Icon(models.Model):
     """
     Post icons
     """
@@ -1311,7 +1311,7 @@ class Log(models.Model):
     class Meta:
         db_table = u'phpbb3_log'
 
-class LoginAttempts(models.Model):
+class LoginAttempt(models.Model):
     """
     tbd
     """
@@ -1354,7 +1354,7 @@ class ModeratorCache(models.Model):
     class Meta:
         db_table = u'phpbb3_moderator_cache'
 
-class Modules(models.Model):
+class Module(models.Model):
     """
     Configuration of acp, mcp and ucp modules
     """
@@ -1400,7 +1400,7 @@ class Modules(models.Model):
     class Meta:
         db_table = u'phpbb3_modules'
 
-class PollOptions(models.Model):
+class PollOption(models.Model):
     """
     Options text of all votes ("Yes", "No", "Maybe"...)
     """
@@ -1422,9 +1422,9 @@ class PollOptions(models.Model):
     class Meta:
         db_table = u'phpbb3_poll_options'
 
-class PollVotes(models.Model):
+class PollVote(models.Model):
     """
-    Users which have voted on a poll
+    User which have voted on a poll
     """
     topic_id = models.PositiveIntegerField(
         # mediumint(8) unsigned
@@ -1444,9 +1444,9 @@ class PollVotes(models.Model):
     class Meta:
         db_table = u'phpbb3_poll_votes'
 
-class Posts(models.Model):
+class Post(models.Model):
     """
-    Topics posts
+    Topic posts
     """
     post_id = models.PositiveIntegerField(primary_key=True,
         # mediumint(8) unsigned
@@ -1550,7 +1550,7 @@ class Posts(models.Model):
     class Meta:
         db_table = u'phpbb3_posts'
 
-class Privmsgs(models.Model):
+class Privmsg(models.Model):
     """
     Private messages text
     """
@@ -1564,13 +1564,13 @@ class Privmsgs(models.Model):
         help_text="the initial message in this message chain (i.e. if you write messages A -> B (reply to A) -> C (reply to B), then B and C will have root_level=msg_id of A"
     )
     # author_id = models.IntegerField()
-    author_id = models.ForeignKey("Users", db_column="user_id", to_field="user_id",
+    author_id = models.ForeignKey("User", db_column="user_id", to_field="user_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
     )
     # icon_id = models.IntegerField()
-    icon_id = models.ForeignKey("Icons", db_column="icons_id", to_field="icons_id",
+    icon_id = models.ForeignKey("Icon", db_column="icons_id", to_field="icons_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|icons|icons_id}}"
@@ -1654,7 +1654,7 @@ class Privmsgs(models.Model):
     class Meta:
         db_table = u'phpbb3_privmsgs'
 
-class PrivmsgsFolder(models.Model):
+class PrivmsgFolder(models.Model):
     """
     Custom privates messages folders (for each user)
     """
@@ -1676,7 +1676,7 @@ class PrivmsgsFolder(models.Model):
     class Meta:
         db_table = u'phpbb3_privmsgs_folder'
 
-class PrivmsgsRules(models.Model):
+class PrivmsgRules(models.Model):
     """
     Messages rules, e.g. "if the username of the sender is ..., move the message to this folder".
     """
@@ -1718,7 +1718,7 @@ class PrivmsgsRules(models.Model):
     class Meta:
         db_table = u'phpbb3_privmsgs_rules'
 
-class PrivmsgsTo(models.Model):
+class PrivmsgTo(models.Model):
     """
     Information (sender, new, replied...) on private messages.
     """
@@ -1770,7 +1770,7 @@ class PrivmsgsTo(models.Model):
     class Meta:
         db_table = u'phpbb3_privmsgs_to'
 
-class ProfileFields(models.Model):
+class ProfileField(models.Model):
     """
     Custom profile fields (name, min/max number of characters, allowed characters...)
     """
@@ -1835,7 +1835,7 @@ class ProfileFields(models.Model):
     class Meta:
         db_table = u'phpbb3_profile_fields'
 
-class ProfileFieldsData(models.Model):
+class ProfileFieldData(models.Model):
     """
     Data that users enter in custom profile fields
     """
@@ -1847,7 +1847,7 @@ class ProfileFieldsData(models.Model):
     class Meta:
         db_table = u'phpbb3_profile_fields_data'
 
-class ProfileFieldsLang(models.Model):
+class ProfileFieldLang(models.Model):
     """
     tbd (empty on my forum with some custom profile fields)
     """
@@ -1912,9 +1912,9 @@ class QaConfirm(models.Model):
     class Meta:
         db_table = u'phpbb3_qa_confirm'
 
-class Ranks(models.Model):
+class Rank(models.Model):
     """
-    Ranks (Name, image, minimal # of posts)
+    Rank (Name, image, minimal # of posts)
     """
     rank_id = models.PositiveIntegerField(primary_key=True,
         # mediumint(8) unsigned
@@ -1937,7 +1937,7 @@ class Ranks(models.Model):
     class Meta:
         db_table = u'phpbb3_ranks'
 
-class Reports(models.Model):
+class Report(models.Model):
     """
     Reported posts
     """
@@ -1976,7 +1976,7 @@ class Reports(models.Model):
     class Meta:
         db_table = u'phpbb3_reports'
 
-class ReportsReasons(models.Model):
+class ReportReasons(models.Model):
     """
     Reasons for reported posts and disapprovals
     """
@@ -1997,7 +1997,7 @@ class ReportsReasons(models.Model):
     class Meta:
         db_table = u'phpbb3_reports_reasons'
 
-class SearchResults(models.Model):
+class SearchResult(models.Model):
     """
     Last searches
     """
@@ -2059,9 +2059,9 @@ class SearchWordmatch(models.Model):
     class Meta:
         db_table = u'phpbb3_search_wordmatch'
 
-class Sessions(models.Model):
+class Session(models.Model):
     """
-    Sessions (to identify users browsing the forum)
+    Session (to identify users browsing the forum)
     """
     session_id = models.CharField(max_length=96, primary_key=True,
         # varchar(32)
@@ -2109,7 +2109,7 @@ class Sessions(models.Model):
     class Meta:
         db_table = u'phpbb3_sessions'
 
-class SessionsKeys(models.Model):
+class SessionKey(models.Model):
     """
     Autologin feature
     """
@@ -2153,9 +2153,9 @@ class Sitelist(models.Model):
     class Meta:
         db_table = u'phpbb3_sitelist'
 
-class Smilies(models.Model):
+class Smilie(models.Model):
     """
-    Smilies (text => image)
+    Smilie (text => image)
     """
     smiley_id = models.PositiveIntegerField(primary_key=True,
         # mediumint(8) unsigned
@@ -2189,7 +2189,7 @@ class Smilies(models.Model):
     class Meta:
         db_table = u'phpbb3_smilies'
 
-class Styles(models.Model):
+class Style(models.Model):
     """
     Style = template + theme + imageset
     """
@@ -2222,7 +2222,7 @@ class Styles(models.Model):
     class Meta:
         db_table = u'phpbb3_styles'
 
-class StylesImageset(models.Model):
+class StyleImageset(models.Model):
     """
     [[Templating_Tutorial#Customizing_the_Imageset|Imagesets]]
     """
@@ -2242,7 +2242,7 @@ class StylesImageset(models.Model):
     class Meta:
         db_table = u'phpbb3_styles_imageset'
 
-class StylesImagesetData(models.Model):
+class StyleImagesetData(models.Model):
     """
     tbd
     """
@@ -2256,7 +2256,7 @@ class StylesImagesetData(models.Model):
     class Meta:
         db_table = u'phpbb3_styles_imageset_data'
 
-class StylesTemplate(models.Model):
+class StyleTemplate(models.Model):
     """
     tbd
     """
@@ -2286,7 +2286,7 @@ class StylesTemplate(models.Model):
     class Meta:
         db_table = u'phpbb3_styles_template'
 
-class StylesTemplateData(models.Model):
+class StyleTemplateData(models.Model):
     """
     tbd
     """
@@ -2309,7 +2309,7 @@ class StylesTemplateData(models.Model):
     class Meta:
         db_table = u'phpbb3_styles_template_data'
 
-class StylesTheme(models.Model):
+class StyleTheme(models.Model):
     """
     theme = css file
     """
@@ -2340,22 +2340,22 @@ class StylesTheme(models.Model):
     class Meta:
         db_table = u'phpbb3_styles_theme'
 
-class Topics(models.Model):
+class Topic(models.Model):
     """
-    Topics in forums
+    Topic in forums
     """
     topic_id = models.PositiveIntegerField(primary_key=True,
         # mediumint(8) unsigned
         help_text="Primary key"
     )
     # forum_id = models.IntegerField()
-    forum_id = models.ForeignKey("Forums", db_column="forum_id", to_field="forum_id",
+    forum_id = models.ForeignKey("Forum", db_column="forum_id", to_field="forum_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|forums|forum_id}}"
     )
     # icon_id = models.IntegerField()
-    icon_id = models.ForeignKey("Icons", db_column="icon_id", to_field="icon_id",
+    icon_id = models.ForeignKey("Icon", db_column="icon_id", to_field="icon_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|icons|icon_id}}"
@@ -2380,7 +2380,7 @@ class Topics(models.Model):
         help_text="The title of the topic."
     )
     # topic_poster = models.IntegerField()
-    topic_poster = models.ForeignKey("Users", db_column="user_id", to_field="user_id",
+    topic_poster = models.ForeignKey("User", db_column="user_id", to_field="user_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
@@ -2421,7 +2421,7 @@ class Topics(models.Model):
         help_text="[[Constants|POST_NORMAL]](0), POST_STICKY(1), POST_ANNOUNCE(2) or POST_GLOBAL(3)"
     )
     # topic_first_post_id = models.IntegerField()
-    topic_first_post_id = models.ForeignKey("Posts", db_column="post_id", to_field="post_id",
+    topic_first_post_id = models.ForeignKey("Post", db_column="post_id", to_field="post_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|posts|post_id}}"
@@ -2435,13 +2435,13 @@ class Topics(models.Model):
         help_text="The colour of the topic creator's default user group."
     )
     # topic_last_post_id = models.IntegerField()
-    topic_last_post_id = models.ForeignKey("Posts", db_column="post_id", to_field="post_id",
+    topic_last_post_id = models.ForeignKey("Post", db_column="post_id", to_field="post_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|posts|post_id}}"
     )
     # topic_last_poster_id = models.IntegerField()
-    topic_last_poster_id = models.ForeignKey("Users", db_column="user_id", to_field="user_id",
+    topic_last_poster_id = models.ForeignKey("User", db_column="user_id", to_field="user_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
@@ -2479,7 +2479,7 @@ class Topics(models.Model):
         help_text="Has this topic been bumped? 1 (yes), 0(no)"
     )
     # topic_bumper = models.IntegerField()
-    topic_bumper = models.ForeignKey("Users", db_column="user_id", to_field="user_id",
+    topic_bumper = models.ForeignKey("User", db_column="user_id", to_field="user_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
@@ -2516,7 +2516,7 @@ class Topics(models.Model):
     class Meta:
         db_table = u'phpbb3_topics'
 
-class TopicsPosted(models.Model):
+class TopicPosted(models.Model):
     """
     Who posted to which topic (used for the small dots in viewforum)
     """
@@ -2537,7 +2537,7 @@ class TopicsPosted(models.Model):
     class Meta:
         db_table = u'phpbb3_topics_posted'
 
-class TopicsTrack(models.Model):
+class TopicTrack(models.Model):
     """
     Unread post information is stored here
     """
@@ -2559,7 +2559,7 @@ class TopicsTrack(models.Model):
     class Meta:
         db_table = u'phpbb3_topics_track'
 
-class TopicsWatch(models.Model):
+class TopicWatch(models.Model):
     """
     "notify me upon replies"
     """
@@ -2580,16 +2580,16 @@ class TopicsWatch(models.Model):
 
 class UserGroup(models.Model):
     """
-    Users groups
+    User groups
     """
     # group_id = models.IntegerField()
-    group_id = models.ForeignKey("Groups", db_column="group_id", to_field="group_id",
+    group_id = models.ForeignKey("Group", db_column="group_id", to_field="group_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|groups|group_id}}"
     )
     # user_id = models.IntegerField()
-    user_id = models.ForeignKey("Users", db_column="user_id", to_field="user_id",
+    user_id = models.ForeignKey("User", db_column="user_id", to_field="user_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
@@ -2607,9 +2607,9 @@ class UserGroup(models.Model):
     class Meta:
         db_table = u'phpbb3_user_group'
 
-class Warnings(models.Model):
+class Warning(models.Model):
     """
-    Warnings given to users
+    Warning given to users
     """
     warning_id = models.PositiveIntegerField(primary_key=True,
         # mediumint(8) unsigned
@@ -2634,7 +2634,7 @@ class Warnings(models.Model):
     class Meta:
         db_table = u'phpbb3_warnings'
 
-class Words(models.Model):
+class Word(models.Model):
     """
     censored words
     """
