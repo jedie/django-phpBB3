@@ -15,46 +15,8 @@
 from django.db import models
 
 
-#
-#These classes would need Django to support composite keys:
-#
-#class AclGroup(models.Model):
-#    """
-#    Permission roles and/or individual permissions assigned to groups
-#    """
-#    # group_id = models.IntegerField()
-#    group = models.ForeignKey("Group",
-#        # mediumint(8) unsigned
-#        default=0,
-#        help_text="{{fk|groups|group_id}}"
-#    )
-#    # forum_id = models.IntegerField()
-#    forum = models.ForeignKey("Forum",
-#        # mediumint(8) unsigned
-#        default=0,
-#        help_text="{{fk|forums|forum_id}}"
-#    )
-#    # auth_option_id = models.IntegerField()
-#    auth_option = models.ForeignKey("AclOption",
-#        # mediumint(8) unsigned
-#        default=0,
-#        help_text="{{fk|acl_options|auth_option_id}}"
-#    )
-#    # auth_role_id = models.IntegerField()
-#    auth_role = models.ForeignKey("AclRole",
-#        # mediumint(8) unsigned
-#        default=0,
-#        help_text="{{fk|acl_roles|role_id}}"
-#    )
-#    auth_setting = models.IntegerField(
-#        # tinyint(2)
-#        default=0,
-#        help_text="ACL_YES, ACL_NO or ACL_NEVER"
-#    )
-#    class Meta:
-#        db_table = u'phpbb3_acl_groups'
-
-
+#------------------------------------------------------------------------------
+# inportand models first:
 
 class User(models.Model):
     """
@@ -402,9 +364,185 @@ class User(models.Model):
     user_reminded = models.IntegerField()
     user_reminded_time = models.IntegerField()
     def __unicode__(self):
-            return self.username
+        return self.username
     class Meta:
         db_table = u'phpbb3_users'
+        ordering = ['-user_posts']
+
+
+class Forum(models.Model):
+    """
+    Forum (Name, description, rules...)
+    """
+    forum_id = models.PositiveIntegerField(primary_key=True,
+        # mediumint(8) unsigned
+        help_text="primary key"
+    )
+    parent = models.ForeignKey("self", related_name='+',
+        # mediumint(8) unsigned
+        default=0,
+        help_text="the forum_id of the parent forum (or category)"
+    )
+    left = models.ForeignKey("self", related_name='+',
+        # mediumint(8) unsigned
+        default=0,
+        help_text="forum_id of the forum left to the current forum in the binary tree (used e. g. to retrieve the list of all parents very fast to create the forum navigation)"
+    )
+    right = models.ForeignKey("self", related_name='+',
+        # mediumint(8) unsigned
+        default=0,
+        help_text="forum_id of the forum right to the current forum in the binary tree (used e. g. to retrieve the list of all parents very fast to create the forum navigation)"
+    )
+    forum_parents = models.TextField(
+        # mediumtext
+        help_text="Holds an serialized array of parent forums name, id "
+    )
+    forum_name = models.CharField(max_length=255,
+        # varchar(255)
+    )
+    forum_desc = models.TextField(
+        # text
+    )
+    forum_desc_bitfield = models.CharField(max_length=255,
+        # varchar(255)
+        help_text="see [[Parsing text]]"
+    )
+    forum_desc_options = models.PositiveIntegerField(
+        # int(11) unsigned
+        default=7,
+        help_text="see [[Parsing text]]"
+    )
+    forum_desc_uid = models.CharField(max_length=8,
+        # varchar(5)
+        help_text="see [[Parsing text]]"
+    )
+    forum_link = models.CharField(max_length=255,
+        # varchar(255)
+    )
+    forum_password = models.CharField(max_length=40,
+        # varchar(40)
+    )
+    forum_style = models.ForeignKey("Style", db_column="forum_style",
+        # tinyint(4)
+        default=0,
+        blank=True,
+    )
+    forum_image = models.CharField(max_length=255,
+        # varchar(255)
+    )
+    forum_rules = models.TextField(
+        # text
+    )
+    forum_rules_link = models.CharField(max_length=255,
+        # varchar(255)
+    )
+    forum_rules_bitfield = models.CharField(max_length=255,
+        # varchar(255)
+        help_text="see [[Parsing text]]"
+    )
+    forum_rules_options = models.PositiveIntegerField(
+        # int(11) unsigned
+        default=7,
+        help_text="see [[Parsing text]]"
+    )
+    forum_rules_uid = models.CharField(max_length=8,
+        # varchar(5)
+        help_text="see [[Parsing text]]"
+    )
+    forum_topics_per_page = models.IntegerField(
+        # tinyint(4)
+        default=0,
+    )
+    forum_type = models.IntegerField(
+        # tinyint(4)
+        default=0,
+        help_text="category (forum_type = FORUM_CAT = 0) or forum (forum_type = FORUM_POST = 1) or link (forum_type = FORUM_LINK = 2)"
+    )
+    forum_status = models.IntegerField(
+        # tinyint(4)
+        default=0,
+    )
+    forum_posts = models.PositiveIntegerField(
+        # mediumint(8) unsigned
+        default=0,
+    )
+    forum_topics = models.PositiveIntegerField(
+        # mediumint(8) unsigned
+        default=0,
+        help_text="Number of topics in a forum."
+    )
+    forum_topics_real = models.PositiveIntegerField(
+        # mediumint(8) unsigned
+        default=0,
+        help_text="Number of topics in a forum. Includes unapproved topics."
+    )
+    forum_last_post_id = models.PositiveIntegerField(
+        # mediumint(8) unsigned
+        default=0,
+    )
+    forum_last_poster_id = models.PositiveIntegerField(
+        # mediumint(8) unsigned
+        default=0,
+    )
+    forum_last_post_subject = models.CharField(max_length=255,
+        # varchar(100)
+    )
+    forum_last_post_time = models.PositiveIntegerField(
+        # int(11) unsigned
+        default=0,
+    )
+    forum_last_poster_name = models.CharField(max_length=255,
+        # varchar(255)
+    )
+    forum_last_poster_colour = models.CharField(max_length=6,
+        # varchar(6)
+    )
+    forum_flags = models.IntegerField(
+        # tinyint(4)
+        default=32,
+    )
+    forum_options = models.IntegerField()
+    display_subforum_list = models.IntegerField()
+    display_on_index = models.PositiveSmallIntegerField(
+        # tinyint(1) unsigned
+        default=1,
+    )
+    enable_indexing = models.PositiveSmallIntegerField(
+        # tinyint(1) unsigned
+        default=1,
+    )
+    enable_icons = models.PositiveSmallIntegerField(
+        # tinyint(1) unsigned
+        default=1,
+    )
+    enable_prune = models.PositiveSmallIntegerField(
+        # tinyint(1) unsigned
+        default=0,
+    )
+    prune_next = models.PositiveIntegerField(
+        # int(11) unsigned
+        default=0,
+    )
+    prune_days = models.IntegerField(
+        # tinyint(4)
+        default=0,
+    )
+    prune_viewed = models.IntegerField(
+        # tinyint(4)
+        default=0,
+    )
+    prune_freq = models.IntegerField(
+        # tinyint(4)
+        default=0,
+    )
+    def __unicode__(self):
+        return self.forum_name
+    class Meta:
+        db_table = u'phpbb3_forums'
+
+
+#------------------------------------------------------------------------------
+# more uninportand models:
 
 
 class Group(models.Model):
@@ -983,172 +1121,6 @@ class Extension(models.Model):
     class Meta:
         db_table = u'phpbb3_extensions'
 
-class Forum(models.Model):
-    """
-    Forum (Name, description, rules...)
-    """
-    forum_id = models.PositiveIntegerField(primary_key=True,
-        # mediumint(8) unsigned
-        help_text="primary key"
-    )
-    parent = models.ForeignKey("self", related_name='+',
-        # mediumint(8) unsigned
-        default=0,
-        help_text="the forum_id of the parent forum (or category)"
-    )
-    left = models.ForeignKey("self", related_name='+',
-        # mediumint(8) unsigned
-        default=0,
-        help_text="forum_id of the forum left to the current forum in the binary tree (used e. g. to retrieve the list of all parents very fast to create the forum navigation)"
-    )
-    right = models.ForeignKey("self", related_name='+',
-        # mediumint(8) unsigned
-        default=0,
-        help_text="forum_id of the forum right to the current forum in the binary tree (used e. g. to retrieve the list of all parents very fast to create the forum navigation)"
-    )
-    forum_parents = models.TextField(
-        # mediumtext
-        help_text="Holds an serialized array of parent forums name, id "
-    )
-    forum_name = models.CharField(max_length=255,
-        # varchar(255)
-    )
-    forum_desc = models.TextField(
-        # text
-    )
-    forum_desc_bitfield = models.CharField(max_length=255,
-        # varchar(255)
-        help_text="see [[Parsing text]]"
-    )
-    forum_desc_options = models.PositiveIntegerField(
-        # int(11) unsigned
-        default=7,
-        help_text="see [[Parsing text]]"
-    )
-    forum_desc_uid = models.CharField(max_length=8,
-        # varchar(5)
-        help_text="see [[Parsing text]]"
-    )
-    forum_link = models.CharField(max_length=255,
-        # varchar(255)
-    )
-    forum_password = models.CharField(max_length=40,
-        # varchar(40)
-    )
-    forum_style = models.IntegerField(
-        # tinyint(4)
-        default=0,
-    )
-    forum_image = models.CharField(max_length=255,
-        # varchar(255)
-    )
-    forum_rules = models.TextField(
-        # text
-    )
-    forum_rules_link = models.CharField(max_length=255,
-        # varchar(255)
-    )
-    forum_rules_bitfield = models.CharField(max_length=255,
-        # varchar(255)
-        help_text="see [[Parsing text]]"
-    )
-    forum_rules_options = models.PositiveIntegerField(
-        # int(11) unsigned
-        default=7,
-        help_text="see [[Parsing text]]"
-    )
-    forum_rules_uid = models.CharField(max_length=8,
-        # varchar(5)
-        help_text="see [[Parsing text]]"
-    )
-    forum_topics_per_page = models.IntegerField(
-        # tinyint(4)
-        default=0,
-    )
-    forum_type = models.IntegerField(
-        # tinyint(4)
-        default=0,
-        help_text="category (forum_type = FORUM_CAT = 0) or forum (forum_type = FORUM_POST = 1) or link (forum_type = FORUM_LINK = 2)"
-    )
-    forum_status = models.IntegerField(
-        # tinyint(4)
-        default=0,
-    )
-    forum_posts = models.PositiveIntegerField(
-        # mediumint(8) unsigned
-        default=0,
-    )
-    forum_topics = models.PositiveIntegerField(
-        # mediumint(8) unsigned
-        default=0,
-        help_text="Number of topics in a forum."
-    )
-    forum_topics_real = models.PositiveIntegerField(
-        # mediumint(8) unsigned
-        default=0,
-        help_text="Number of topics in a forum. Includes unapproved topics."
-    )
-    forum_last_post_id = models.PositiveIntegerField(
-        # mediumint(8) unsigned
-        default=0,
-    )
-    forum_last_poster_id = models.PositiveIntegerField(
-        # mediumint(8) unsigned
-        default=0,
-    )
-    forum_last_post_subject = models.CharField(max_length=255,
-        # varchar(100)
-    )
-    forum_last_post_time = models.PositiveIntegerField(
-        # int(11) unsigned
-        default=0,
-    )
-    forum_last_poster_name = models.CharField(max_length=255,
-        # varchar(255)
-    )
-    forum_last_poster_colour = models.CharField(max_length=6,
-        # varchar(6)
-    )
-    forum_flags = models.IntegerField(
-        # tinyint(4)
-        default=32,
-    )
-    forum_options = models.IntegerField()
-    display_subforum_list = models.IntegerField()
-    display_on_index = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=1,
-    )
-    enable_indexing = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=1,
-    )
-    enable_icons = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=1,
-    )
-    enable_prune = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=0,
-    )
-    prune_next = models.PositiveIntegerField(
-        # int(11) unsigned
-        default=0,
-    )
-    prune_days = models.IntegerField(
-        # tinyint(4)
-        default=0,
-    )
-    prune_viewed = models.IntegerField(
-        # tinyint(4)
-        default=0,
-    )
-    prune_freq = models.IntegerField(
-        # tinyint(4)
-        default=0,
-    )
-    class Meta:
-        db_table = u'phpbb3_forums'
 
 class ForumAccess(models.Model):
     """
@@ -1934,6 +1906,8 @@ class Rank(models.Model):
     rank_image = models.CharField(max_length=255,
         # varchar(255)
     )
+    def __unicode__(self):
+        return self.rank_title
     class Meta:
         db_table = u'phpbb3_ranks'
 
@@ -2219,6 +2193,8 @@ class Style(models.Model):
         # tinyint(4)
         default=0,
     )
+    def __unicode__(self):
+        return self.style_name
     class Meta:
         db_table = u'phpbb3_styles'
 
@@ -2674,3 +2650,45 @@ class Zebra(models.Model):
     class Meta:
         db_table = u'phpbb3_zebra'
 
+
+#------------------------------------------------------------------------------
+# not supported models:
+
+#
+#These classes would need Django to support composite keys:
+#
+#class AclGroup(models.Model):
+#    """
+#    Permission roles and/or individual permissions assigned to groups
+#    """
+#    # group_id = models.IntegerField()
+#    group = models.ForeignKey("Group",
+#        # mediumint(8) unsigned
+#        default=0,
+#        help_text="{{fk|groups|group_id}}"
+#    )
+#    # forum_id = models.IntegerField()
+#    forum = models.ForeignKey("Forum",
+#        # mediumint(8) unsigned
+#        default=0,
+#        help_text="{{fk|forums|forum_id}}"
+#    )
+#    # auth_option_id = models.IntegerField()
+#    auth_option = models.ForeignKey("AclOption",
+#        # mediumint(8) unsigned
+#        default=0,
+#        help_text="{{fk|acl_options|auth_option_id}}"
+#    )
+#    # auth_role_id = models.IntegerField()
+#    auth_role = models.ForeignKey("AclRole",
+#        # mediumint(8) unsigned
+#        default=0,
+#        help_text="{{fk|acl_roles|role_id}}"
+#    )
+#    auth_setting = models.IntegerField(
+#        # tinyint(2)
+#        default=0,
+#        help_text="ACL_YES, ACL_NO or ACL_NEVER"
+#    )
+#    class Meta:
+#        db_table = u'phpbb3_acl_groups'
