@@ -1,5 +1,6 @@
 # Django settings for django_phpBB3 project.
 
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -149,6 +150,7 @@ try:
     from local_settings import *
 except ImportError, err:
     if str(err).startswith("No module named"):
+        import os
         msg = (
             "There is no local_settings.py file in '%s' !"
             " (Original error was: %s)\n"
