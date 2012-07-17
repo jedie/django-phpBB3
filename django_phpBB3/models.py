@@ -991,17 +991,17 @@ class Forum(models.Model):
         # mediumint(8) unsigned
         help_text="primary key"
     )
-    parent_id = models.PositiveIntegerField(
+    parent = models.ForeignKey("self", related_name='+',
         # mediumint(8) unsigned
         default=0,
         help_text="the forum_id of the parent forum (or category)"
     )
-    left_id = models.PositiveIntegerField(
+    left = models.ForeignKey("self", related_name='+',
         # mediumint(8) unsigned
         default=0,
         help_text="forum_id of the forum left to the current forum in the binary tree (used e. g. to retrieve the list of all parents very fast to create the forum navigation)"
     )
-    right_id = models.PositiveIntegerField(
+    right = models.ForeignKey("self", related_name='+',
         # mediumint(8) unsigned
         default=0,
         help_text="forum_id of the forum right to the current forum in the binary tree (used e. g. to retrieve the list of all parents very fast to create the forum navigation)"
