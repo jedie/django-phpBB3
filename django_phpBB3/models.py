@@ -23,25 +23,25 @@ from django.db import models
 #    Permission roles and/or individual permissions assigned to groups
 #    """
 #    # group_id = models.IntegerField()
-#    group_id = models.ForeignKey("Group", db_column="group_id", to_field="group_id",
+#    group_id = models.ForeignKey("Group", db_column="group_id",# to_field="group_id",
 #        # mediumint(8) unsigned
 #        default=0,
 #        help_text="{{fk|groups|group_id}}"
 #    )
 #    # forum_id = models.IntegerField()
-#    forum_id = models.ForeignKey("Forum", db_column="forum_id", to_field="forum_id",
+#    forum_id = models.ForeignKey("Forum", db_column="forum_id",# to_field="forum_id",
 #        # mediumint(8) unsigned
 #        default=0,
 #        help_text="{{fk|forums|forum_id}}"
 #    )
 #    # auth_option_id = models.IntegerField()
-#    auth_option_id = models.ForeignKey("Acl_options", db_column="auth_option_id", to_field="auth_option_id",
+#    auth_option_id = models.ForeignKey("AclOption", db_column="auth_option_id",# to_field="auth_option_id",
 #        # mediumint(8) unsigned
 #        default=0,
 #        help_text="{{fk|acl_options|auth_option_id}}"
 #    )
 #    # auth_role_id = models.IntegerField()
-#    auth_role_id = models.ForeignKey("Acl_roles", db_column="role_id", to_field="role_id",
+#    auth_role_id = models.ForeignKey("AclRole", db_column="role_id",# to_field="role_id",
 #        # mediumint(8) unsigned
 #        default=0,
 #        help_text="{{fk|acl_roles|role_id}}"
@@ -69,8 +69,8 @@ class User(models.Model):
         default=0,
         help_text="Defines what type the user is. 0 is normal user, 1 is inactive and needs to activate their account through an activation link sent in an email, 2 is a pre-defined type to ignore user (i.e. bot), 3 is Founder."
     )
-    # group_id = models.ForeignKey("Group", db_column="group_id", to_field="group_id")
-    group_id = models.ForeignKey("Group", db_column="group_id", to_field="group_id",
+    # group_id = models.ForeignKey("Group", db_column="group_id",# to_field="group_id")
+    group_id = models.ForeignKey("Group", db_column="group_id", # to_field="group_id",
         # mediumint(8) unsigned
         default=3,
         help_text="The user's default group. {{fk|groups|group_id}}"
@@ -80,7 +80,7 @@ class User(models.Model):
         help_text="A cached copy of the user's computed permissions."
     )
     # user_perm_from = models.ForeignKey(
-    user_perm_from = models.ForeignKey("User", db_column="user_id", to_field="user_id",
+    user_perm_from = models.ForeignKey("User", db_column="user_id", # to_field="user_id",
         # mediumint(8) unsigned
         default=0,
         help_text="The id of the user whose permissions are being tested. {{fk|users|user_id}}"
@@ -207,13 +207,13 @@ class User(models.Model):
         help_text="The user's desired date [http://www.php.net/function.date.php format]"
     )
     # user_style = models.IntegerField()
-    user_style = models.ForeignKey("Style", db_column="style_id", to_field="style_id",
+    user_style = models.ForeignKey("Style", db_column="user_style", # to_field="user_style",
         # tinyint(4)
         default=0,
         help_text="Style the user uses to browse the board. {{fk|styles|style_id}}"
     )
     # user_rank = models.IntegerField()
-    user_rank = models.ForeignKey("Rank", db_column="rank_id", to_field="rank_id",
+    user_rank = models.ForeignKey("Rank", db_column="rank_id", # to_field="rank_id",
         # mediumint(8) unsigned
         default=0,
         help_text="User's rank. {{fk|ranks|rank_id}}"
@@ -597,25 +597,25 @@ class AclUser(models.Model):
     Permission roles and/or individual permissions assigned to users
     """
     # user_id = models.IntegerField()
-    user_id = models.ForeignKey("User", db_column="user_id", to_field="user_id",
+    user_id = models.ForeignKey("User", db_column="user_id", # to_field="user_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
     )
     # forum_id = models.IntegerField()
-    forum_id = models.ForeignKey("Forum", db_column="forum_id", to_field="forum_id",
+    forum_id = models.ForeignKey("Forum", db_column="forum_id", # to_field="forum_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|forums|forum_id}}"
     )
     # auth_option_id = models.IntegerField()
-    auth_option_id = models.ForeignKey("Acl_options", db_column="auth_option_id", to_field="auth_option_id",
+    auth_option_id = models.ForeignKey("AclOption", db_column="auth_option_id", # to_field="auth_option_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|acl_options|auth_option_id}}"
     )
     # auth_role_id = models.IntegerField()
-    auth_role_id = models.ForeignKey("Acl_roles", db_column="role_id", to_field="role_id",
+    auth_role_id = models.ForeignKey("AclRole", db_column="role_id", # to_field="role_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|acl_roles|role_id}}"
@@ -637,13 +637,13 @@ class Attachment(models.Model):
         help_text="primary key"
     )
     # post_msg_id = models.IntegerField()
-    post_msg_id = models.ForeignKey("Post", db_column="post_id", to_field="post_id",
+    post_msg_id = models.ForeignKey("Post", db_column="post_id", # to_field="post_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|posts|post_id}}"
     )
     # topic_id = models.IntegerField()
-    topic_id = models.ForeignKey("Topic", db_column="topic_id", to_field="topic_id",
+    topic_id = models.ForeignKey("Topic", db_column="topic_id", # to_field="topic_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|topics|topic_id}}"
@@ -654,7 +654,7 @@ class Attachment(models.Model):
         help_text="1 if attachment is used inside private message, 0 if used inside post"
     )
     # poster_id = models.IntegerField()
-    poster_id = models.ForeignKey("User", db_column="user_id", to_field="user_id",
+    poster_id = models.ForeignKey("User", db_column="user_id", # to_field="user_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
@@ -1564,13 +1564,13 @@ class Privmsg(models.Model):
         help_text="the initial message in this message chain (i.e. if you write messages A -> B (reply to A) -> C (reply to B), then B and C will have root_level=msg_id of A"
     )
     # author_id = models.IntegerField()
-    author_id = models.ForeignKey("User", db_column="user_id", to_field="user_id",
+    author_id = models.ForeignKey("User", db_column="user_id", # to_field="user_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
     )
     # icon_id = models.IntegerField()
-    icon_id = models.ForeignKey("Icon", db_column="icons_id", to_field="icons_id",
+    icon_id = models.ForeignKey("Icon", db_column="icons_id", # to_field="icon_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|icons|icons_id}}"
@@ -2349,13 +2349,13 @@ class Topic(models.Model):
         help_text="Primary key"
     )
     # forum_id = models.IntegerField()
-    forum_id = models.ForeignKey("Forum", db_column="forum_id", to_field="forum_id",
+    forum_id = models.ForeignKey("Forum", db_column="forum_id", # to_field="forum_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|forums|forum_id}}"
     )
     # icon_id = models.IntegerField()
-    icon_id = models.ForeignKey("Icon", db_column="icon_id", to_field="icon_id",
+    icon_id = models.ForeignKey("Icon", db_column="icon_id", # to_field="icon_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|icons|icon_id}}"
@@ -2380,7 +2380,7 @@ class Topic(models.Model):
         help_text="The title of the topic."
     )
     # topic_poster = models.IntegerField()
-    topic_poster = models.ForeignKey("User", db_column="user_id", to_field="user_id",
+    topic_poster = models.ForeignKey("User", db_column="user_id", # to_field="user_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
@@ -2421,7 +2421,7 @@ class Topic(models.Model):
         help_text="[[Constants|POST_NORMAL]](0), POST_STICKY(1), POST_ANNOUNCE(2) or POST_GLOBAL(3)"
     )
     # topic_first_post_id = models.IntegerField()
-    topic_first_post_id = models.ForeignKey("Post", db_column="post_id", to_field="post_id",
+    topic_first_post_id = models.ForeignKey("Post", related_name='+', db_column="post_id", # to_field="post_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|posts|post_id}}"
@@ -2435,13 +2435,13 @@ class Topic(models.Model):
         help_text="The colour of the topic creator's default user group."
     )
     # topic_last_post_id = models.IntegerField()
-    topic_last_post_id = models.ForeignKey("Post", db_column="post_id", to_field="post_id",
+    topic_last_post_id = models.ForeignKey("Post", related_name='+', db_column="post_id", # to_field="post_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|posts|post_id}}"
     )
     # topic_last_poster_id = models.IntegerField()
-    topic_last_poster_id = models.ForeignKey("User", db_column="user_id", to_field="user_id",
+    topic_last_poster_id = models.ForeignKey("User", related_name='+', db_column="user_id", # to_field="user_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
@@ -2479,7 +2479,7 @@ class Topic(models.Model):
         help_text="Has this topic been bumped? 1 (yes), 0(no)"
     )
     # topic_bumper = models.IntegerField()
-    topic_bumper = models.ForeignKey("User", db_column="user_id", to_field="user_id",
+    topic_bumper = models.ForeignKey("User", related_name='+', db_column="user_id", # to_field="user_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
@@ -2583,13 +2583,13 @@ class UserGroup(models.Model):
     User groups
     """
     # group_id = models.IntegerField()
-    group_id = models.ForeignKey("Group", db_column="group_id", to_field="group_id",
+    group_id = models.ForeignKey("Group", db_column="group_id", # to_field="group_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|groups|group_id}}"
     )
     # user_id = models.IntegerField()
-    user_id = models.ForeignKey("User", db_column="user_id", to_field="user_id",
+    user_id = models.ForeignKey("User", db_column="user_id", # to_field="user_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
