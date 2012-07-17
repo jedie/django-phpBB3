@@ -21,6 +21,7 @@ import urllib2
 import re
 import pprint
 
+OUT_FILE = "model_data.py"
 
 CONTENT_RE = re.compile(
     r'<textarea.*?>(.*?)</textarea>', re.IGNORECASE | re.VERBOSE | re.UNICODE | re.DOTALL
@@ -106,7 +107,7 @@ def fill_table_data(table_data):
         print "_"*79
         print table_name
         data = table_data[table_name]
-        print data
+#        print data
         content = get_wiki_page(data["page_name"])
         if "Login required" in content or "no text in this page" in content:
             # Page is not creaed, yet.
@@ -123,19 +124,24 @@ def fill_table_data(table_data):
 #        print table_info
         headings = HEADINGS_RE.findall(table_info)
         
-        column_data = {}
         for column_block in COLUMN_BLOCK_RE.findall(table_info):
 #            print "***", column_block
             column_info = COLUMN_RE.findall(column_block)
 #            print column_info
+            column_data = {}
             for key, value in zip(headings, column_info):
                 column_data[key] = value
+                
 #            print "----"
-            
-        column_name = column_data.pop("column")
-#        print column_data
-        table_data[table_name][column_name] = column_data
-#        print "=" * 79
+            try:
+                column_name = column_data.pop("column")
+            except KeyError:
+                print "Skip column block..."
+            else:
+#                print "column_data:"
+#                pprint.pprint(column_data)
+                table_data[table_name][column_name] = column_data
+#                print "=" * 79
 
         
 
@@ -146,12 +152,19 @@ if __name__=="__main__":
 #    print "="*79
     content = get_textarea(content)
     table_data = get_table_data(content)
-#    print table_data
+    pprint.pprint(table_data)
+
+#    table_data = {'PhpbbUsers':table_data['PhpbbUsers']}
 
 #    print "="*79    
     fill_table_data(table_data)
 #    print table_data    
 
-    pprint.pprint(table_data)
+#    pprint.pprint(table_data)
+    with file(OUT_FILE, "w") as f:
+        f.write("# Auto generated with '%s'\n" % os.path.basename(__file__))
+        f.write("data=%s" % pprint.pformat(table_data))
+        
+    print "\n\n%r generated!\n" % OUT_FILE
     
     
