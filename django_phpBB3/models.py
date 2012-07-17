@@ -18,18 +18,18 @@ from django.db import models
 #
 #These classes would need Django to support composite keys:
 #
-#class AclGroups(models.Model):
-#    """
-#    Permission roles and/or individual permissions assigned to groups
-#    """
-#    group_id = models.IntegerField()
-#    forum_id = models.IntegerField()
-#    auth_option_id = models.IntegerField()
-#    auth_role_id = models.IntegerField()
-#    auth_setting = models.IntegerField()
-#    class Meta:
-#        db_table = u'phpbb3_acl_groups'
-#
+class AclGroups(models.Model):
+    """
+    Permission roles and/or individual permissions assigned to groups
+    """
+    group_id = models.IntegerField()
+    forum_id = models.IntegerField()
+    auth_option_id = models.IntegerField()
+    auth_role_id = models.IntegerField()
+    auth_setting = models.IntegerField()
+    class Meta:
+        db_table = u'phpbb3_acl_groups'
+
 
 
 class User(models.Model):
