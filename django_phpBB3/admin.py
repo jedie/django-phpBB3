@@ -6,13 +6,13 @@ from django.utils.translation import ugettext_lazy as _
 from django_phpBB3.models import AclOption, AclRole, AclRoleData, \
     AclUser, Attachment, Banlist, Bbcode, Bookmark, Bot, CaptchaAnswers, \
     CaptchaQuestions, Config, Confirm, Disallow, Draft, ExtensionGroup, Extension, \
-    Forum, ForumAccess, ForumTrack, ForumWatch, Group, Icon, Lang, Log, \
-    LoginAttempt, ModeratorCache, Module, PollOption, PollVote, Post, Privmsg, \
-    PrivmsgFolder, PrivmsgRules, PrivmsgTo, ProfileField, ProfileFieldData, \
+    Forum, ForumAccess, ForumTrack, Group, Icon, Lang, Log, \
+    LoginAttempt, Module, PollOption, Post, Privmsg, \
+    PrivmsgFolder, PrivmsgRules, ProfileField, ProfileFieldData, \
     ProfileFieldLang, ProfileLang, QaConfirm, Rank, Report, ReportReasons, \
-    SearchResult, SearchWordlist, SearchWordmatch, Session, SessionKey, Sitelist, \
+    SearchResult, SearchWordlist, SearchWordmatch, Session, Sitelist, \
     Smilie, Style, StyleImageset, StyleImagesetData, StyleTemplate, \
-    StyleTemplateData, StyleTheme, Topic, TopicPosted, TopicTrack, TopicWatch, \
+    StyleTemplateData, StyleTheme, Topic, TopicPosted, TopicTrack, \
     UserGroup, User, Warning, Word, Zebra
 
 
@@ -197,13 +197,6 @@ class ForumTrackAdmin(admin.ModelAdmin):
     pass
 admin.site.register(ForumTrack, ForumTrackAdmin)
 
-class ForumWatchAdmin(admin.ModelAdmin):
-    """
-    Subscribed forums
-    """
-    pass
-admin.site.register(ForumWatch, ForumWatchAdmin)
-
 class IconAdmin(admin.ModelAdmin):
     """
     Post icons
@@ -232,13 +225,6 @@ class LoginAttemptAdmin(admin.ModelAdmin):
     pass
 admin.site.register(LoginAttempt, LoginAttemptAdmin)
 
-class ModeratorCacheAdmin(admin.ModelAdmin):
-    """
-    Who is a moderator in which forum (for display on forum index)
-    """
-    pass
-admin.site.register(ModeratorCache, ModeratorCacheAdmin)
-
 class ModuleAdmin(admin.ModelAdmin):
     """
     Configuration of acp, mcp and ucp modules
@@ -252,13 +238,6 @@ class PollOptionAdmin(admin.ModelAdmin):
     """
     pass
 admin.site.register(PollOption, PollOptionAdmin)
-
-class PollVoteAdmin(admin.ModelAdmin):
-    """
-    User which have voted on a poll
-    """
-    pass
-admin.site.register(PollVote, PollVoteAdmin)
 
 class PrivmsgAdmin(admin.ModelAdmin):
     """
@@ -280,13 +259,6 @@ class PrivmsgRulesAdmin(admin.ModelAdmin):
     """
     pass
 admin.site.register(PrivmsgRules, PrivmsgRulesAdmin)
-
-class PrivmsgToAdmin(admin.ModelAdmin):
-    """
-    Information (sender, new, replied...) on private messages.
-    """
-    pass
-admin.site.register(PrivmsgTo, PrivmsgToAdmin)
 
 class ProfileFieldAdmin(admin.ModelAdmin):
     """
@@ -369,13 +341,6 @@ class SessionAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Session, SessionAdmin)
 
-class SessionKeyAdmin(admin.ModelAdmin):
-    """
-    Autologin feature
-    """
-    pass
-admin.site.register(SessionKey, SessionKeyAdmin)
-
 class SitelistAdmin(admin.ModelAdmin):
     """
     Secure Downloads of attachments - list of IPs and hostnames
@@ -452,13 +417,6 @@ class TopicTrackAdmin(admin.ModelAdmin):
     """
     pass
 admin.site.register(TopicTrack, TopicTrackAdmin)
-
-class TopicWatchAdmin(admin.ModelAdmin):
-    """
-    "notify me upon replies"
-    """
-    pass
-admin.site.register(TopicWatch, TopicWatchAdmin)
 
 class UserGroupAdmin(admin.ModelAdmin):
     """
