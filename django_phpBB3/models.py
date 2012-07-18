@@ -2401,35 +2401,6 @@ class TopicTrack(models.Model):
         db_table = u"%stopics_track" % settings.PHPBB_TABLE_PREFIX
 
 
-class UserGroup(models.Model):
-    """
-    User groups
-    """
-    # group_id = models.IntegerField()
-    group = models.ForeignKey("Group", 
-        # mediumint(8) unsigned
-        default=0,
-        help_text="{{fk|groups|group_id}}"
-    )
-    # user_id = models.IntegerField()
-    user = models.ForeignKey("User", 
-        # mediumint(8) unsigned
-        default=0,
-        help_text="{{fk|users|user_id}}"
-    )
-    group_leader = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=0,
-        help_text="1 (true) if this user is a group leader"
-    )
-    user_pending = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=1,
-        help_text="1 (true) if the user is waiting for approval"
-    )
-    class Meta:
-        db_table = u"%suser_group" % settings.PHPBB_TABLE_PREFIX
-
 class Warning(models.Model):
     """
     Warning given to users
