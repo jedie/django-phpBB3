@@ -1152,11 +1152,11 @@ class Draft(models.Model):
         # mediumint(8) unsigned
         default=0,
     )
-    topic_id = models.PositiveIntegerField(
+    topic = models.ForeignKey("Topic",
         # mediumint(8) unsigned
         default=0,
     )
-    forum_id = models.PositiveIntegerField(
+    forum = models.ForeignKey("Forum",
         # mediumint(8) unsigned
         default=0,
     )
@@ -1349,11 +1349,11 @@ class Log(models.Model):
         # mediumint(8) unsigned
         default=0,
     )
-    forum_id = models.PositiveIntegerField(
+    forum = models.ForeignKey("Forum",
         # mediumint(8) unsigned
         default=0,
     )
-    topic_id = models.PositiveIntegerField(
+    topic = models.ForeignKey("Topic",
         # mediumint(8) unsigned
         default=0,
     )
@@ -1446,7 +1446,7 @@ class PollOption(models.Model):
         # tinyint(4)
         default=0,
     )
-    topic_id = models.PositiveIntegerField(
+    topic = models.ForeignKey("Topic",
         # mediumint(8) unsigned
         default=0,
     )
@@ -2386,11 +2386,11 @@ class TopicTrack(models.Model):
         # mediumint(8) unsigned
         help_text="primary key"
     )
-    topic_id = models.PositiveIntegerField(
+    topic = models.ForeignKey("Topic",
         # mediumint(8) unsigned
         help_text="primary key"
     )
-    forum_id = models.PositiveIntegerField(
+    forum = models.ForeignKey("Forum",
         # mediumint(8) unsigned
     )
     mark_time = models.PositiveIntegerField(
