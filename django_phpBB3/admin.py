@@ -13,7 +13,7 @@ from django_phpBB3.models import AclOption, AclRole, AclRoleData, \
     SearchResult, SearchWordlist, SearchWordmatch, Session, Sitelist, \
     Smilie, Style, StyleImageset, StyleImagesetData, StyleTemplate, \
     StyleTemplateData, StyleTheme, Topic, TopicPosted, TopicTrack, \
-    UserGroup, User, Warning, Word, Zebra
+    User, Warning, Word, Zebra
 
 
 #
@@ -417,13 +417,6 @@ class TopicTrackAdmin(admin.ModelAdmin):
     """
     pass
 admin.site.register(TopicTrack, TopicTrackAdmin)
-
-class UserGroupAdmin(admin.ModelAdmin):
-    """
-    User groups
-    """
-    pass
-admin.site.register(UserGroup, UserGroupAdmin)
 
 class WarningAdmin(admin.ModelAdmin):
     """
