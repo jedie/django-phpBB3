@@ -60,6 +60,22 @@ class PostAdmin(admin.ModelAdmin):
 admin.site.register(Post, PostAdmin)
 
 
+class LogAdmin(admin.ModelAdmin):
+    """
+    Administration/Moderation/Error logs
+    """
+    def username(self, obj):
+        return obj.user.username
+    def forum_name(self, obj):
+        return obj.forum.forum_name
+    def topic_title(self, obj):
+        return obj.topic.topic_title
+    
+    list_display = ('id', "username", "log_operation", "log_time", "forum_name", "topic_title")
+    list_display_links = ('id', "username", "log_operation", "log_time")
+    list_filter = ("forum","log_operation")
+admin.site.register(Log, LogAdmin)
+
 class GroupAdmin(admin.ModelAdmin):
     """
     Usergroups
@@ -210,13 +226,6 @@ class LangAdmin(admin.ModelAdmin):
     """
     pass
 admin.site.register(Lang, LangAdmin)
-
-class LogAdmin(admin.ModelAdmin):
-    """
-    Administration/Moderation/Error logs
-    """
-    pass
-admin.site.register(Log, LogAdmin)
 
 class LoginAttemptAdmin(admin.ModelAdmin):
     """
