@@ -43,7 +43,7 @@ class User(models.Model):
         help_text="A cached copy of the user's computed permissions."
     )
     # user_perm_from = models.ForeignKey(, db_column="# user_perm_from"
-    user_perm_from = models.ForeignKey("User", db_column="user_perm_from",
+    user_perm_from = models.ForeignKey("User", db_column="user_perm_from", blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="The id of the user whose permissions are being tested. {{fk|users|user_id}}"
@@ -170,13 +170,13 @@ class User(models.Model):
         help_text="The user's desired date [http://www.php.net/function.date.php format]"
     )
     # user_style = models.IntegerField()
-    user_style = models.ForeignKey("Style", db_column="user_style", 
+    user_style = models.ForeignKey("Style", db_column="user_style",  blank=True,
         # tinyint(4)
         default=0,
         help_text="Style the user uses to browse the board. {{fk|styles|style_id}}"
     )
     # user_rank = models.IntegerField()
-    user_rank = models.ForeignKey("Rank", db_column="user_rank", 
+    user_rank = models.ForeignKey("Rank", db_column="user_rank",  blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="User's rank. {{fk|ranks|rank_id}}"
@@ -379,17 +379,17 @@ class Forum(models.Model):
         # mediumint(8) unsigned
         help_text="primary key"
     )
-    parent = models.ForeignKey("self", related_name='+',
+    parent = models.ForeignKey("self", related_name='+', blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="the forum_id of the parent forum (or category)"
     )
-    left = models.ForeignKey("self", related_name='+',
+    left = models.ForeignKey("self", related_name='+', blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="forum_id of the forum left to the current forum in the binary tree (used e. g. to retrieve the list of all parents very fast to create the forum navigation)"
     )
-    right = models.ForeignKey("self", related_name='+',
+    right = models.ForeignKey("self", related_name='+', blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="forum_id of the forum right to the current forum in the binary tree (used e. g. to retrieve the list of all parents very fast to create the forum navigation)"
@@ -550,19 +550,19 @@ class Post(models.Model):
         # mediumint(8) unsigned
         help_text="primary key"
     )
-    topic = models.ForeignKey("Topic",
+    topic = models.ForeignKey("Topic", blank=True,
         # mediumint(8) unsigned
         default=0,
     )
-    forum = models.ForeignKey("Forum",
+    forum = models.ForeignKey("Forum", blank=True,
         # mediumint(8) unsigned
         default=0,
     )
-    poster = models.ForeignKey("User",
+    poster = models.ForeignKey("User", blank=True,
         # mediumint(8) unsigned
         default=0,
     )
-    icon = models.ForeignKey("Icon",
+    icon = models.ForeignKey("Icon", blank=True,
         # mediumint(8) unsigned
         default=0,
     )
@@ -843,25 +843,25 @@ class AclUser(models.Model):
     Permission roles and/or individual permissions assigned to users
     """
     # user_id = models.IntegerField()
-    user = models.ForeignKey("User", 
+    user = models.ForeignKey("User", blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
     )
     # forum_id = models.IntegerField()
-    forum = models.ForeignKey("Forum", 
+    forum = models.ForeignKey("Forum",  blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|forums|forum_id}}"
     )
     # auth_option_id = models.IntegerField()
-    auth_option = models.ForeignKey("AclOption", 
+    auth_option = models.ForeignKey("AclOption",  blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|acl_options|auth_option_id}}"
     )
     # auth_role_id = models.IntegerField()
-    auth_role = models.ForeignKey("AclRole", 
+    auth_role = models.ForeignKey("AclRole",  blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|acl_roles|role_id}}"
@@ -883,13 +883,13 @@ class Attachment(models.Model):
         help_text="primary key"
     )
     # post_msg_id = models.IntegerField()
-    post_msg = models.ForeignKey("Post", 
+    post_msg = models.ForeignKey("Post",  blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|posts|post_id}}"
     )
     # topic_id = models.IntegerField()
-    topic = models.ForeignKey("Topic", 
+    topic = models.ForeignKey("Topic",  blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|topics|topic_id}}"
@@ -900,7 +900,7 @@ class Attachment(models.Model):
         help_text="1 if attachment is used inside private message, 0 if used inside post"
     )
     # poster_id = models.IntegerField()
-    poster = models.ForeignKey("User", 
+    poster = models.ForeignKey("User",  blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
@@ -1062,7 +1062,7 @@ class Bot(models.Model):
     bot_name = models.CharField(max_length=255,
         # varchar(255)
     )
-    user = models.ForeignKey("User", related_name='+',
+    user = models.ForeignKey("User", related_name='+', blank=True,
         # mediumint(8) unsigned
         default=0,
     )
@@ -1148,15 +1148,15 @@ class Draft(models.Model):
         # mediumint(8) unsigned
         help_text="primary key"
     )
-    user = models.ForeignKey("User", related_name='+',
+    user = models.ForeignKey("User", related_name='+', blank=True,
         # mediumint(8) unsigned
         default=0,
     )
-    topic = models.ForeignKey("Topic",
+    topic = models.ForeignKey("Topic", blank=True,
         # mediumint(8) unsigned
         default=0,
     )
-    forum = models.ForeignKey("Forum",
+    forum = models.ForeignKey("Forum", blank=True,
         # mediumint(8) unsigned
         default=0,
     )
@@ -1345,15 +1345,15 @@ class Log(models.Model):
         # tinyint(4)
         default=0,
     )
-    user = models.ForeignKey("User", related_name='+',
+    user = models.ForeignKey("User", related_name='+', blank=True,
         # mediumint(8) unsigned
         default=0,
     )
-    forum = models.ForeignKey("Forum",
+    forum = models.ForeignKey("Forum", blank=True,
         # mediumint(8) unsigned
         default=0,
     )
-    topic = models.ForeignKey("Topic",
+    topic = models.ForeignKey("Topic", blank=True,
         # mediumint(8) unsigned
         default=0,
     )
@@ -1446,7 +1446,7 @@ class PollOption(models.Model):
         # tinyint(4)
         default=0,
     )
-    topic = models.ForeignKey("Topic",
+    topic = models.ForeignKey("Topic", blank=True,
         # mediumint(8) unsigned
         default=0,
     )
@@ -1474,13 +1474,13 @@ class Privmsg(models.Model):
         help_text="the initial message in this message chain (i.e. if you write messages A -> B (reply to A) -> C (reply to B), then B and C will have root_level=msg_id of A"
     )
     # author_id = models.IntegerField()
-    author = models.ForeignKey("User", 
+    author = models.ForeignKey("User",  blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
     )
     # icon_id = models.IntegerField()
-    icon = models.ForeignKey("Icon", 
+    icon = models.ForeignKey("Icon",  blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|icons|icons_id}}"
@@ -1572,7 +1572,7 @@ class PrivmsgFolder(models.Model):
         # mediumint(8) unsigned
         help_text="primary key"
     )
-    user = models.ForeignKey("User", related_name='+',
+    user = models.ForeignKey("User", related_name='+', blank=True,
         # mediumint(8) unsigned
         default=0,
     )
@@ -1594,7 +1594,7 @@ class PrivmsgRules(models.Model):
         # mediumint(8) unsigned
         help_text="primary key"
     )
-    user = models.ForeignKey("User", related_name='+',
+    user = models.ForeignKey("User", related_name='+', blank=True,
         # mediumint(8) unsigned
         default=0,
     )
@@ -1814,7 +1814,7 @@ class Report(models.Model):
         default=0,
     )
     pm_id = models.IntegerField()
-    user = models.ForeignKey("User", related_name='+',
+    user = models.ForeignKey("User", related_name='+', blank=True,
         # mediumint(8) unsigned
         default=0,
     )
@@ -1927,7 +1927,7 @@ class Session(models.Model):
         # varchar(32)
         help_text="primary key"
     )
-    session_user = models.ForeignKey("User", related_name='+',
+    session_user = models.ForeignKey("User", related_name='+', blank=True,
         # mediumint(8) unsigned
         default=0,
     )
@@ -2188,13 +2188,13 @@ class Topic(models.Model):
         help_text="Primary key"
     )
     # forum_id = models.IntegerField()
-    forum = models.ForeignKey("Forum", 
+    forum = models.ForeignKey("Forum",  blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|forums|forum_id}}"
     )
     # icon_id = models.IntegerField()
-    icon = models.ForeignKey("Icon", 
+    icon = models.ForeignKey("Icon",  blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|icons|icon_id}}"
@@ -2219,7 +2219,7 @@ class Topic(models.Model):
         help_text="The title of the topic."
     )
     # topic_poster = models.IntegerField()
-    topic_poster = models.ForeignKey("User", db_column="topic_poster", 
+    topic_poster = models.ForeignKey("User", db_column="topic_poster",  blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
@@ -2260,7 +2260,7 @@ class Topic(models.Model):
         help_text="[[Constants|POST_NORMAL]](0), POST_STICKY(1), POST_ANNOUNCE(2) or POST_GLOBAL(3)"
     )
     # topic_first_post_id = models.IntegerField()
-    topic_first_post = models.ForeignKey("Post", related_name='+', 
+    topic_first_post = models.ForeignKey("Post", related_name='+',  blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|posts|post_id}}"
@@ -2274,13 +2274,13 @@ class Topic(models.Model):
         help_text="The colour of the topic creator's default user group."
     )
     # topic_last_post_id = models.IntegerField()
-    topic_last_post = models.ForeignKey("Post", related_name='+', 
+    topic_last_post = models.ForeignKey("Post", related_name='+',  blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|posts|post_id}}"
     )
     # topic_last_poster_id = models.IntegerField()
-    topic_last_poster = models.ForeignKey("User", related_name='+', 
+    topic_last_poster = models.ForeignKey("User", related_name='+',  blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
@@ -2318,7 +2318,7 @@ class Topic(models.Model):
         help_text="Has this topic been bumped? 1 (yes), 0(no)"
     )
     # topic_bumper = models.IntegerField()
-    topic_bumper = models.ForeignKey("User", related_name='+', db_column="topic_bumper", 
+    topic_bumper = models.ForeignKey("User", related_name='+', db_column="topic_bumper",  blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
@@ -2409,7 +2409,7 @@ class Warning(models.Model):
         # mediumint(8) unsigned
         help_text="primary key"
     )
-    user = models.ForeignKey("User", related_name='+',
+    user = models.ForeignKey("User", related_name='+', blank=True,
         # mediumint(8) unsigned
         default=0,
     )
@@ -2427,6 +2427,7 @@ class Warning(models.Model):
     )
     class Meta:
         db_table = u"%swarnings" % settings.PHPBB_TABLE_PREFIX
+
 
 class Word(models.Model):
     """
