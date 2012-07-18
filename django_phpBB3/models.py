@@ -23,7 +23,7 @@ class User(models.Model):
     """
     Registered users
     """
-    user_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="user_id",
         # mediumint(8) unsigned
         help_text="Primary key"
     )
@@ -375,7 +375,7 @@ class Forum(models.Model):
     """
     Forum (Name, description, rules...)
     """
-    forum_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="forum_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -546,7 +546,7 @@ class Post(models.Model):
     """
     Topic posts
     """
-    post_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="post_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -657,7 +657,7 @@ class Group(models.Model):
     """
     Usergroups
     """
-    group_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="group_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -739,7 +739,7 @@ class Config(models.Model):
     """
     Configuration information ($config table)
     """
-    config_name = models.CharField(max_length=255, primary_key=True,
+    id = models.CharField(max_length=255, primary_key=True, db_column="config_name",
         # varchar(255)
         help_text="primary key"
     )
@@ -764,7 +764,7 @@ class AclOption(models.Model):
     """
     List of possible permissions
     """
-    auth_option_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="auth_option_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -794,7 +794,7 @@ class AclRole(models.Model):
     """
     Permission roles (Standard Moderator, Simple Moderator etc.)
     """
-    role_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="role_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -820,7 +820,7 @@ class AclRoleData(models.Model):
     """
     Permissions each role contains
     """
-    role_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="role_id",
         # mediumint(8) unsigned
         default=0,
         help_text="primary key"
@@ -878,7 +878,7 @@ class Attachment(models.Model):
     """
     Information on attachments (Post, physical filename, original filename, MIME type...)
     """
-    attach_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="attach_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -957,7 +957,7 @@ class Banlist(models.Model):
     """
     Banned users/IPs/emails...
     """
-    ban_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="ban_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -996,7 +996,7 @@ class Bbcode(models.Model):
     """
     Custom BBCodes
     """
-    bbcode_id = models.IntegerField(primary_key=True,
+    id = models.IntegerField(primary_key=True, db_column="bbcode_id",
         # tinyint(3)
         default=0,
         help_text="primary key"
@@ -1036,11 +1036,11 @@ class Bookmark(models.Model):
     """
     Bookmarked topics
     """
-    topic_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="topic_id",
         # mediumint(8) unsigned
         default=0,
     )
-    user_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="user_id",
         # mediumint(8) unsigned
         default=0,
     )
@@ -1051,7 +1051,7 @@ class Bot(models.Model):
     """
     Spiders/Robots
     """
-    bot_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="bot_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -1082,7 +1082,7 @@ class CaptchaAnswers(models.Model):
         db_table = u"%scaptcha_answers" % settings.PHPBB_TABLE_PREFIX
 
 class CaptchaQuestions(models.Model):
-    question_id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True, db_column="question_id")
     strict = models.IntegerField()
     lang_id = models.IntegerField()
     lang_iso = models.CharField(max_length=30)
@@ -1094,11 +1094,11 @@ class Confirm(models.Model):
     """
     Contains session information for confirm pages ("are you sure you want to delete foo")
     """
-    confirm_id = models.CharField(max_length=96, primary_key=True,
+    id = models.CharField(max_length=96, primary_key=True, db_column="confirm_id",
         # char(32)
         help_text="primary key"
     )
-    session_id = models.CharField(max_length=96, primary_key=True,
+    id = models.CharField(max_length=96, primary_key=True, db_column="session_id",
         # char(32)
         help_text="primary key, The session ID associated with the registration attempt."
     )
@@ -1128,7 +1128,7 @@ class Disallow(models.Model):
     """
     Disallowed usernames
     """
-    disallow_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="disallow_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -1142,7 +1142,7 @@ class Draft(models.Model):
     """
     Draft of future posts/private messages
     """
-    draft_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="draft_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -1175,7 +1175,7 @@ class ExtensionGroup(models.Model):
     """
     Extension Group (associate extensions with a file type - Images, text...)
     """
-    group_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="group_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -1215,7 +1215,7 @@ class Extension(models.Model):
     """
     Extension (.xxx) allowed for attachments
     """
-    extension_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="extension_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -1234,17 +1234,17 @@ class ForumAccess(models.Model):
     """
     Stores who is logged in to password protected forums
     """
-    forum_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="forum_id",
         # mediumint(8) unsigned
         default=0,
         help_text="primary key"
     )
-    user_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="user_id",
         # mediumint(8) unsigned
         default=0,
         help_text="primary key"
     )
-    session_id = models.CharField(max_length=96, primary_key=True,
+    id = models.CharField(max_length=96, primary_key=True, db_column="session_id",
         # char(32) binary
         help_text="primary key"
     )
@@ -1255,12 +1255,12 @@ class ForumTrack(models.Model):
     """
     Unread post information is stored here
     """
-    user_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="user_id",
         # mediumint(8) unsigned
         default=0,
         help_text="primary key"
     )
-    forum_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="forum_id",
         # mediumint(8) unsigned
         default=0,
         help_text="primary key"
@@ -1295,7 +1295,7 @@ class Icon(models.Model):
     """
     Post icons
     """
-    icons_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="icons_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -1327,7 +1327,7 @@ class Lang(models.Model):
     """
     Installed languages
     """
-    lang_id = models.IntegerField(primary_key=True,
+    id = models.IntegerField(primary_key=True, db_column="lang_id",
         # tinyint(4)
         help_text="primary key"
     )
@@ -1353,7 +1353,7 @@ class Log(models.Model):
     """
     Administration/Moderation/Error logs
     """
-    log_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="log_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -1440,7 +1440,7 @@ class Module(models.Model):
     """
     Configuration of acp, mcp and ucp modules
     """
-    module_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="module_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -1530,7 +1530,7 @@ class Privmsg(models.Model):
     """
     Private messages text
     """
-    msg_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="msg_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -1634,7 +1634,7 @@ class PrivmsgFolder(models.Model):
     """
     Custom privates messages folders (for each user)
     """
-    folder_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="folder_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -1656,7 +1656,7 @@ class PrivmsgRules(models.Model):
     """
     Messages rules, e.g. "if the username of the sender is ..., move the message to this folder".
     """
-    rule_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="rule_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -1750,7 +1750,7 @@ class ProfileField(models.Model):
     """
     Custom profile fields (name, min/max number of characters, allowed characters...)
     """
-    field_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="field_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -1815,7 +1815,7 @@ class ProfileFieldData(models.Model):
     """
     Data that users enter in custom profile fields
     """
-    user_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="user_id",
         # mediumint(8) unsigned
         default=0,
         help_text="primary key"
@@ -1827,17 +1827,17 @@ class ProfileFieldLang(models.Model):
     """
     tbd (empty on my forum with some custom profile fields)
     """
-    field_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="field_id",
         # mediumint(8) unsigned
         default=0,
         help_text="primary key"
     )
-    lang_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="lang_id",
         # mediumint(8) unsigned
         default=0,
         help_text="primary key"
     )
-    option_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="option_id",
         # mediumint(8) unsigned
         default=0,
         help_text="primary key"
@@ -1856,12 +1856,12 @@ class ProfileLang(models.Model):
     """
     Localized name and description of custom profile fields (presented to users)
     """
-    field_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="field_id",
         # mediumint(8) unsigned
         default=0,
         help_text="primary key"
     )
-    lang_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="lang_id",
         # mediumint(8) unsigned
         default=0,
         help_text="primary key"
@@ -1892,7 +1892,7 @@ class Rank(models.Model):
     """
     Rank (Name, image, minimal # of posts)
     """
-    rank_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="rank_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -1919,7 +1919,7 @@ class Report(models.Model):
     """
     Reported posts
     """
-    report_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="report_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -1958,7 +1958,7 @@ class ReportReasons(models.Model):
     """
     Reasons for reported posts and disapprovals
     """
-    reason_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="reason_id",
         # smallint(4) unsigned
         help_text="primary key"
     )
@@ -1979,7 +1979,7 @@ class SearchResult(models.Model):
     """
     Last searches
     """
-    search_key = models.CharField(max_length=32, primary_key=True,
+    id = models.CharField(max_length=32, primary_key=True, db_column="search_key",
         # varchar(32)
         help_text="primary key"
     )
@@ -2000,7 +2000,7 @@ class SearchWordlist(models.Model):
     """
     Indexed words (for search)
     """
-    word_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="word_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -2041,7 +2041,7 @@ class Session(models.Model):
     """
     Session (to identify users browsing the forum)
     """
-    session_id = models.CharField(max_length=96, primary_key=True,
+    id = models.CharField(max_length=96, primary_key=True, db_column="session_id",
         # varchar(32)
         help_text="primary key"
     )
@@ -2091,11 +2091,11 @@ class SessionKey(models.Model):
     """
     Autologin feature
     """
-    key_id = models.CharField(max_length=96, primary_key=True,
+    id = models.CharField(max_length=96, primary_key=True, db_column="key_id",
         # varchar(32)
         help_text="primary key"
     )
-    user_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="user_id",
         # mediumint(8) unsigned
         default=0,
         help_text="primary key"
@@ -2114,7 +2114,7 @@ class Sitelist(models.Model):
     """
     Secure Downloads of attachments - list of IPs and hostnames
     """
-    site_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="site_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -2135,7 +2135,7 @@ class Smilie(models.Model):
     """
     Smilie (text => image)
     """
-    smiley_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="smiley_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -2171,7 +2171,7 @@ class Style(models.Model):
     """
     Style = template + theme + imageset
     """
-    style_id = models.IntegerField(primary_key=True,
+    id = models.IntegerField(primary_key=True, db_column="style_id",
         # tinyint(4)
         help_text="primary key"
     )
@@ -2206,7 +2206,7 @@ class StyleImageset(models.Model):
     """
     [[Templating_Tutorial#Customizing_the_Imageset|Imagesets]]
     """
-    imageset_id = models.IntegerField(primary_key=True,
+    id = models.IntegerField(primary_key=True, db_column="imageset_id",
         # tinyint(4)
         help_text="primary key"
     )
@@ -2226,7 +2226,7 @@ class StyleImagesetData(models.Model):
     """
     tbd
     """
-    image_id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True, db_column="image_id")
     image_name = models.CharField(max_length=200)
     image_filename = models.CharField(max_length=200)
     image_lang = models.CharField(max_length=30)
@@ -2240,7 +2240,7 @@ class StyleTemplate(models.Model):
     """
     tbd
     """
-    template_id = models.IntegerField(primary_key=True,
+    id = models.IntegerField(primary_key=True, db_column="template_id",
         # tinyint(4)
         help_text="primary key"
     )
@@ -2293,7 +2293,7 @@ class StyleTheme(models.Model):
     """
     theme = css file
     """
-    theme_id = models.IntegerField(primary_key=True,
+    id = models.IntegerField(primary_key=True, db_column="theme_id",
         # tinyint(4)
         help_text="primary key"
     )
@@ -2324,7 +2324,7 @@ class Topic(models.Model):
     """
     Topic in forums
     """
-    topic_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="topic_id",
         # mediumint(8) unsigned
         help_text="Primary key"
     )
@@ -2502,12 +2502,12 @@ class TopicPosted(models.Model):
     """
     Who posted to which topic (used for the small dots in viewforum)
     """
-    user_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="user_id",
         # mediumint(8) unsigned
         default=0,
         help_text="primary key"
     )
-    topic_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="topic_id",
         # mediumint(8) unsigned
         default=0,
         help_text="primary key"
@@ -2523,7 +2523,7 @@ class TopicTrack(models.Model):
     """
     Unread post information is stored here
     """
-    user_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="user_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -2593,7 +2593,7 @@ class Warning(models.Model):
     """
     Warning given to users
     """
-    warning_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="warning_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -2620,7 +2620,7 @@ class Word(models.Model):
     """
     censored words
     """
-    word_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="word_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -2637,11 +2637,11 @@ class Zebra(models.Model):
     """
     Friends and foes
     """
-    user_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="user_id",
         # mediumint(8) unsigned
         default=0,
     )
-    zebra_id = models.PositiveIntegerField(primary_key=True,
+    id = models.PositiveIntegerField(primary_key=True, db_column="zebra_id",
         # mediumint(8) unsigned
         default=0,
     )

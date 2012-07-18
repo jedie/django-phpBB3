@@ -32,7 +32,8 @@ class UserAdmin(admin.ModelAdmin):
     """
     Registered users
     """
-    list_display = ('username','user_id','user_regdate','user_posts','user_email')
+    list_display = ('id','username','user_regdate','user_posts','user_email')
+    list_display_links = ("username",)
 admin.site.register(User, UserAdmin)
 
 
@@ -40,7 +41,7 @@ class ForumAdmin(admin.ModelAdmin):
     """
     Forum (Name, description, rules...)
     """
-    list_display = ('forum_id', "forum_name", "forum_desc", "forum_posts", "forum_topics_real")
+    list_display = ('id', "forum_name", "forum_desc", "forum_posts", "forum_topics_real")
     list_display_links = ("forum_name",)
 admin.site.register(Forum, ForumAdmin)
 
@@ -53,7 +54,7 @@ class PostAdmin(admin.ModelAdmin):
         return obj.post_text.strip().splitlines()[0]
     first_line.short_description = _("first line")
 
-    list_display = ('post_id', "first_line")
+    list_display = ('id', "first_line")
     list_filter = ("forum", "poster")
     search_fields = ("post_text",)
 admin.site.register(Post, PostAdmin)
