@@ -19,6 +19,15 @@ from django.conf import settings
 from django.utils.tzinfo import FixedOffset
 
 
+class PhpBBForeignKey(models.ForeignKey):
+    """
+    phpBB stores a None ForeignKey as a numeric 0
+    """
+    def get_db_prep_save(self, value, connection):
+        if value in ("", None):
+            value = 0
+        return super(PhpBBForeignKey, self).get_db_prep_save(value, connection)
+
 #------------------------------------------------------------------------------
 # important models first:
 
@@ -46,12 +55,12 @@ class User(models.Model):
         help_text="A cached copy of the user's computed permissions."
     )
     # user_perm_from = models.ForeignKey(, db_column="# user_perm_from"
-    perm_from = models.ForeignKey("User", db_column="user_perm_from", blank=True,
+    perm_from = PhpBBForeignKey("User", db_column="user_perm_from", blank=True, null=True,
         # mediumint(8) unsigned
         default=0,
         help_text="The id of the user whose permissions are being tested. {{fk|users|user_id}}"
     )
-    ip = models.CharField(max_length=40, db_column="user_ip",
+    ip = models.CharField(max_length=40, db_column="user_ip", blank=True,
         # varchar(40)
         help_text="The IP of the user on registration, dotted QUAD style (ie: 127.0.0.1)"
     )
@@ -114,7 +123,7 @@ class User(models.Model):
         # varchar(200)
         help_text="The last page visited by the user."
     )
-    last_confirm_key = models.CharField(max_length=10, db_column="user_last_confirm_key",
+    last_confirm_key = models.CharField(max_length=10, db_column="user_last_confirm_key", blank=True,
         # varchar(10)
         help_text="Code used for security reasons by confirmation windows"
     )
@@ -288,7 +297,7 @@ class User(models.Model):
         default=230271,
         help_text="A bitfield containing the options for: showing images in posts, showing flash in posts, showing similies in posts, showing signatures, showing avatars, enable word censoring, attach signature by default, enable bbcodes by default, enable smilies by default, show a popup for new private messages, enable bbcode in signature, enable smilies in signature, automatically parse links in signature"
     )
-    avatar = models.CharField(max_length=255, db_column="user_avatar",
+    avatar = models.CharField(max_length=255, db_column="user_avatar", blank=True,
         # varchar(255)
         help_text="Avatar's file name. URI for remote avatar, file directory and name for gallery avatar, combination of user id and time stamp for uploaded avatar."
     )
@@ -323,43 +332,43 @@ class User(models.Model):
         # varchar(100)
         help_text="User's location field value"
     )
-    icq = models.CharField(max_length=15, db_column="user_icq",
+    icq = models.CharField(max_length=15, db_column="user_icq", blank=True,
         # varchar(15)
         help_text="User's ICQ field value"
     )
-    aim = models.CharField(max_length=255, db_column="user_aim",
+    aim = models.CharField(max_length=255, db_column="user_aim", blank=True,
         # varchar(255)
         help_text="User's AIM field value"
     )
-    yim = models.CharField(max_length=255, db_column="user_yim",
+    yim = models.CharField(max_length=255, db_column="user_yim", blank=True,
         # varchar(255)
         help_text="User's YIM field value"
     )
-    msnm = models.CharField(max_length=255, db_column="user_msnm",
+    msnm = models.CharField(max_length=255, db_column="user_msnm", blank=True,
         # varchar(255)
         help_text="User's MSN field value"
     )
-    jabber = models.CharField(max_length=255, db_column="user_jabber",
+    jabber = models.CharField(max_length=255, db_column="user_jabber", blank=True,
         # varchar(255)
         help_text="User's Jabber field value"
     )
-    website = models.CharField(max_length=200, db_column="user_website",
+    website = models.CharField(max_length=200, db_column="user_website", blank=True,
         # varchar(200)
         help_text="User's website field value"
     )
-    occ = models.TextField(db_column="user_occ",
+    occ = models.TextField(db_column="user_occ", blank=True,
         # text
         help_text="User's occupation field value"
     )
-    interests = models.TextField(db_column="user_interests",
+    interests = models.TextField(db_column="user_interests", blank=True,
         # text
         help_text="User's interests field value"
     )
-    actkey = models.CharField(max_length=32, db_column="user_actkey",
+    actkey = models.CharField(max_length=32, db_column="user_actkey", blank=True,
         # varchar(32)
         help_text="The key required to activate the user's account."
     )
-    newpasswd = models.CharField(max_length=40, db_column="user_newpasswd",
+    newpasswd = models.CharField(max_length=40, db_column="user_newpasswd", blank=True,
         # varchar(32)
         help_text="A randomly generated password for when the user has forgotten their password."
     )
