@@ -35,8 +35,8 @@ class UserAdmin(admin.ModelAdmin):
 
 
     list_display = (
-        'id', 'username', 'registration_datetime', 'user_posts',
-        'lastvisit_datetime', 'user_email'
+        'id', 'username', 'registration_datetime', 'posts',
+        'lastvisit_datetime', 'email'
     )
     list_display_links = ("username",)
 admin.site.register(User, UserAdmin)

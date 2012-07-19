@@ -28,7 +28,7 @@ class User(models.Model):
         # mediumint(8) unsigned
         help_text="Primary key"
     )
-    user_type = models.IntegerField(
+    type = models.IntegerField(db_column="user_type",
         # tinyint(2)
         default=0,
         help_text="Defines what type the user is. 0 is normal user, 1 is inactive and needs to activate their account through an activation link sent in an email, 2 is a pre-defined type to ignore user (i.e. bot), 3 is Founder."
@@ -39,21 +39,21 @@ class User(models.Model):
         default=3,
         help_text="The user's default group. {{fk|groups|group_id}}"
     )
-    user_permissions = models.TextField(
+    permissions = models.TextField(db_column="user_permissions",
         # mediumtext
         help_text="A cached copy of the user's computed permissions."
     )
     # user_perm_from = models.ForeignKey(, db_column="# user_perm_from"
-    user_perm_from = models.ForeignKey("User", db_column="user_perm_from", blank=True,
+    perm_from = models.ForeignKey("User", db_column="user_perm_from", blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="The id of the user whose permissions are being tested. {{fk|users|user_id}}"
     )
-    user_ip = models.CharField(max_length=40,
+    ip = models.CharField(max_length=40, db_column="user_ip",
         # varchar(40)
         help_text="The IP of the user on registration, dotted QUAD style (ie: 127.0.0.1)"
     )
-    user_regdate = models.PositiveIntegerField(
+    regdate = models.PositiveIntegerField(db_column="user_regdate",
         # int(11) unsigned
         default=0,
         help_text="User's registration date/time, UNIX timestamp"
@@ -66,254 +66,254 @@ class User(models.Model):
         # varchar(255)
         help_text="The all lower-case normalized version of the username for comparisons."
     )
-    user_password = models.CharField(max_length=40,
+    password = models.CharField(max_length=40, db_column="user_password",
         # varchar(40)
         help_text="The [[Function.phpbb_hash|hashed]] version of the user's password."
     )
-    user_passchg = models.PositiveIntegerField(
+    passchg = models.PositiveIntegerField(db_column="user_passchg",
         # int(11) unsigned
         default=0,
         help_text="Unix timestamp indicating when the user's password was last changed."
     )
-    user_pass_convert = models.PositiveSmallIntegerField(
+    pass_convert = models.PositiveSmallIntegerField(db_column="user_pass_convert",
         # tinyint(1) unsigned
         default=0,
         help_text="Flag indicating whether or not the user's password needs to be converted to the phpBB3 hashing. Used when converting from phpBB2."
     )
-    user_email = models.CharField(max_length=100,
+    email = models.CharField(max_length=100, db_column="user_email",
         # varchar(100)
         help_text="User's email address"
     )
-    user_email_hash = models.BigIntegerField(
+    email_hash = models.BigIntegerField(db_column="user_email_hash",
         # bigint(20)
         default=0,
         help_text="A hash of the user's email address."
     )
-    user_birthday = models.CharField(max_length=10,
+    birthday = models.CharField(max_length=10, db_column="user_birthday",
         # varchar(10)
         help_text="The user's birthday, in the form of dd-mm-yyyy."
     )
-    user_lastvisit = models.PositiveIntegerField(
+    lastvisit = models.PositiveIntegerField(db_column="user_lastvisit",
         # int(11) unsigned
         default=0,
         help_text="User's last visit time, UNIX timestamp."
     )
-    user_lastmark = models.PositiveIntegerField(
+    lastmark = models.PositiveIntegerField(db_column="user_lastmark",
         # int(11) unsigned
         default=0,
         help_text="The last time the user clicked 'Mark forums read'"
     )
-    user_lastpost_time = models.PositiveIntegerField(
+    lastpost_time = models.PositiveIntegerField(db_column="user_lastpost_time",
         # int(11) unsigned
         default=0,
         help_text="The time of the latest post of the user, UNIX timestamp"
     )
-    user_lastpage = models.CharField(max_length=200,
+    lastpage = models.CharField(max_length=200, db_column="user_lastpage",
         # varchar(200)
         help_text="The last page visited by the user."
     )
-    user_last_confirm_key = models.CharField(max_length=10,
+    last_confirm_key = models.CharField(max_length=10, db_column="user_last_confirm_key",
         # varchar(10)
         help_text="Code used for security reasons by confirmation windows"
     )
-    user_last_search = models.PositiveIntegerField(
+    last_search = models.PositiveIntegerField(db_column="user_last_search",
         # int(11) unsigned
         default=0,
         help_text="Unix timestamp, the last time the user performed a search. Used for search flood time limits."
     )
-    user_warnings = models.IntegerField(
+    warnings = models.IntegerField(db_column="user_warnings",
         # tinyint(4)
         default=0,
         help_text="The number of warnings the user has."
     )
-    user_last_warning = models.PositiveIntegerField(
+    last_warning = models.PositiveIntegerField(db_column="user_last_warning",
         # int(11) unsigned
         default=0,
         help_text="Unix timestamp, the last time the user was warned."
     )
-    user_login_attempts = models.IntegerField(
+    login_attempts = models.IntegerField(db_column="user_login_attempts",
         # tinyint(4)
         default=0,
         help_text="The number of times a login to this account has failed. This is reset to zero upon successful login."
     )
-    user_inactive_reason = models.IntegerField(
+    inactive_reason = models.IntegerField(db_column="user_inactive_reason",
         # tinyint(2)
         default=0,
         help_text="Reason for being inactive"
     )
-    user_inactive_time = models.PositiveIntegerField(
+    inactive_time = models.PositiveIntegerField(db_column="user_inactive_time",
         # int(11) unsigned
         default=0,
         help_text="Unix timestamp, when the user's account became inactive."
     )
-    user_posts = models.PositiveIntegerField(
+    posts = models.PositiveIntegerField(db_column="user_posts",
         # mediumint(8) unsigned
         default=0,
         help_text="Amount of posts the user has posted"
     )
-    user_lang = models.CharField(max_length=30,
+    lang = models.CharField(max_length=30, db_column="user_lang",
         # varchar(30)
         help_text="The user's selected board language"
     )
-    user_timezone = models.DecimalField(max_digits=7, decimal_places=2,
+    timezone = models.DecimalField(max_digits=7, decimal_places=2, db_column="user_timezone",
         # decimal(5,2)
         default=0,
         help_text="The user's timezone offset from UTC."
     )
-    user_dst = models.PositiveSmallIntegerField(
+    dst = models.PositiveSmallIntegerField(db_column="user_dst",
         # tinyint(1) unsigned
         default=0,
         help_text="Is the user on Daylight Savings Time"
     )
-    user_dateformat = models.CharField(max_length=30,
+    dateformat = models.CharField(max_length=30, db_column="user_dateformat",
         # varchar(30)
         default="d M Y H:i",
         help_text="The user's desired date [http://www.php.net/function.date.php format]"
     )
     # user_style = models.IntegerField()
-    user_style = models.ForeignKey("Style", db_column="user_style", blank=True,
+    style = models.ForeignKey("Style", db_column="user_style", blank=True,
         # tinyint(4)
         default=0,
         help_text="Style the user uses to browse the board. {{fk|styles|style_id}}"
     )
     # user_rank = models.IntegerField()
-    user_rank = models.ForeignKey("Rank", db_column="user_rank", blank=True,
+    rank = models.ForeignKey("Rank", db_column="user_rank", blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="User's rank. {{fk|ranks|rank_id}}"
     )
-    user_colour = models.CharField(max_length=6,
+    colour = models.CharField(max_length=6, db_column="user_colour",
         # varchar(6)
         help_text="User's colour, hex code."
     )
-    user_new_privmsg = models.IntegerField(
+    new_privmsg = models.IntegerField(db_column="user_new_privmsg",
         # tinyint(4)
         default=0,
         help_text="The number of new private messages that the user has."
     )
-    user_unread_privmsg = models.IntegerField(
+    unread_privmsg = models.IntegerField(db_column="user_unread_privmsg",
         # tinyint(4)
         default=0,
         help_text="The number of unread private messages that the user has."
     )
-    user_last_privmsg = models.PositiveIntegerField(
+    last_privmsg = models.PositiveIntegerField(db_column="user_last_privmsg",
         # int(11) unsigned
         default=0,
         help_text="Unix timestamp, the last time the user sent a private message. Used for flood checking."
     )
-    user_message_rules = models.PositiveSmallIntegerField(
+    message_rules = models.PositiveSmallIntegerField(db_column="user_message_rules",
         # tinyint(1) unsigned
         default=0,
         help_text="Flag indicating whether or not the user has custom rules for private messages."
     )
-    user_full_folder = models.IntegerField(
+    full_folder = models.IntegerField(db_column="user_full_folder",
         # int(11)
         default= -3,
         help_text="The action to take when a user's private message folder is full."
     )
-    user_emailtime = models.PositiveIntegerField(
+    emailtime = models.PositiveIntegerField(db_column="user_emailtime",
         # int(11) unsigned
         default=0,
         help_text="Unix timestamp, the time the user last sent an email. Used for flood checking."
     )
-    user_topic_show_days = models.PositiveIntegerField(
+    topic_show_days = models.PositiveIntegerField(db_column="user_topic_show_days",
         # smallint(4) unsigned
         default=0,
         help_text="The maximum age of a topic that should be shown."
     )
-    user_topic_sortby_type = models.CharField(max_length=1,
+    topic_sortby_type = models.CharField(max_length=1, db_column="user_topic_sortby_type",
         # char(1)
         default="t",
         help_text="Topic sort order. a is Author, r is Replies, t is Post Time, s is Subject, v is Views"
     )
-    user_topic_sortby_dir = models.CharField(max_length=1,
+    topic_sortby_dir = models.CharField(max_length=1, db_column="user_topic_sortby_dir",
         # char(1)
         default="d",
         help_text="Topic sort direction. a is ascending, d is descending"
     )
-    user_post_show_days = models.PositiveIntegerField(
+    post_show_days = models.PositiveIntegerField(db_column="user_post_show_days",
         # smallint(4) unsigned
         default=0,
         help_text="Preferences for reading "
     )
-    user_post_sortby_type = models.CharField(max_length=1,
+    post_sortby_type = models.CharField(max_length=1, db_column="user_post_sortby_type",
         # char(1)
         default="t",
         help_text="Post sort order. a is Author, s is subject, t is Post Time"
     )
-    user_post_sortby_dir = models.CharField(max_length=1,
+    post_sortby_dir = models.CharField(max_length=1, db_column="user_post_sortby_dir",
         # char(1)
         default="a",
         help_text="Post sort direction. a is ascending, d is descending"
     )
-    user_notify = models.PositiveSmallIntegerField(
+    notify = models.PositiveSmallIntegerField(db_column="user_notify",
         # tinyint(1) unsigned
         default=0,
         help_text="Flag indicating whether the user should be notified upon replies to a topic by default or not."
     )
-    user_notify_pm = models.PositiveSmallIntegerField(
+    notify_pm = models.PositiveSmallIntegerField(db_column="user_notify_pm",
         # tinyint(1) unsigned
         default=1,
         help_text="Flag indicating if the user should be notified upon the arrival of new private messages."
     )
-    user_notify_type = models.IntegerField(
+    notify_type = models.IntegerField(db_column="user_notify_type",
         # tinyint(4)
         default=0,
         help_text="How the user should be notified for the above events: email, IM, or both"
     )
-    user_allow_pm = models.PositiveSmallIntegerField(
+    allow_pm = models.PositiveSmallIntegerField(db_column="user_allow_pm",
         # tinyint(1) unsigned
         default=1,
         help_text="Flag indicating whether the user wants to receive private messages from other users or not."
     )
-    user_allow_viewonline = models.PositiveSmallIntegerField(
+    allow_viewonline = models.PositiveSmallIntegerField(db_column="user_allow_viewonline",
         # tinyint(1) unsigned
         default=1,
         help_text="Flag indicating if the user should be visible or hidden."
     )
-    user_allow_viewemail = models.PositiveSmallIntegerField(
+    allow_viewemail = models.PositiveSmallIntegerField(db_column="user_allow_viewemail",
         # tinyint(1) unsigned
         default=1,
         help_text="Flag indicating if the user can be contacted via email through the board's email form."
     )
-    user_allow_massemail = models.PositiveSmallIntegerField(
+    allow_massemail = models.PositiveSmallIntegerField(db_column="user_allow_massemail",
         # tinyint(1) unsigned
         default=1,
         help_text="Flag indicating if the user wishes to receive mass emails."
     )
-    user_options = models.PositiveIntegerField(
+    options = models.PositiveIntegerField(db_column="user_options",
         # int(11) unsigned
         default=230271,
         help_text="A bitfield containing the options for: showing images in posts, showing flash in posts, showing similies in posts, showing signatures, showing avatars, enable word censoring, attach signature by default, enable bbcodes by default, enable smilies by default, show a popup for new private messages, enable bbcode in signature, enable smilies in signature, automatically parse links in signature"
     )
-    user_avatar = models.CharField(max_length=255,
+    avatar = models.CharField(max_length=255, db_column="user_avatar",
         # varchar(255)
         help_text="Avatar's file name. URI for remote avatar, file directory and name for gallery avatar, combination of user id and time stamp for uploaded avatar."
     )
-    user_avatar_type = models.IntegerField(
+    avatar_type = models.IntegerField(db_column="user_avatar_type",
         # tinyint(2)
         default=0,
         help_text="The type of avatar the user has: remote, gallery, or uploaded"
     )
-    user_avatar_width = models.PositiveIntegerField(
+    avatar_width = models.PositiveIntegerField(db_column="user_avatar_width",
         # smallint(4) unsigned
         default=0,
         help_text="Width of the avatar"
     )
-    user_avatar_height = models.PositiveIntegerField(
+    avatar_height = models.PositiveIntegerField(db_column="user_avatar_height",
         # smallint(4) unsigned
         default=0,
         help_text="Height of the avatar"
     )
-    user_sig = models.TextField(
+    sig = models.TextField(db_column="user_sig",
         # mediumtext
         help_text="The user's signature"
     )
-    user_sig_bbcode_uid = models.CharField(max_length=8,
+    sig_bbcode_uid = models.CharField(max_length=8, db_column="user_sig_bbcode_uid",
         # varchar(5)
         help_text="The bbcode uid used in the user's signature."
     )
-    user_sig_bbcode_bitfield = models.CharField(max_length=255,
+    sig_bbcode_bitfield = models.CharField(max_length=255, db_column="user_sig_bbcode_bitfield",
         # varchar(255)
         help_text="The bbcode, smiley, and url settings used when saving the user's signature."
     )
@@ -321,63 +321,63 @@ class User(models.Model):
         # varchar(100)
         help_text="User's location field value"
     )
-    user_icq = models.CharField(max_length=15,
+    icq = models.CharField(max_length=15, db_column="user_icq",
         # varchar(15)
         help_text="User's ICQ field value"
     )
-    user_aim = models.CharField(max_length=255,
+    aim = models.CharField(max_length=255, db_column="user_aim",
         # varchar(255)
         help_text="User's AIM field value"
     )
-    user_yim = models.CharField(max_length=255,
+    yim = models.CharField(max_length=255, db_column="user_yim",
         # varchar(255)
         help_text="User's YIM field value"
     )
-    user_msnm = models.CharField(max_length=255,
+    msnm = models.CharField(max_length=255, db_column="user_msnm",
         # varchar(255)
         help_text="User's MSN field value"
     )
-    user_jabber = models.CharField(max_length=255,
+    jabber = models.CharField(max_length=255, db_column="user_jabber",
         # varchar(255)
         help_text="User's Jabber field value"
     )
-    user_website = models.CharField(max_length=200,
+    website = models.CharField(max_length=200, db_column="user_website",
         # varchar(200)
         help_text="User's website field value"
     )
-    user_occ = models.TextField(
+    occ = models.TextField(db_column="user_occ",
         # text
         help_text="User's occupation field value"
     )
-    user_interests = models.TextField(
+    interests = models.TextField(db_column="user_interests",
         # text
         help_text="User's interests field value"
     )
-    user_actkey = models.CharField(max_length=32,
+    actkey = models.CharField(max_length=32, db_column="user_actkey",
         # varchar(32)
         help_text="The key required to activate the user's account."
     )
-    user_newpasswd = models.CharField(max_length=40,
+    newpasswd = models.CharField(max_length=40, db_column="user_newpasswd",
         # varchar(32)
         help_text="A randomly generated password for when the user has forgotten their password."
     )
-    user_form_salt = models.CharField(max_length=32)
-    user_new = models.IntegerField()
-    user_reminded = models.IntegerField()
-    user_reminded_time = models.IntegerField()
+    form_salt = models.CharField(max_length=32, db_column="user_form_salt")
+    new = models.IntegerField(db_column="user_new",)
+    reminded = models.IntegerField(db_column="user_reminded",)
+    reminded_time = models.IntegerField(db_column="user_reminded_time",)
 
     def registration_datetime(self):
-        return datetime.datetime.fromtimestamp(self.user_regdate)
+        return datetime.datetime.fromtimestamp(self.regdate)
     def lastvisit_datetime(self):
-        if self.user_lastvisit == 0:
+        if self.lastvisit == 0:
             return None
-        return datetime.datetime.fromtimestamp(self.user_lastvisit)
+        return datetime.datetime.fromtimestamp(self.lastvisit)
 
     def __unicode__(self):
         return self.username
     class Meta:
         db_table = u"%susers" % settings.PHPBB_TABLE_PREFIX
-        ordering = ['-user_posts']
+        ordering = ['-posts']
 
 
 class Forum(models.Model):
