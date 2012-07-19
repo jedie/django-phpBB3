@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from django_phpBB3.models import AclOption, AclRole, AclRoleData, \
     AclUser, Attachment, Banlist, Bbcode, Bookmark, Bot, CaptchaAnswers, \
     CaptchaQuestions, Config, Confirm, Disallow, Draft, ExtensionGroup, Extension, \
-    Forum, ForumAccess, ForumTrack, Group, Icon, Lang, Log, \
+    Forum, ForumTrack, Group, Icon, Lang, Log, \
     LoginAttempt, Module, PollOption, Post, Privmsg, \
     PrivmsgFolder, PrivmsgRules, ProfileField, ProfileFieldData, \
     ProfileFieldLang, ProfileLang, QaConfirm, Rank, Report, ReportReasons, \
@@ -32,7 +32,7 @@ class UserAdmin(admin.ModelAdmin):
     """
     Registered users
     """
-    list_display = ('id','username','user_regdate','user_posts','user_email')
+    list_display = ('id', 'username', 'user_regdate', 'user_posts', 'user_email')
     list_display_links = ("username",)
 admin.site.register(User, UserAdmin)
 
@@ -70,10 +70,10 @@ class LogAdmin(admin.ModelAdmin):
         return obj.forum.forum_name
     def topic_title(self, obj):
         return obj.topic.topic_title
-    
+
     list_display = ('id', "username", "log_operation", "log_time", "forum_name", "topic_title")
     list_display_links = ('id', "username", "log_operation", "log_time")
-    list_filter = ("forum","log_operation")
+    list_filter = ("forum", "log_operation")
 admin.site.register(Log, LogAdmin)
 
 class GroupAdmin(admin.ModelAdmin):
@@ -198,13 +198,6 @@ class ExtensionAdmin(admin.ModelAdmin):
     """
     pass
 admin.site.register(Extension, ExtensionAdmin)
-
-class ForumAccessAdmin(admin.ModelAdmin):
-    """
-    Stores who is logged in to password protected forums
-    """
-    pass
-admin.site.register(ForumAccess, ForumAccessAdmin)
 
 class ForumTrackAdmin(admin.ModelAdmin):
     """

@@ -1232,27 +1232,6 @@ class Extension(models.Model):
         db_table = u"%sextensions" % settings.PHPBB_TABLE_PREFIX
 
 
-class ForumAccess(models.Model):
-    """
-    Stores who is logged in to password protected forums
-    """
-    id = models.PositiveIntegerField(primary_key=True, db_column="forum_id",
-        # mediumint(8) unsigned
-        default=0,
-        help_text="primary key"
-    )
-    id = models.PositiveIntegerField(primary_key=True, db_column="user_id",
-        # mediumint(8) unsigned
-        default=0,
-        help_text="primary key"
-    )
-    id = models.CharField(max_length=96, primary_key=True, db_column="session_id",
-        # char(32) binary
-        help_text="primary key"
-    )
-    class Meta:
-        db_table = u"%sforums_access" % settings.PHPBB_TABLE_PREFIX
-
 class ForumTrack(models.Model):
     """
     Unread post information is stored here
