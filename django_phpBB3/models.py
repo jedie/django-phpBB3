@@ -14,6 +14,7 @@
 
 from django.db import models
 from django.conf import settings
+import datetime
 
 
 #------------------------------------------------------------------------------
@@ -364,6 +365,14 @@ class User(models.Model):
     user_new = models.IntegerField()
     user_reminded = models.IntegerField()
     user_reminded_time = models.IntegerField()
+
+    def registration_datetime(self):
+        return datetime.datetime.fromtimestamp(self.user_regdate)
+    def lastvisit_datetime(self):
+        if self.user_lastvisit == 0:
+            return None
+        return datetime.datetime.fromtimestamp(self.user_lastvisit)
+
     def __unicode__(self):
         return self.username
     class Meta:
