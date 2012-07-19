@@ -54,12 +54,12 @@ We implement a migration command. To call it run this:
 === options ===
 ==== cleanup_users ====
 
-Add {{{--cleanup_users=x}}} to setup which users are migrate, where **x** is:
+Add {{{--cleanup_users=x}}} to setup which users are migrate, where **x** is a number:
 
-| **0**           | all users
-| **1**           | users with email addresses (skip bots) **default**
-| **2** (default) | users with email and has a 'lastvisit' date
-| **3**           | email + lastvisit and has created at least one post
+| **0** | all users
+| **1** | users with email addresses (skip bots)
+| **2** | users with email and has a 'lastvisit' date **(default)**
+| **3** | email + lastvisit and has created at least one post
 
 
 === limitations ===
@@ -68,7 +68,7 @@ Things that would not be transfered, yet:
 
 * Forum moderators
 * Category groups
-* position if Category / Forum
+* position in Category / Forum
 
 
 == phpBB3 links ==
