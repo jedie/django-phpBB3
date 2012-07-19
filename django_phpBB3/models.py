@@ -675,10 +675,6 @@ class Post(models.Model):
         db_table = u"%sposts" % settings.PHPBB_TABLE_PREFIX
 
 
-#------------------------------------------------------------------------------
-# more uninportand models:
-
-
 class Group(models.Model):
     """
     Usergroups
@@ -759,6 +755,10 @@ class Group(models.Model):
         return self.name
     class Meta:
         db_table = u"%sgroups" % settings.PHPBB_TABLE_PREFIX
+
+
+#------------------------------------------------------------------------------
+# more uninportand models:
 
 
 class Config(models.Model):
