@@ -170,13 +170,13 @@ class User(models.Model):
         help_text="The user's desired date [http://www.php.net/function.date.php format]"
     )
     # user_style = models.IntegerField()
-    user_style = models.ForeignKey("Style", db_column="user_style",  blank=True,
+    user_style = models.ForeignKey("Style", db_column="user_style", blank=True,
         # tinyint(4)
         default=0,
         help_text="Style the user uses to browse the board. {{fk|styles|style_id}}"
     )
     # user_rank = models.IntegerField()
-    user_rank = models.ForeignKey("Rank", db_column="user_rank",  blank=True,
+    user_rank = models.ForeignKey("Rank", db_column="user_rank", blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="User's rank. {{fk|ranks|rank_id}}"
@@ -207,7 +207,7 @@ class User(models.Model):
     )
     user_full_folder = models.IntegerField(
         # int(11)
-        default=-3,
+        default= -3,
         help_text="The action to take when a user's private message folder is full."
     )
     user_emailtime = models.PositiveIntegerField(
@@ -849,19 +849,19 @@ class AclUser(models.Model):
         help_text="{{fk|users|user_id}}"
     )
     # forum_id = models.IntegerField()
-    forum = models.ForeignKey("Forum",  blank=True,
+    forum = models.ForeignKey("Forum", blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|forums|forum_id}}"
     )
     # auth_option_id = models.IntegerField()
-    auth_option = models.ForeignKey("AclOption",  blank=True,
+    auth_option = models.ForeignKey("AclOption", blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|acl_options|auth_option_id}}"
     )
     # auth_role_id = models.IntegerField()
-    auth_role = models.ForeignKey("AclRole",  blank=True,
+    auth_role = models.ForeignKey("AclRole", blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|acl_roles|role_id}}"
@@ -883,13 +883,13 @@ class Attachment(models.Model):
         help_text="primary key"
     )
     # post_msg_id = models.IntegerField()
-    post_msg = models.ForeignKey("Post",  blank=True,
+    post_msg = models.ForeignKey("Post", blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|posts|post_id}}"
     )
     # topic_id = models.IntegerField()
-    topic = models.ForeignKey("Topic",  blank=True,
+    topic = models.ForeignKey("Topic", blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|topics|topic_id}}"
@@ -900,7 +900,7 @@ class Attachment(models.Model):
         help_text="1 if attachment is used inside private message, 0 if used inside post"
     )
     # poster_id = models.IntegerField()
-    poster = models.ForeignKey("User",  blank=True,
+    poster = models.ForeignKey("User", blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
@@ -1474,13 +1474,13 @@ class Privmsg(models.Model):
         help_text="the initial message in this message chain (i.e. if you write messages A -> B (reply to A) -> C (reply to B), then B and C will have root_level=msg_id of A"
     )
     # author_id = models.IntegerField()
-    author = models.ForeignKey("User",  blank=True,
+    author = models.ForeignKey("User", blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
     )
     # icon_id = models.IntegerField()
-    icon = models.ForeignKey("Icon",  blank=True,
+    icon = models.ForeignKey("Icon", blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|icons|icons_id}}"
@@ -2188,13 +2188,13 @@ class Topic(models.Model):
         help_text="Primary key"
     )
     # forum_id = models.IntegerField()
-    forum = models.ForeignKey("Forum",  blank=True,
+    forum = models.ForeignKey("Forum", blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|forums|forum_id}}"
     )
     # icon_id = models.IntegerField()
-    icon = models.ForeignKey("Icon",  blank=True,
+    icon = models.ForeignKey("Icon", blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|icons|icon_id}}"
@@ -2219,7 +2219,7 @@ class Topic(models.Model):
         help_text="The title of the topic."
     )
     # topic_poster = models.IntegerField()
-    topic_poster = models.ForeignKey("User", db_column="topic_poster",  blank=True,
+    topic_poster = models.ForeignKey("User", db_column="topic_poster", blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
@@ -2260,7 +2260,7 @@ class Topic(models.Model):
         help_text="[[Constants|POST_NORMAL]](0), POST_STICKY(1), POST_ANNOUNCE(2) or POST_GLOBAL(3)"
     )
     # topic_first_post_id = models.IntegerField()
-    topic_first_post = models.ForeignKey("Post", related_name='+',  blank=True,
+    topic_first_post = models.ForeignKey("Post", related_name='+', blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|posts|post_id}}"
@@ -2274,13 +2274,13 @@ class Topic(models.Model):
         help_text="The colour of the topic creator's default user group."
     )
     # topic_last_post_id = models.IntegerField()
-    topic_last_post = models.ForeignKey("Post", related_name='+',  blank=True,
+    topic_last_post = models.ForeignKey("Post", related_name='+', blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|posts|post_id}}"
     )
     # topic_last_poster_id = models.IntegerField()
-    topic_last_poster = models.ForeignKey("User", related_name='+',  blank=True,
+    topic_last_poster = models.ForeignKey("User", related_name='+', blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
@@ -2318,7 +2318,7 @@ class Topic(models.Model):
         help_text="Has this topic been bumped? 1 (yes), 0(no)"
     )
     # topic_bumper = models.IntegerField()
-    topic_bumper = models.ForeignKey("User", related_name='+', db_column="topic_bumper",  blank=True,
+    topic_bumper = models.ForeignKey("User", related_name='+', db_column="topic_bumper", blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
