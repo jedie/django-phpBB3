@@ -12,9 +12,11 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
+import datetime
+
 from django.db import models
 from django.conf import settings
-import datetime
+from django.utils.tzinfo import FixedOffset
 
 
 #------------------------------------------------------------------------------
@@ -366,12 +368,18 @@ class User(models.Model):
     reminded = models.IntegerField(db_column="user_reminded",)
     reminded_time = models.IntegerField(db_column="user_reminded_time",)
 
-    def registration_datetime(self):
-        return datetime.datetime.fromtimestamp(self.regdate)
-    def lastvisit_datetime(self):
-        if self.lastvisit == 0:
+    def timestamp2datetime(self, timestamp):
+        if timestamp == 0:
             return None
-        return datetime.datetime.fromtimestamp(self.lastvisit)
+        # XXX: Don't know if this convert is right:
+        offset_minutes = int(self.timezone) * 60
+        tzinfo = FixedOffset(offset_minutes)
+        return datetime.datetime.fromtimestamp(timestamp, tzinfo)
+
+    def registration_datetime(self):
+        return self.timestamp2datetime(self.regdate)
+    def lastvisit_datetime(self):
+        return self.timestamp2datetime(self.lastvisit)
 
     def __unicode__(self):
         return self.username
