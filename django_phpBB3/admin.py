@@ -50,11 +50,28 @@ class ForumAdmin(admin.ModelAdmin):
 admin.site.register(Forum, ForumAdmin)
 
 
+class TopicAdmin(admin.ModelAdmin):
+    """
+    Topic in forums
+    """
+    def username(self, obj):
+        return obj.poster.username
+
+    list_display = ('id', "title", "username", "status", "type", "create_datetime", "last_post_datetime", "last_view_datetime",)
+    list_display_links = ("title",)
+    list_filter = ("status", "type", "forum", "poster")
+admin.site.register(Topic, TopicAdmin)
+
+
 class PostAdmin(admin.ModelAdmin):
     """
     Topic posts
     """
-    list_display = ('id', "has_attachment", "teaser")
+    def poster_username(self, obj):
+        return obj.poster.username
+    poster_username.short_description = "username"
+
+    list_display = ('id', "poster_username", "has_attachment", "datetime", "teaser")
     list_filter = ("forum", "poster")
     search_fields = ("text",)
 admin.site.register(Post, PostAdmin)
@@ -405,13 +422,6 @@ class StyleThemeAdmin(admin.ModelAdmin):
     """
     pass
 admin.site.register(StyleTheme, StyleThemeAdmin)
-
-class TopicAdmin(admin.ModelAdmin):
-    """
-    Topic in forums
-    """
-    pass
-admin.site.register(Topic, TopicAdmin)
 
 class TopicPostedAdmin(admin.ModelAdmin):
     """

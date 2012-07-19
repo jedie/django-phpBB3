@@ -671,6 +671,13 @@ class Post(models.Model):
         # tinyint(1) unsigned
         default=0,
     )
+    def create_datetime(self):
+        # FIXME: UTC or local time from user???
+        return datetime.datetime.fromtimestamp(self.time)
+    def updated_datetime(self):
+        # FIXME: UTC or local time from user???
+        return datetime.datetime.fromtimestamp(self.edit_time)
+
     def teaser(self):
         return u" ".join(self.text.splitlines())[:50] + u"..."
 
@@ -683,6 +690,193 @@ class Post(models.Model):
 
     class Meta:
         db_table = u"%sposts" % settings.PHPBB_TABLE_PREFIX
+
+
+class Topic(models.Model):
+    """
+    Topic in forums
+    """
+    id = models.PositiveIntegerField(primary_key=True, db_column="topic_id",
+        # mediumint(8) unsigned
+        help_text="Primary key"
+    )
+    # forum_id = models.IntegerField()
+    forum = models.ForeignKey("Forum", blank=True,
+        # mediumint(8) unsigned
+        default=0,
+        help_text="{{fk|forums|forum_id}}"
+    )
+    # icon_id = models.IntegerField()
+    icon = models.ForeignKey("Icon", blank=True,
+        # mediumint(8) unsigned
+        default=0,
+        help_text="{{fk|icons|icon_id}}"
+    )
+    attachment = models.PositiveSmallIntegerField(db_column="topic_attachment",
+        # tinyint(1) unsigned
+        default=0,
+        help_text="1=at least one post in this topic has an attachment&lt;br/>0=no attachments in this topic"
+    )
+    approved = models.PositiveSmallIntegerField(db_column="topic_approved",
+        # tinyint(1) unsigned
+        default=1,
+        help_text="Flag indicating whether the topic is awaiting approval or not."
+    )
+    reported = models.PositiveSmallIntegerField(db_column="topic_reported",
+        # tinyint(1) unsigned
+        default=0,
+        help_text="Flag indicating that a post within the topic has been reported."
+    )
+    title = models.CharField(max_length=255, db_column="topic_title",
+        # varchar(100)
+        help_text="The title of the topic."
+    )
+    # topic_poster = models.IntegerField()
+    poster = models.ForeignKey("User", db_column="topic_poster", blank=True,
+        # mediumint(8) unsigned
+        default=0,
+        help_text="{{fk|users|user_id}}"
+    )
+    time = models.PositiveIntegerField(db_column="topic_time",
+        # int(11) unsigned
+        default=0,
+        help_text="Unix timestamp, the topic's creation date."
+    )
+    time_limit = models.PositiveIntegerField(db_column="topic_time_limit",
+        # int(11) unsigned
+        default=0,
+        help_text="The number of seconds that a topic will remain as a sticky."
+    )
+    views = models.PositiveIntegerField(db_column="topic_views",
+        # mediumint(8) unsigned
+        default=0,
+        help_text="The number of time the topic has been viewed."
+    )
+    replies = models.PositiveIntegerField(db_column="topic_replies",
+        # mediumint(8) unsigned
+        default=0,
+        help_text="The number of approved replies to this topic."
+    )
+    replies_real = models.PositiveIntegerField(db_column="topic_replies_real",
+        # mediumint(8) unsigned
+        default=0,
+        help_text="Total number of replies to this topic (including posts waiting for approval)."
+    )
+    status = models.IntegerField(db_column="topic_status",
+        # tinyint(3)
+        default=0,
+        help_text="[[Constants|ITEM_UNLOCKED]](0), ITEM_LOCKED(1) or ITEM_MOVED(2)"
+    )
+    type = models.IntegerField(db_column="topic_type",
+        # tinyint(3)
+        default=0,
+        help_text="[[Constants|POST_NORMAL]](0), POST_STICKY(1), POST_ANNOUNCE(2) or POST_GLOBAL(3)"
+    )
+    # topic_first_post_id = models.IntegerField()
+    first_post = models.ForeignKey("Post", related_name='+', blank=True, db_column="topic_first_post_id",
+        # mediumint(8) unsigned
+        default=0,
+        help_text="{{fk|posts|post_id}}"
+    )
+    first_poster_name = models.CharField(max_length=255, db_column="topic_first_poster_name",
+        # varchar(255)
+        help_text="The topic creator's username."
+    )
+    first_poster_colour = models.CharField(max_length=6, db_column="topic_first_poster_colour",
+        # varchar(6)
+        help_text="The colour of the topic creator's default user group."
+    )
+    # topic_last_post_id = models.IntegerField()
+    last_post = models.ForeignKey("Post", related_name='+', blank=True, db_column="topic_last_post_id",
+        # mediumint(8) unsigned
+        default=0,
+        help_text="{{fk|posts|post_id}}"
+    )
+    # topic_last_poster_id = models.IntegerField()
+    last_poster = models.ForeignKey("User", related_name='+', blank=True, db_column="topic_last_poster_id",
+        # mediumint(8) unsigned
+        default=0,
+        help_text="{{fk|users|user_id}}"
+    )
+    last_poster_name = models.CharField(max_length=255, db_column="topic_last_poster_name",
+        # varchar(255)
+        help_text="The username of the topic's last poster."
+    )
+    last_poster_colour = models.CharField(max_length=6, db_column="topic_last_poster_colour",
+        # varchar(6)
+        help_text="The colour of the last poster's default user group."
+    )
+    last_post_subject = models.CharField(max_length=255, db_column="topic_last_post_subject",
+        # varchar(100)
+        help_text="The subject of the topic's last post"
+    )
+    last_post_time = models.PositiveIntegerField(db_column="topic_last_post_time",
+        # int(11) unsigned
+        default=0,
+        help_text="Unix timestamp, the last time a post was made in the topic."
+    )
+    last_view_time = models.PositiveIntegerField(db_column="topic_last_view_time",
+        # int(11) unsigned
+        default=0,
+        help_text="Unix timestamp, the last time the topic was viewed. Used in topic pruning."
+    )
+    moved_id = models.PositiveIntegerField(db_column="topic_moved_id",
+        # mediumint(8) unsigned
+        default=0,
+        help_text="If topic_status is ITEM_MOVED (a shadow topic), this field contains the topic id of the real topic."
+    )
+    bumped = models.PositiveSmallIntegerField(db_column="topic_bumped",
+        # tinyint(1) unsigned
+        default=0,
+        help_text="Has this topic been bumped? 1 (yes), 0(no)"
+    )
+    # topic_bumper = models.IntegerField()
+    bumper = models.ForeignKey("User", related_name='+', db_column="topic_bumper", blank=True,
+        # mediumint(8) unsigned
+        default=0,
+        help_text="{{fk|users|user_id}}"
+    )
+    poll_title = models.CharField(max_length=255,
+        # varchar(100)
+        help_text="The poll's question"
+    )
+    poll_start = models.PositiveIntegerField(
+        # int(11) unsigned
+        default=0,
+        help_text="Unix timestamp, poll's creation date"
+    )
+    poll_length = models.PositiveIntegerField(
+        # int(11) unsigned
+        default=0,
+        help_text="Poll duration, in seconds"
+    )
+    poll_max_options = models.IntegerField(
+        # tinyint(4)
+        default=1,
+        help_text="The number of poll options a user can choose when casting a vote"
+    )
+    poll_last_vote = models.PositiveIntegerField(
+        # int(11) unsigned
+        default=0,
+        help_text="Unix timestamp, time of the last vote"
+    )
+    poll_vote_change = models.PositiveSmallIntegerField(
+        # tinyint(1) unsigned
+        default=0,
+        help_text="Are users allowed to change their vote(s)? 1 (yes), 0(no)"
+    )
+    def create_datetime(self):
+        return datetime.datetime.fromtimestamp(self.time)
+    def last_post_datetime(self):
+        return datetime.datetime.fromtimestamp(self.last_post_time)
+    def last_view_datetime(self):
+        return datetime.datetime.fromtimestamp(self.last_view_time)
+
+    def __unicode__(self):
+        return self.title
+    class Meta:
+        db_table = u"%stopics" % settings.PHPBB_TABLE_PREFIX
+        ordering = ['-time']
 
 
 class Group(models.Model):
@@ -782,7 +976,7 @@ class Attachment(models.Model):
         help_text="{{fk|posts|post_id}}"
     )
     # topic_id = models.IntegerField()
-    topic = models.ForeignKey("Topic", blank=True,
+    topic = models.ForeignKey("Topic", blank=True, related_name="+",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|topics|topic_id}}"
@@ -2202,183 +2396,7 @@ class StyleTheme(models.Model):
     class Meta:
         db_table = u"%sstyles_theme" % settings.PHPBB_TABLE_PREFIX
 
-class Topic(models.Model):
-    """
-    Topic in forums
-    """
-    id = models.PositiveIntegerField(primary_key=True, db_column="topic_id",
-        # mediumint(8) unsigned
-        help_text="Primary key"
-    )
-    # forum_id = models.IntegerField()
-    forum = models.ForeignKey("Forum", blank=True,
-        # mediumint(8) unsigned
-        default=0,
-        help_text="{{fk|forums|forum_id}}"
-    )
-    # icon_id = models.IntegerField()
-    icon = models.ForeignKey("Icon", blank=True,
-        # mediumint(8) unsigned
-        default=0,
-        help_text="{{fk|icons|icon_id}}"
-    )
-    topic_attachment = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=0,
-        help_text="1=at least one post in this topic has an attachment&lt;br/>0=no attachments in this topic"
-    )
-    topic_approved = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=1,
-        help_text="Flag indicating whether the topic is awaiting approval or not."
-    )
-    topic_reported = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=0,
-        help_text="Flag indicating that a post within the topic has been reported."
-    )
-    topic_title = models.CharField(max_length=255,
-        # varchar(100)
-        help_text="The title of the topic."
-    )
-    # topic_poster = models.IntegerField()
-    topic_poster = models.ForeignKey("User", db_column="topic_poster", blank=True,
-        # mediumint(8) unsigned
-        default=0,
-        help_text="{{fk|users|user_id}}"
-    )
-    topic_time = models.PositiveIntegerField(
-        # int(11) unsigned
-        default=0,
-        help_text="Unix timestamp, the topic's creation date."
-    )
-    topic_time_limit = models.PositiveIntegerField(
-        # int(11) unsigned
-        default=0,
-        help_text="The number of seconds that a topic will remain as a sticky."
-    )
-    topic_views = models.PositiveIntegerField(
-        # mediumint(8) unsigned
-        default=0,
-        help_text="The number of time the topic has been viewed."
-    )
-    topic_replies = models.PositiveIntegerField(
-        # mediumint(8) unsigned
-        default=0,
-        help_text="The number of approved replies to this topic."
-    )
-    topic_replies_real = models.PositiveIntegerField(
-        # mediumint(8) unsigned
-        default=0,
-        help_text="Total number of replies to this topic (including posts waiting for approval)."
-    )
-    topic_status = models.IntegerField(
-        # tinyint(3)
-        default=0,
-        help_text="[[Constants|ITEM_UNLOCKED]](0), ITEM_LOCKED(1) or ITEM_MOVED(2)"
-    )
-    topic_type = models.IntegerField(
-        # tinyint(3)
-        default=0,
-        help_text="[[Constants|POST_NORMAL]](0), POST_STICKY(1), POST_ANNOUNCE(2) or POST_GLOBAL(3)"
-    )
-    # topic_first_post_id = models.IntegerField()
-    topic_first_post = models.ForeignKey("Post", related_name='+', blank=True,
-        # mediumint(8) unsigned
-        default=0,
-        help_text="{{fk|posts|post_id}}"
-    )
-    topic_first_poster_name = models.CharField(max_length=255,
-        # varchar(255)
-        help_text="The topic creator's username."
-    )
-    topic_first_poster_colour = models.CharField(max_length=6,
-        # varchar(6)
-        help_text="The colour of the topic creator's default user group."
-    )
-    # topic_last_post_id = models.IntegerField()
-    topic_last_post = models.ForeignKey("Post", related_name='+', blank=True,
-        # mediumint(8) unsigned
-        default=0,
-        help_text="{{fk|posts|post_id}}"
-    )
-    # topic_last_poster_id = models.IntegerField()
-    topic_last_poster = models.ForeignKey("User", related_name='+', blank=True,
-        # mediumint(8) unsigned
-        default=0,
-        help_text="{{fk|users|user_id}}"
-    )
-    topic_last_poster_name = models.CharField(max_length=255,
-        # varchar(255)
-        help_text="The username of the topic's last poster."
-    )
-    topic_last_poster_colour = models.CharField(max_length=6,
-        # varchar(6)
-        help_text="The colour of the last poster's default user group."
-    )
-    topic_last_post_subject = models.CharField(max_length=255,
-        # varchar(100)
-        help_text="The subject of the topic's last post"
-    )
-    topic_last_post_time = models.PositiveIntegerField(
-        # int(11) unsigned
-        default=0,
-        help_text="Unix timestamp, the last time a post was made in the topic."
-    )
-    topic_last_view_time = models.PositiveIntegerField(
-        # int(11) unsigned
-        default=0,
-        help_text="Unix timestamp, the last time the topic was viewed. Used in topic pruning."
-    )
-    topic_moved_id = models.PositiveIntegerField(
-        # mediumint(8) unsigned
-        default=0,
-        help_text="If topic_status is ITEM_MOVED (a shadow topic), this field contains the topic id of the real topic."
-    )
-    topic_bumped = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=0,
-        help_text="Has this topic been bumped? 1 (yes), 0(no)"
-    )
-    # topic_bumper = models.IntegerField()
-    topic_bumper = models.ForeignKey("User", related_name='+', db_column="topic_bumper", blank=True,
-        # mediumint(8) unsigned
-        default=0,
-        help_text="{{fk|users|user_id}}"
-    )
-    poll_title = models.CharField(max_length=255,
-        # varchar(100)
-        help_text="The poll's question"
-    )
-    poll_start = models.PositiveIntegerField(
-        # int(11) unsigned
-        default=0,
-        help_text="Unix timestamp, poll's creation date"
-    )
-    poll_length = models.PositiveIntegerField(
-        # int(11) unsigned
-        default=0,
-        help_text="Poll duration, in seconds"
-    )
-    poll_max_options = models.IntegerField(
-        # tinyint(4)
-        default=1,
-        help_text="The number of poll options a user can choose when casting a vote"
-    )
-    poll_last_vote = models.PositiveIntegerField(
-        # int(11) unsigned
-        default=0,
-        help_text="Unix timestamp, time of the last vote"
-    )
-    poll_vote_change = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=0,
-        help_text="Are users allowed to change their vote(s)? 1 (yes), 0(no)"
-    )
-    def __unicode__(self):
-        return self.topic_title
-    class Meta:
-        db_table = u"%stopics" % settings.PHPBB_TABLE_PREFIX
+
 
 class TopicPosted(models.Model):
     """
