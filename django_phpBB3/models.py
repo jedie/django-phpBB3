@@ -595,15 +595,15 @@ class Post(models.Model):
     poster_ip = models.CharField(max_length=40,
         # varchar(40)
     )
-    post_time = models.PositiveIntegerField(
+    time = models.PositiveIntegerField(db_column="post_time",
         # int(11) unsigned
         default=0,
     )
-    post_approved = models.PositiveSmallIntegerField(
+    approved = models.PositiveSmallIntegerField(db_column="post_approved",
         # tinyint(1) unsigned
         default=1,
     )
-    post_reported = models.PositiveSmallIntegerField(
+    reported = models.PositiveSmallIntegerField(db_column="post_reported",
         # tinyint(1) unsigned
         default=0,
     )
@@ -623,19 +623,19 @@ class Post(models.Model):
         # tinyint(1) unsigned
         default=1,
     )
-    post_username = models.CharField(max_length=255,
+    username = models.CharField(max_length=255, db_column="post_username",
         # varchar(255)
     )
-    post_subject = models.CharField(max_length=255,
+    subject = models.CharField(max_length=255, db_column="post_subject",
         # varchar(100)
     )
-    post_text = models.TextField(
+    text = models.TextField(db_column="post_text",
         # mediumtext
     )
-    post_checksum = models.CharField(max_length=32,
+    checksum = models.CharField(max_length=32, db_column="post_checksum",
         # varchar(32)
     )
-    post_attachment = models.PositiveSmallIntegerField(
+    attachment = models.PositiveSmallIntegerField(db_column="post_attachment",
         # tinyint(1) unsigned
         default=0,
         help_text="| 1=This post has at least one attachment&lt;br/>0=no attachments in this post"
@@ -648,29 +648,34 @@ class Post(models.Model):
         # varchar(5)
         help_text="see [[Parsing text]]"
     )
-    post_postcount = models.PositiveSmallIntegerField(
+    postcount = models.PositiveSmallIntegerField(db_column="post_postcount",
         # tinyint(1) unsigned
         default=1,
     )
-    post_edit_time = models.PositiveIntegerField(
+    edit_time = models.PositiveIntegerField(db_column="post_edit_time",
         # int(11) unsigned
         default=0,
     )
-    post_edit_reason = models.CharField(max_length=255,
+    edit_reason = models.CharField(max_length=255, db_column="post_edit_reason",
         # varchar(255)
     )
-    post_edit_user = models.PositiveIntegerField(
+    edit_user = models.PositiveIntegerField(db_column="post_edit_user",
         # mediumint(8) unsigned
         default=0,
     )
-    post_edit_count = models.PositiveIntegerField(
+    edit_count = models.PositiveIntegerField(db_column="post_edit_count",
         # smallint(4) unsigned
         default=0,
     )
-    post_edit_locked = models.PositiveSmallIntegerField(
+    edit_locked = models.PositiveSmallIntegerField(db_column="post_edit_locked",
         # tinyint(1) unsigned
         default=0,
     )
+
+    def has_attachment(self):
+        return bool(self.attachment)
+    has_attachment.boolean = True
+
     class Meta:
         db_table = u"%sposts" % settings.PHPBB_TABLE_PREFIX
 
