@@ -59,7 +59,7 @@ class ForumWatch(models.Model):
     """
     Subscribed forums
     """
-    forum = models.ForeignKey("Forum", primary_key=True, related_name='+', 
+    forum = models.ForeignKey("Forum", primary_key=True, related_name='+',
         # mediumint(8) unsigned
         default=0,
     )
@@ -129,7 +129,7 @@ class SessionKey(models.Model):
     )
     class Meta:
         db_table = u"%ssessions_keys" % settings.PHPBB_TABLE_PREFIX
-        
+
 
 class PollVote(models.Model):
     """
@@ -152,7 +152,7 @@ class PollVote(models.Model):
     )
     class Meta:
         db_table = u"%spoll_votes" % settings.PHPBB_TABLE_PREFIX
-        
+
 
 class PrivmsgTo(models.Model):
     """
@@ -225,20 +225,20 @@ class TopicWatch(models.Model):
     )
     class Meta:
         db_table = u"%stopics_watch" % settings.PHPBB_TABLE_PREFIX
-        
+
 
 class UserGroup(models.Model):
     """
     User groups
     """
     # group_id = models.IntegerField()
-    group = models.ForeignKey("Group",  blank=True,
+    group = models.ForeignKey("Group", blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|groups|group_id}}"
     )
     # user_id = models.IntegerField()
-    user = models.ForeignKey("User",  blank=True,
+    user = models.ForeignKey("User", blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
@@ -255,3 +255,25 @@ class UserGroup(models.Model):
     )
     class Meta:
         db_table = u"%suser_group" % settings.PHPBB_TABLE_PREFIX
+
+
+class ForumAccess(models.Model):
+    """
+    Stores who is logged in to password protected forums
+    """
+    forum = models.PositiveIntegerField(primary_key=True, db_column="forum_id",
+        # mediumint(8) unsigned
+        default=0,
+        help_text="primary key"
+    )
+    user = models.PositiveIntegerField(primary_key=True, db_column="user_id",
+        # mediumint(8) unsigned
+        default=0,
+        help_text="primary key"
+    )
+    session = models.CharField(max_length=96, primary_key=True, db_column="session_id",
+        # char(32) binary
+        help_text="primary key"
+    )
+    class Meta:
+        db_table = u"%sforums_access" % settings.PHPBB_TABLE_PREFIX

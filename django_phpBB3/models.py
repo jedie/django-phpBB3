@@ -18,7 +18,7 @@ import datetime
 
 
 #------------------------------------------------------------------------------
-# inportand models first:
+# important models first:
 
 class User(models.Model):
     """
