@@ -3,6 +3,13 @@
 Django-phpBB3 provides the database models of a existing phpBB3 installation for easy migration into a other forum software.
 It's not a phpBB clone or a forum!
 
+Warning:
+In the current state, it's not guaranteed that changes trough the django admin will work with phpBB3! 
+So in the current state, access 'read-only' to the data ;)
+
+Patches are welcome! Please send pull requests. 
+
+
 == test ==
 
 We added a test project for easy start in: [[https://github.com/jedie/django-phpBB3/tree/master/django_phpBB3_project|/django_phpBB3_project/]]
