@@ -61,15 +61,28 @@ Add {{{--cleanup_users=x}}} to setup which users are migrate, where **x** is a n
 | **2** | users with email and has a 'lastvisit' date **(default)**
 | **3** | email + lastvisit and has created at least one post
 
+=== migration notes ===
 
-=== limitations ===
+* We transfer phpBB Users who are in the user group {{{ADMINISTRATORS}}} or {{{GLOBAL_MODERATORS}}} to all forum moderators.
+
+==== open questions =====
+
+* Are the phpBB times in {{{phpbb_posts}}} in UTC oder in local time from user?
+* What does {{{POST_GLOBAL}}} in {{{phpbb_topics.topic_type}}} mean?
+* What does {{{ITEM_MOVED}}} in {{{phpbb_topics.topic_status}}} mean?
+
+==== limitations ====
 
 Things that would not be transfered, yet:
 
 * Forum moderators
 * Category groups
 * position in Category / Forum
+* ForumWatch / TopicWatch can't be converted because the models are unsupported
 
+TODOs:
+
+* Attachments
 
 == phpBB3 links ==
 
