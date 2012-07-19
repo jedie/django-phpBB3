@@ -687,76 +687,76 @@ class Group(models.Model):
         # mediumint(8) unsigned
         help_text="primary key"
     )
-    group_type = models.IntegerField(
+    type = models.IntegerField(db_column="group_type",
         # tinyint(4)
         default=1,
     )
-    group_founder_manage = models.PositiveSmallIntegerField(
+    founder_manage = models.PositiveSmallIntegerField(db_column="group_founder_manage",
         # tinyint(1) unsigned
         default=0,
     )
-    group_skip_auth = models.IntegerField()
-    group_name = models.CharField(max_length=255,
+    skip_auth = models.IntegerField(db_column="group_skip_auth")
+    name = models.CharField(max_length=255, db_column="group_name",
         # varchar(255)
     )
-    group_desc = models.TextField(
+    desc = models.TextField(db_column="group_desc",
         # text
     )
-    group_desc_bitfield = models.CharField(max_length=255,
+    desc_bitfield = models.CharField(max_length=255, db_column="group_desc_bitfield",
         # varchar(255)
     )
-    group_desc_options = models.PositiveIntegerField(
+    desc_options = models.PositiveIntegerField(db_column="group_desc_options",
         # int(11) unsigned
         default=7,
     )
-    group_desc_uid = models.CharField(max_length=8,
+    desc_uid = models.CharField(max_length=8, db_column="group_desc_uid",
         # varchar(5)
     )
-    group_display = models.PositiveSmallIntegerField(
+    display = models.PositiveSmallIntegerField(db_column="group_display",
         # tinyint(1) unsigned
         default=0,
     )
-    group_avatar = models.CharField(max_length=255,
+    avatar = models.CharField(max_length=255, db_column="group_avatar",
         # varchar(255)
     )
-    group_avatar_type = models.IntegerField(
+    avatar_type = models.IntegerField(db_column="group_avatar_type",
         # tinyint(4)
         default=0,
     )
-    group_avatar_width = models.IntegerField(
+    avatar_width = models.IntegerField(db_column="group_avatar_width",
         # tinyint(4)
         default=0,
     )
-    group_avatar_height = models.IntegerField(
+    avatar_height = models.IntegerField(db_column="group_avatar_height",
         # tinyint(4)
         default=0,
     )
-    group_rank = models.PositiveIntegerField(
+    rank = models.PositiveIntegerField(db_column="group_rank",
         # mediumint(8) unsigned
         default=0,
     )
-    group_colour = models.CharField(max_length=6,
+    colour = models.CharField(max_length=6, db_column="group_colour",
         # varchar(6)
     )
-    group_sig_chars = models.PositiveIntegerField(
+    sig_chars = models.PositiveIntegerField(db_column="group_sig_chars",
         # mediumint(8) unsigned
         default=0,
     )
-    group_receive_pm = models.PositiveSmallIntegerField(
+    receive_pm = models.PositiveSmallIntegerField(db_column="group_receive_pm",
         # tinyint(1) unsigned
         default=0,
     )
-    group_message_limit = models.PositiveIntegerField(
+    message_limit = models.PositiveIntegerField(db_column="group_message_limit",
         # mediumint(8) unsigned
         default=0,
     )
-    group_max_recipients = models.IntegerField()
-    group_legend = models.PositiveSmallIntegerField(
+    max_recipients = models.IntegerField(db_column="group_max_recipients")
+    legend = models.PositiveSmallIntegerField(db_column="group_legend",
         # tinyint(1) unsigned
         default=1,
     )
     def __unicode__(self):
-            return self.group_name
+        return self.name
     class Meta:
         db_table = u"%sgroups" % settings.PHPBB_TABLE_PREFIX
 
