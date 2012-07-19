@@ -42,6 +42,35 @@ You can startup a test server with, e.g:
 }}}
 
 
+== migrate a phpBB3 installation to DjangoBB ==
+
+**not complete implemented, yet!**
+
+We implement a migration command. To call it run this:
+{{{
+./manage.py phpbb2djangobb
+}}}
+
+=== options ===
+==== cleanup_users ====
+
+Add {{{--cleanup_users=x}}} to setup which users are migrate, where **x** is:
+
+| **0**           | all users
+| **1**           | users with email addresses (skip bots) **default**
+| **2** (default) | users with email and has a 'lastvisit' date
+| **3**           | email + lastvisit and has created at least one post
+
+
+=== limitations ===
+
+Things that would not be transfered, yet:
+
+* Forum moderators
+* Category groups
+* position if Category / Forum
+
+
 == phpBB3 links ==
 
 Here some links for phpBB documentations:
