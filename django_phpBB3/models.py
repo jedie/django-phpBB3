@@ -671,10 +671,15 @@ class Post(models.Model):
         # tinyint(1) unsigned
         default=0,
     )
+    def teaser(self):
+        return u" ".join(self.text.splitlines())[:50] + u"..."
 
     def has_attachment(self):
         return bool(self.attachment)
     has_attachment.boolean = True
+
+    def __unicode__(self):
+        return u"Post %i: %s" % (self.id, self.teaser())
 
     class Meta:
         db_table = u"%sposts" % settings.PHPBB_TABLE_PREFIX
@@ -760,6 +765,92 @@ class Group(models.Model):
         return self.name
     class Meta:
         db_table = u"%sgroups" % settings.PHPBB_TABLE_PREFIX
+
+
+class Attachment(models.Model):
+    """
+    Information on attachments (Post, physical filename, original filename, MIME type...)
+    """
+    id = models.PositiveIntegerField(primary_key=True, db_column="attach_id",
+        # mediumint(8) unsigned
+        help_text="primary key"
+    )
+    # post_msg_id = models.IntegerField()
+    post_msg = models.ForeignKey("Post", blank=True, related_name="+",
+        # mediumint(8) unsigned
+        default=0,
+        help_text="{{fk|posts|post_id}}"
+    )
+    # topic_id = models.IntegerField()
+    topic = models.ForeignKey("Topic", blank=True,
+        # mediumint(8) unsigned
+        default=0,
+        help_text="{{fk|topics|topic_id}}"
+    )
+    in_message = models.PositiveSmallIntegerField(
+        # tinyint(1) unsigned
+        default=0,
+        help_text="1 if attachment is used inside private message, 0 if used inside post"
+    )
+    # poster_id = models.IntegerField()
+    poster = models.ForeignKey("User", blank=True,
+        # mediumint(8) unsigned
+        default=0,
+        help_text="{{fk|users|user_id}}"
+    )
+    is_orphan = models.PositiveSmallIntegerField(
+        # tinyint(1) unsigned
+        default=1,
+        help_text="1 if attachment is unused (user left posting.php without submiting post)"
+    )
+    physical_filename = models.CharField(max_length=255,
+        # varchar(255)
+        help_text="name of the file stored inside the $config['upload_path'] directory"
+    )
+    real_filename = models.CharField(max_length=255,
+        # varchar(255)
+        help_text="name of the file before the user uploaded it"
+    )
+    download_count = models.PositiveIntegerField(
+        # mediumint(8) unsigned
+        default=0,
+        help_text="how many times was this attachment downloaded/viewed"
+    )
+    attach_comment = models.TextField(
+        # text
+        help_text="comment"
+    )
+    extension = models.CharField(max_length=100,
+        # varchar(100)
+        help_text="self explaining"
+    )
+    mimetype = models.CharField(max_length=100,
+        # varchar(100)
+        help_text="[[wikipedia:mime-type|mime-type]]"
+    )
+    filesize = models.PositiveIntegerField(
+        # int(20) unsigned
+        default=0,
+        help_text="file size in bytes"
+    )
+    filetime = models.PositiveIntegerField(
+        # int(11) unsigned
+        default=0,
+        help_text="unix timestamp"
+    )
+    thumbnail = models.PositiveSmallIntegerField(
+        # tinyint(1) unsigned
+        default=0,
+        help_text="has this attachment a thumbnail (1/0)? The thumbnails physical filename is prefixed with thumb_"
+    )
+    def file_datetime(self):
+        return datetime.datetime.fromtimestamp(self.filetime)
+
+    def __unicode__(self):
+        return u"Attachment %i for %s" % (self.id, self.post_msg)
+
+    class Meta:
+        db_table = u"%sattachments" % settings.PHPBB_TABLE_PREFIX
 
 
 #------------------------------------------------------------------------------
@@ -905,84 +996,6 @@ class AclUser(models.Model):
     class Meta:
         db_table = u"%sacl_users" % settings.PHPBB_TABLE_PREFIX
 
-class Attachment(models.Model):
-    """
-    Information on attachments (Post, physical filename, original filename, MIME type...)
-    """
-    id = models.PositiveIntegerField(primary_key=True, db_column="attach_id",
-        # mediumint(8) unsigned
-        help_text="primary key"
-    )
-    # post_msg_id = models.IntegerField()
-    post_msg = models.ForeignKey("Post", blank=True,
-        # mediumint(8) unsigned
-        default=0,
-        help_text="{{fk|posts|post_id}}"
-    )
-    # topic_id = models.IntegerField()
-    topic = models.ForeignKey("Topic", blank=True,
-        # mediumint(8) unsigned
-        default=0,
-        help_text="{{fk|topics|topic_id}}"
-    )
-    in_message = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=0,
-        help_text="1 if attachment is used inside private message, 0 if used inside post"
-    )
-    # poster_id = models.IntegerField()
-    poster = models.ForeignKey("User", blank=True,
-        # mediumint(8) unsigned
-        default=0,
-        help_text="{{fk|users|user_id}}"
-    )
-    is_orphan = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=1,
-        help_text="1 if attachment is unused (user left posting.php without submiting post)"
-    )
-    physical_filename = models.CharField(max_length=255,
-        # varchar(255)
-        help_text="name of the file stored inside the $config['upload_path'] directory"
-    )
-    real_filename = models.CharField(max_length=255,
-        # varchar(255)
-        help_text="name of the file before the user uploaded it"
-    )
-    download_count = models.PositiveIntegerField(
-        # mediumint(8) unsigned
-        default=0,
-        help_text="how many times was this attachment downloaded/viewed"
-    )
-    attach_comment = models.TextField(
-        # text
-        help_text="comment"
-    )
-    extension = models.CharField(max_length=100,
-        # varchar(100)
-        help_text="self explaining"
-    )
-    mimetype = models.CharField(max_length=100,
-        # varchar(100)
-        help_text="[[wikipedia:mime-type|mime-type]]"
-    )
-    filesize = models.PositiveIntegerField(
-        # int(20) unsigned
-        default=0,
-        help_text="file size in bytes"
-    )
-    filetime = models.PositiveIntegerField(
-        # int(11) unsigned
-        default=0,
-        help_text="unix timestamp"
-    )
-    thumbnail = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=0,
-        help_text="has this attachment a thumbnail (1/0)? The thumbnails physical filename is prefixed with thumb_"
-    )
-    class Meta:
-        db_table = u"%sattachments" % settings.PHPBB_TABLE_PREFIX
 
 class Banlist(models.Model):
     """

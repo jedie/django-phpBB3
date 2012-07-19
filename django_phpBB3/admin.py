@@ -54,14 +54,24 @@ class PostAdmin(admin.ModelAdmin):
     """
     Topic posts
     """
-    def first_line(self, obj):
-        return obj.post_text.strip().splitlines()[0]
-    first_line.short_description = _("first line")
-
-    list_display = ('id', "first_line")
+    list_display = ('id', "has_attachment", "teaser")
     list_filter = ("forum", "poster")
-    search_fields = ("post_text",)
+    search_fields = ("text",)
 admin.site.register(Post, PostAdmin)
+
+
+class AttachmentAdmin(admin.ModelAdmin):
+    """
+    Information on attachments (Post, physical filename, original filename, MIME type...)
+    """
+    def teaser(self, obj):
+        return obj.post_msg.teaser()
+    def username(self, obj):
+        return obj.poster.username
+    list_display = ('id', "real_filename", "filesize", "download_count", "username", "file_datetime", "teaser")
+    list_display_links = ("real_filename",)
+    list_filter = ("poster",)
+admin.site.register(Attachment, AttachmentAdmin)
 
 
 class LogAdmin(admin.ModelAdmin):
@@ -117,13 +127,6 @@ class AclUserAdmin(admin.ModelAdmin):
     """
     pass
 admin.site.register(AclUser, AclUserAdmin)
-
-class AttachmentAdmin(admin.ModelAdmin):
-    """
-    Information on attachments (Post, physical filename, original filename, MIME type...)
-    """
-    pass
-admin.site.register(Attachment, AttachmentAdmin)
 
 class BanlistAdmin(admin.ModelAdmin):
     """
