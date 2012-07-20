@@ -312,18 +312,16 @@ class Command(BaseCommand):
             else:
                 updated_by = user_dict[phpbb_post.edit_user]
 
-            obj, created = Post.objects.get_or_create(
+            obj = Post.objects.create(
                 topic=topic,
                 user=user,
-                defaults={
-                    "created": phpbb_post.create_datetime(),
-                    "updated":phpbb_post.updated_datetime(),
-                    "updated_by": updated_by,
-                    "markup": "bbcode",
-                    "body": phpbb_post.text,
-                    #"body_html": html, # would be generated in save()
-                    "user_ip": phpbb_post.poster_ip,
-                }
+                created=phpbb_post.create_datetime(),
+                updated=phpbb_post.updated_datetime(),
+                updated_by=updated_by,
+                markup="bbcode",
+                body=phpbb_post.text,
+                #body_html=html, # would be generated in save()
+                user_ip=phpbb_post.poster_ip,
             )
             post_id_dict[phpbb_post.id] = obj.id
 
