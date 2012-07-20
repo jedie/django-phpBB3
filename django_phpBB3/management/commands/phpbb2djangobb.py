@@ -339,22 +339,25 @@ class Command(BaseCommand):
                 }
             )
 
-            post_id_dict[phpbb_post.id] = obj.id
+            post_id_dict[phpbb_post.id] = obj
 
         self.stdout.write("\n *** %i posts migrated.\n" % count)
         return post_id_dict
 
     def set_last_post(self, post_id_dict, last_post_dict):
-        self.stdout.write("\nTODO!\n")
-#        self.stdout.write("set last post information...\n")
-#
-#        for topic, last_post_id in last_post_dict.items():
-#            last_post_phpbb_id = post_id_dict[last_post_id]
-#            
-#            last_post = 
-#
-#            print "set last post %s to topic %s" % (last_post, topic)
-#
-#            topic.last_post = last_post
-#            topic.save()
+        self.stdout.write("set last post information...\n")
+
+        total = len(last_post_dict)
+        count = 0
+        next_status = time.time() + 0.25
+        for topic, last_post_id in last_post_dict.items():
+            count += 1
+            if time.time() > next_status:
+                self.stdout.write("\r\t%i/%i topics...           " % (count, total))
+                next_status = time.time() + 1
+
+            last_post = post_id_dict[last_post_id]
+            #print "set last post %s to topic %s" % (last_post, topic)
+            topic.last_post = last_post
+            topic.save()
 
