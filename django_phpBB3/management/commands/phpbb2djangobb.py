@@ -166,7 +166,6 @@ class Command(BaseCommand):
                     "icq":phpbb_user.icq,
                     "msn":phpbb_user.msnm,
                     "aim":phpbb_user.aim,
-
                 }
             )
             if created:
@@ -191,13 +190,12 @@ class Command(BaseCommand):
 
         phpbb_forums = phpbb_Forum.objects.all()
 
-        # Create Categories
+        # Create categories
         category_dict = {}
         forum_dict = {}
         for phpbb_forum in phpbb_forums:
             #print phpbb_forum
             try:
-                # XXX: We can also use "forum_type"
                 phpbb_forum.parent
             except phpbb_Forum.DoesNotExist:
                 # has no parent -> is a Category
@@ -208,8 +206,7 @@ class Command(BaseCommand):
                 # Has parent -> no Category
                 continue
 
-
-        # Create Categories
+        # Create forums and categories for a sub forum
         for phpbb_forum in phpbb_forums:
             #print phpbb_forum
             try:
@@ -219,9 +216,11 @@ class Command(BaseCommand):
                 # has no parent -> is a Category
                 # skip, was created above
                 continue
+
             try:
                 category = category_dict[parent.id]
-            except KeyError as err:
+            except KeyError:
+                # Create a new category for sub-forum
                 parent = phpbb_Forum.objects.get(pk=parent.id)
                 category = self.get_or_create_category(parent)
                 category_dict[parent.id] = category
@@ -276,8 +275,8 @@ class Command(BaseCommand):
             forum = forum_dict[topic.forum.id]
 
             if topic.type in (1, 2, 3):
-                # POST_NORMAL(0), POST_STICKY(1), POST_ANNOUNCE(2) or POST_GLOBAL(3)
-                # POST_GLOBAL not supported by DjangoBB
+                # convert sticky, announce and global post to sticky
+                # 0 == NORMAL, 1 == STICKY, 2 == ANNOUNCE, 3 == GLOBAL
                 sticky = True
             else:
                 sticky = False
@@ -295,27 +294,6 @@ class Command(BaseCommand):
                 post_count=topic.replies_real,
                 last_post=None, # will be set in migrate_posts()
             )
-
-#            obj, created = Topic.objects.get_or_create(
-#                forum=forum,
-#                user=user,
-#                name=topic.title,
-#                defaults={
-#                    "created": topic.create_datetime(),
-#                    "updated": topic.last_post_datetime(),
-#                    "views": topic.views,
-#                    "sticky": sticky,
-#                    "closed": topic.locked(),
-#                    #"subscribers":, # FIXME: ForumWatch / TopicWatch models are unsupported
-#                    "post_count": topic.replies_real,
-#                    "last_post": None, # will be set in migrate_posts()
-#                }
-#            )
-#            if created:
-#                self.stdout.write("\tTopic '%s' created.\n" % obj)
-#            else:
-#                self.stdout.write("\tTopic '%s' exists.\n" % obj)
-
             topic_dict[topic.id] = obj
 
         duration = time.time() - start_time
