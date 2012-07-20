@@ -692,6 +692,12 @@ class Post(models.Model):
         db_table = u"%sposts" % settings.PHPBB_TABLE_PREFIX
 
 
+
+# for Topic.status:
+TOPIC_UNLOCKED = 0
+TOPIC_LOCKED = 1
+TOPIC_MOVED = 2
+
 class Topic(models.Model):
     """
     Topic in forums
@@ -765,7 +771,7 @@ class Topic(models.Model):
     status = models.IntegerField(db_column="topic_status",
         # tinyint(3)
         default=0,
-        help_text="[[Constants|ITEM_UNLOCKED]](0), ITEM_LOCKED(1) or ITEM_MOVED(2)"
+        help_text="0 == UNLOCKED, 1 == LOCKED or 2 == MOVED"
     )
     type = models.IntegerField(db_column="topic_type",
         # tinyint(3)
@@ -865,6 +871,14 @@ class Topic(models.Model):
         default=0,
         help_text="Are users allowed to change their vote(s)? 1 (yes), 0(no)"
     )
+
+    def moved(self):
+        return self.status == TOPIC_MOVED
+    moved.boolean = True
+    def locked(self):
+        return self.status == TOPIC_LOCKED
+    locked.boolean = True
+
     def create_datetime(self):
         return datetime.datetime.fromtimestamp(self.time)
     def last_post_datetime(self):

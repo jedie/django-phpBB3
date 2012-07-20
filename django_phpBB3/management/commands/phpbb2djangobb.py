@@ -242,22 +242,19 @@ class Command(BaseCommand):
                 self.stdout.write("\r\t%i/%i topics migrated...          " % (count, total))
                 next_status = time.time() + 1
 
+            if topic.moved():
+                # skip moved topics -> DjangoBB doesn't support them
+                continue
+
             user = user_dict[topic.poster.id]
             forum = forum_dict[topic.forum.id]
 
             if topic.type in (1, 2):
                 # POST_NORMAL(0), POST_STICKY(1), POST_ANNOUNCE(2) or POST_GLOBAL(3)
-                # FIXME: what is POST_GLOBAL ?
+                # POST_GLOBAL not supported by DjangoBB
                 sticky = True
             else:
                 sticky = False
-
-            if topic.status == 1:
-                # ITEM_UNLOCKED(0), ITEM_LOCKED(1) or ITEM_MOVED(2)
-                # FIXME: What is ITEM_MOVED ?
-                closed = True
-            else:
-                closed = False
 
             obj, created = Topic.objects.get_or_create(
                 forum=forum,
@@ -268,7 +265,7 @@ class Command(BaseCommand):
                     #"updated":,
                     "views": topic.views,
                     "sticky": sticky,
-                    "closed": closed,
+                    "closed": topic.locked(),
                     #"subscribers":, # FIXME: ForumWatch / TopicWatch models are unsupported
                     "post_count": topic.replies_real,
                     "last_post": None, # will be set in migrate_posts()
