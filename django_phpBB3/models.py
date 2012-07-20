@@ -19,6 +19,23 @@ from django.conf import settings
 from django.utils.tzinfo import FixedOffset
 
 
+def timestamp2datetime(timestamp, timezone=None):
+    """
+    convert the phpBB timestamp into a datetime with tzinfo
+    FIXME: Don't know if timezone handling is correct
+    """
+    if timestamp == 0:
+        return None
+
+    if timezone is None:
+        tzinfo = FixedOffset(0)
+    else:
+        offset_minutes = int(timezone) * 60
+        tzinfo = FixedOffset(offset_minutes)
+
+    return datetime.datetime.fromtimestamp(timestamp, tzinfo)
+
+
 class PhpBBForeignKey(models.ForeignKey):
     """
     phpBB stores a None ForeignKey as a numeric 0
@@ -377,21 +394,15 @@ class User(models.Model):
     reminded = models.IntegerField(db_column="user_reminded",)
     reminded_time = models.IntegerField(db_column="user_reminded_time",)
 
-    def timestamp2datetime(self, timestamp):
-        if timestamp == 0:
-            return None
-        # XXX: Don't know if this convert is right:
-        offset_minutes = int(self.timezone) * 60
-        tzinfo = FixedOffset(offset_minutes)
-        return datetime.datetime.fromtimestamp(timestamp, tzinfo)
-
     def registration_datetime(self):
-        return self.timestamp2datetime(self.regdate)
+        return timestamp2datetime(self.regdate, self.timezone)
+
     def lastvisit_datetime(self):
-        return self.timestamp2datetime(self.lastvisit)
+        return timestamp2datetime(self.lastvisit, self.timezone)
 
     def __unicode__(self):
         return self.username
+
     class Meta:
         db_table = u"%susers" % settings.PHPBB_TABLE_PREFIX
         ordering = ['-posts']
@@ -672,11 +683,12 @@ class Post(models.Model):
         default=0,
     )
     def create_datetime(self):
-        # FIXME: UTC or local time from user???
-        return datetime.datetime.fromtimestamp(self.time)
+        # FIXME: UTC or local time from user???        
+        return timestamp2datetime(self.time, timezone=None)
+
     def update_datetime(self):
         # FIXME: UTC or local time from user???
-        return datetime.datetime.fromtimestamp(self.edit_time)
+        return timestamp2datetime(self.edit_time, timezone=None)
 
     def teaser(self):
         return u" ".join(self.text.splitlines())[:50] + u"..."
