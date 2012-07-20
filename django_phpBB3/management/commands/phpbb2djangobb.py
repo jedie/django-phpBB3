@@ -16,7 +16,7 @@ if __name__ == "__main__":
     os.environ["DJANGO_SETTINGS_MODULE"] = "django_phpBB3_project.settings"
     from django.core import management
     management.call_command("phpbb2djangobb",
-#        clear_tables=True,
+        clear_tables=True,
         cleanup_users=3
     )
     sys.exit()
@@ -304,17 +304,19 @@ class Command(BaseCommand):
             topic = topic_dict[phpbb_post.topic.id]
             user = user_dict[phpbb_post.poster.id]
 
-            if phpbb_post.edit_user == 0:
-                updated_by = None
-            else:
+            if phpbb_post.edit_user > 0 and phpbb_post.edit_time > 0:
+                updated = phpbb_post.update_datetime()
                 updated_by = user_dict[phpbb_post.edit_user]
+            else:
+                updated = None
+                updated_by = None
 
             obj, created = Post.objects.get_or_create(
                 topic=topic,
                 user=user,
                 defaults={
                     "created": phpbb_post.create_datetime(),
-                    "updated":phpbb_post.update_datetime(),
+                    "updated": updated,
                     "updated_by": updated_by,
                     "markup": "bbcode",
                     "body": phpbb_post.text,
