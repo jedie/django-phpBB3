@@ -159,6 +159,16 @@ class Command(BaseCommand):
 
         return user_dict, moderators
 
+    def get_or_create_category(self, phpbb_forum):
+        obj, created = Category.objects.get_or_create(
+            name=phpbb_forum.forum_name
+        )
+        if created:
+            self.stdout.write("\tCategory '%s' created.\n" % obj)
+        else:
+            self.stdout.write("\tCategory '%s' exists.\n" % obj)
+        return obj
+
     def migrate_forums(self, moderators):
         self.stdout.write("Migrate phpbb_forum entries...\n")
 
@@ -175,14 +185,8 @@ class Command(BaseCommand):
             except phpbb_Forum.DoesNotExist:
                 # has no parent -> is a Category
                 # phpbb_forum.parent == 0 and a db item with ID 0 doesn't exist
-                obj, created = Category.objects.get_or_create(
-                    name=phpbb_forum.forum_name
-                )
-                if created:
-                    self.stdout.write("\tCategory '%s' created.\n" % obj)
-                else:
-                    self.stdout.write("\tCategory '%s' exists.\n" % obj)
-                category_dict[phpbb_forum.id] = obj
+                category = self.get_or_create_category(phpbb_forum)
+                category_dict[phpbb_forum.id] = category
             else:
                 # Has parent -> no Categorie
                 continue
@@ -198,8 +202,12 @@ class Command(BaseCommand):
                 # has no parent -> is a Category
                 # skip, was created above
                 continue
-
-            category = category_dict[parent.id]
+            try:
+                category = category_dict[parent.id]
+            except KeyError as err:
+                parent = phpbb_Forum.objects.get(pk=parent.id)
+                category = self.get_or_create_category(parent)
+                category_dict[parent.id] = category
 
             obj, created = Forum.objects.get_or_create(
                 name=phpbb_forum.forum_name,
@@ -225,6 +233,7 @@ class Command(BaseCommand):
             self.stdout.write("\t - moderators: %s\n" % obj.moderators.all())
 
         return forum_dict
+
 
 
     def migrate_topic(self, user_dict, forum_dict):
