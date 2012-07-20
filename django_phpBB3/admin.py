@@ -32,6 +32,7 @@ class UserAdmin(admin.ModelAdmin):
     """
     Registered users
     """
+    #test
     list_display = (
         'id', 'username', 'registration_datetime', 'posts',
         'lastvisit_datetime', 'email'
