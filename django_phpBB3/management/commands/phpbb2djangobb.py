@@ -26,11 +26,13 @@ from optparse import make_option
 import datetime
 import time
 
+from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandError
 
 from postmarkup import render_bbcode
 from djangobb_forum.models import Category, Forum, Profile, TZ_CHOICES, Post, Topic
+from djangobb_forum import signals as djangobb_signals
 
 from django_phpBB3.models import Forum as phpbb_Forum
 from django_phpBB3.models import Topic as phpbb_Topic
@@ -68,6 +70,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
+        # disable DjangoBB signals for speedup
+        post_save.disconnect(djangobb_signals.post_saved, sender=Post, dispatch_uid='djangobb_post_save')
+        post_save.disconnect(djangobb_signals.topic_saved, sender=Topic, dispatch_uid='djangobb_topic_save')
+
         #disable_auto_fields(Forum)
         disable_auto_fields(Topic)
         disable_auto_fields(Post)
@@ -80,10 +86,12 @@ class Command(BaseCommand):
 
         forum_dict = self.migrate_forums(moderators)
 
-        topic_dict, last_post_dict = self.migrate_topic(user_dict, forum_dict)
-        post_id_dict = self.migrate_posts(user_dict, topic_dict, last_post_dict)
+        topic_dict = self.migrate_topic(user_dict, forum_dict)
+        self.migrate_posts(user_dict, topic_dict)
 
-        self.set_last_post(post_id_dict, last_post_dict)
+        # needed if signals disabled, see above
+        self.update_topic_stats()
+        self.update_forum_stats()
 
         self.stdout.write("\nmigration done.\n")
 
@@ -244,12 +252,12 @@ class Command(BaseCommand):
     def migrate_topic(self, user_dict, forum_dict):
         self.stdout.write("Migrate phpBB topic entries...\n")
 
-        last_post_dict = {}
         topic_dict = {}
         topics = phpbb_Topic.objects.all().order_by("time")
         total = topics.count()
         count = 0
-        next_status = time.time() + 0.25
+        start_time = time.time()
+        next_status = start_time + 0.25
         for topic in topics:
             count += 1
             if time.time() > next_status:
@@ -290,22 +298,21 @@ class Command(BaseCommand):
 #            else:
 #                self.stdout.write("\tTopic '%s' exists.\n" % obj)
 
-            last_post_dict[obj] = topic.last_post.id
             topic_dict[topic.id] = obj
 
-        self.stdout.write("\n *** %i topics migrated.\n" % count)
-        return topic_dict, last_post_dict
+        duration = time.time() - start_time
+        self.stdout.write("\n *** %i topics migrated in %isec.\n" % (count, duration))
+        return topic_dict
 
 
-    def migrate_posts(self, user_dict, topic_dict, last_post_dict):
+    def migrate_posts(self, user_dict, topic_dict):
         self.stdout.write("Migrate phpBB posts entries...\n")
-
-        post_id_dict = {}
 
         posts = phpbb_Post.objects.all().order_by("time")
         total = posts.count()
         count = 0
-        next_status = time.time() + 0.25
+        start_time = time.time()
+        next_status = start_time + 0.25
         for phpbb_post in posts:
             count += 1
             if time.time() > next_status:
@@ -339,25 +346,55 @@ class Command(BaseCommand):
                 }
             )
 
-            post_id_dict[phpbb_post.id] = obj
+        duration = time.time() - start_time
+        self.stdout.write("\n *** %i posts migrated in %isec.\n" % (count, duration))
 
-        self.stdout.write("\n *** %i posts migrated.\n" % count)
-        return post_id_dict
 
-    def set_last_post(self, post_id_dict, last_post_dict):
-        self.stdout.write("set last post information...\n")
+    def update_topic_stats(self):
+        self.stdout.write("set topic stats...\n")
 
-        total = len(last_post_dict)
-        count = 0
+        topics = Topic.objects.all()
+        total = topics.count()
+        start_time = time.time()
         next_status = time.time() + 0.25
-        for topic, last_post_id in last_post_dict.items():
-            count += 1
+        for count, topic in enumerate(topics):
             if time.time() > next_status:
                 self.stdout.write("\r\t%i/%i topics...           " % (count, total))
                 next_status = time.time() + 1
 
-            last_post = post_id_dict[last_post_id]
-            #print "set last post %s to topic %s" % (last_post, topic)
-            topic.last_post = last_post
+            queryset = Post.objects.only("created", "updated").filter(topic=topic)
+            topic.post_count = queryset.count()
+            try:
+                last_post = queryset.latest("updated")
+            except Post.DoesNotExist:
+                # there is no post in this forum
+                pass
+            else:
+                topic.last_post = last_post
+                if last_post.updated:
+                    topic.updated = last_post.updated
+                else:
+                    topic.updated = last_post.created
             topic.save()
 
+        duration = time.time() - start_time
+        self.stdout.write("\n *** %i topic stats set in %isec.\n" % (count, duration))
+
+
+    def update_forum_stats(self):
+        self.stdout.write("set forum stats...\n")
+
+        for forum in Forum.objects.all():
+            self.stdout.write("\tset stats for %s\n" % forum)
+            queryset = Post.objects.all().filter(topic__forum=forum)
+            forum.post_count = queryset.count()
+            try:
+                forum.last_post = queryset.latest("updated")
+            except Post.DoesNotExist:
+                # there is no post in this forum
+                pass
+
+            queryset = Topic.objects.all().filter(forum=forum)
+            forum.topic_count = queryset.count()
+
+            forum.save()
