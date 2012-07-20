@@ -252,9 +252,10 @@ class Command(BaseCommand):
             else:
                 sticky = False
 
-            if topic.status == 1:
+            if topic.status == 2: #DjangoBB does not have the post moved feature.
                 # ITEM_UNLOCKED(0), ITEM_LOCKED(1) or ITEM_MOVED(2)
-                # FIXME: What is ITEM_MOVED ?
+                continue
+            elif topic.status == 1:
                 closed = True
             else:
                 closed = False
