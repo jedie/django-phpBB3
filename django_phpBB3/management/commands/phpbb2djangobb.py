@@ -8,8 +8,7 @@
     :copyleft: 2012 by the django-phpBB3 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
-import datetime
-import time
+
 if __name__ == "__main__":
     import os
     import sys
@@ -24,6 +23,8 @@ if __name__ == "__main__":
     sys.exit()
 
 from optparse import make_option
+import datetime
+import time
 
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandError
@@ -192,7 +193,7 @@ class Command(BaseCommand):
                 category = self.get_or_create_category(phpbb_forum)
                 category_dict[phpbb_forum.id] = category
             else:
-                # Has parent -> no Categorie
+                # Has parent -> no Category
                 continue
 
 
