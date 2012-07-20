@@ -159,6 +159,8 @@ class Command(BaseCommand):
                     "site": phpbb_user.website,
                     "signature": phpbb_user.sig,
                     #"signature_html": phpbb_user.sig,
+                    "post_count": phpbb_user.posts,
+                    "yahoo": phpbb_user.yim,
 
                     "time_zone": tz,
 
