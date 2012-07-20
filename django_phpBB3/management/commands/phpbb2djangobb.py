@@ -15,8 +15,10 @@ if __name__ == "__main__":
     import sys
     os.environ["DJANGO_SETTINGS_MODULE"] = "django_phpBB3_project.settings"
     from django.core import management
+    print "reset 'djangobb_forum'...",
+    management.call_command("reset", "djangobb_forum", interactive=False)
+    print "OK"
     management.call_command("phpbb2djangobb",
-        clear_tables=True,
         cleanup_users=3
     )
     sys.exit()
@@ -53,12 +55,6 @@ def disable_auto_fields(model_class):
 class Command(BaseCommand):
     help = 'migrate a phpBB3 installation to DjangoBB'
     option_list = BaseCommand.option_list + (
-        make_option('--clear_tables',
-            action='store_true',
-            dest='clear_tables',
-            default=False,
-            help='Delete all DjangoBB entries before migrate. WARNING: Made a backup of existing data!'
-        ),
         make_option('--cleanup_users',
             action='store',
             dest='cleanup_users',
@@ -70,9 +66,6 @@ class Command(BaseCommand):
     )
 
     def handle(self, *args, **options):
-        clear_tables = options.get("clear_tables")
-        if clear_tables:
-            self.clear_tables()
 
         #disable_auto_fields(Forum)
         disable_auto_fields(Topic)
@@ -92,13 +85,6 @@ class Command(BaseCommand):
         self.set_last_post(post_id_dict, last_post_dict)
 
         self.stdout.write("\nmigration done.\n")
-
-    def clear_tables(self):
-        self.stdout.write("Delete all DjangoBB entries...\n")
-        Category.objects.all().delete()
-        Forum.objects.all().delete()
-        Profile.objects.all().delete()
-        #User.objects.all().exclude(username="test").delete()
 
     def migrate_users(self, cleanup_users, moderator_groups):
         self.stdout.write("Migrate phpbb_forum users...\n")
