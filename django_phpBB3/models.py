@@ -573,6 +573,10 @@ class Forum(models.Model):
         # tinyint(4)
         default=0,
     )
+    def last_post_datetime(self):
+        # FIXME: UTC or local time from user???        
+        return timestamp2datetime(self.forum_last_post_time, timezone=None)
+
     def __unicode__(self):
         return self.forum_name
     class Meta:
@@ -892,11 +896,11 @@ class Topic(models.Model):
     locked.boolean = True
 
     def create_datetime(self):
-        return datetime.datetime.fromtimestamp(self.time)
+        return timestamp2datetime(self.time)
     def last_post_datetime(self):
-        return datetime.datetime.fromtimestamp(self.last_post_time)
+        return timestamp2datetime(self.last_post_time)
     def last_view_datetime(self):
-        return datetime.datetime.fromtimestamp(self.last_view_time)
+        return timestamp2datetime(self.last_view_time)
 
     def __unicode__(self):
         return self.title

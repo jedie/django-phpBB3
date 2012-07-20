@@ -36,6 +36,20 @@ from django_phpBB3.models import User as phpbb_User
 from django_phpBB3.models import Post as phpbb_Post
 
 
+def disable_auto_fields(model_class):
+    """
+    Hack: It's needed to disable "auto_now_add" to set a old datetime
+    
+    see also: http://stackoverflow.com/questions/7499767/temporarily-disable-auto-now-auto-now-add
+    """
+    ATTR_NAMES = ("auto_now", "auto_now_add")
+    for field in model_class._meta.local_fields:
+        for attr_name in ATTR_NAMES:
+            if getattr(field, attr_name, False) == True:
+                print "Disable '%s' on field %s.%s" % (attr_name, model_class.__name__, field.name)
+                setattr(field, attr_name, False)
+
+
 class Command(BaseCommand):
     help = 'migrate a phpBB3 installation to DjangoBB'
     option_list = BaseCommand.option_list + (
@@ -59,6 +73,10 @@ class Command(BaseCommand):
         clear_tables = options.get("clear_tables")
         if clear_tables:
             self.clear_tables()
+
+        #disable_auto_fields(Forum)
+        disable_auto_fields(Topic)
+        disable_auto_fields(Post)
 
         cleanup_users = int(options.get("cleanup_users"))
         moderator_groups = phpbb_Group.objects.filter(
@@ -206,6 +224,7 @@ class Command(BaseCommand):
                 defaults={
                     "category":category,
                     "description":phpbb_forum.forum_desc,
+                    #"updated": phpbb_forum.last_post_datetime(),
                     #    position
                     #    post_count
                     #    topic_count
@@ -262,7 +281,7 @@ class Command(BaseCommand):
                 name=topic.title,
                 defaults={
                     "created": topic.create_datetime(),
-                    #"updated":,
+                    "updated": topic.last_post_datetime(),
                     "views": topic.views,
                     "sticky": sticky,
                     "closed": topic.locked(),
@@ -324,6 +343,7 @@ class Command(BaseCommand):
                     "user_ip": phpbb_post.poster_ip,
                 }
             )
+
             post_id_dict[phpbb_post.id] = obj.id
 
         self.stdout.write("\n *** %i posts migrated.\n" % count)
