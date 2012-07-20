@@ -335,7 +335,7 @@ class Command(BaseCommand):
                 updated=updated,
                 updated_by=updated_by,
                 markup="bbcode",
-                body=phpbb_post.text,
+                body=phpbb_post.get_cleaned_bbcode(),
                 #body_html=html, # would be generated in save()
                 user_ip=phpbb_post.poster_ip,
             )
