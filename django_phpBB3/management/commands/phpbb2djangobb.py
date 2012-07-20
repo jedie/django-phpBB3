@@ -70,6 +70,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
+#        self.update_topic_stats()
+#        self.update_forum_stats()
+#        sys.exit()
+
         # disable DjangoBB signals for speedup
         post_save.disconnect(djangobb_signals.post_saved, sender=Post, dispatch_uid='djangobb_post_save')
         post_save.disconnect(djangobb_signals.topic_saved, sender=Topic, dispatch_uid='djangobb_topic_save')
@@ -278,21 +282,35 @@ class Command(BaseCommand):
             else:
                 sticky = False
 
-            obj, created = Topic.objects.get_or_create(
+            obj = Topic.objects.create(
                 forum=forum,
                 user=user,
                 name=topic.title,
-                defaults={
-                    "created": topic.create_datetime(),
-                    "updated": topic.last_post_datetime(),
-                    "views": topic.views,
-                    "sticky": sticky,
-                    "closed": topic.locked(),
-                    #"subscribers":, # FIXME: ForumWatch / TopicWatch models are unsupported
-                    "post_count": topic.replies_real,
-                    "last_post": None, # will be set in migrate_posts()
-                }
+                created=topic.create_datetime(),
+                updated=topic.last_post_datetime(),
+                views=topic.views,
+                sticky=sticky,
+                closed=topic.locked(),
+                #subscribers=, # FIXME: ForumWatch / TopicWatch models are unsupported
+                post_count=topic.replies_real,
+                last_post=None, # will be set in migrate_posts()
             )
+
+#            obj, created = Topic.objects.get_or_create(
+#                forum=forum,
+#                user=user,
+#                name=topic.title,
+#                defaults={
+#                    "created": topic.create_datetime(),
+#                    "updated": topic.last_post_datetime(),
+#                    "views": topic.views,
+#                    "sticky": sticky,
+#                    "closed": topic.locked(),
+#                    #"subscribers":, # FIXME: ForumWatch / TopicWatch models are unsupported
+#                    "post_count": topic.replies_real,
+#                    "last_post": None, # will be set in migrate_posts()
+#                }
+#            )
 #            if created:
 #                self.stdout.write("\tTopic '%s' created.\n" % obj)
 #            else:
@@ -332,18 +350,16 @@ class Command(BaseCommand):
                 updated = None
                 updated_by = None
 
-            obj, created = Post.objects.get_or_create(
+            Post.objects.create(
                 topic=topic,
                 user=user,
-                defaults={
-                    "created": phpbb_post.create_datetime(),
-                    "updated": updated,
-                    "updated_by": updated_by,
-                    "markup": "bbcode",
-                    "body": phpbb_post.text,
-                    #"body_html": html, # would be generated in save()
-                    "user_ip": phpbb_post.poster_ip,
-                }
+                created=phpbb_post.create_datetime(),
+                updated=updated,
+                updated_by=updated_by,
+                markup="bbcode",
+                body=phpbb_post.text,
+                #body_html=html, # would be generated in save()
+                user_ip=phpbb_post.poster_ip,
             )
 
         duration = time.time() - start_time
