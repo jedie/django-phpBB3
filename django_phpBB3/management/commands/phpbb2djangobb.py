@@ -317,7 +317,7 @@ class Command(BaseCommand):
                 user=user,
                 defaults={
                     "created": phpbb_post.create_datetime(),
-                    "updated":phpbb_post.updated_datetime(),
+                    "updated":phpbb_post.update_datetime(),
                     "updated_by": updated_by,
                     "markup": "bbcode",
                     "body": phpbb_post.text,

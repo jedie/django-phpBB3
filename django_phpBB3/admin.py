@@ -71,7 +71,7 @@ class PostAdmin(admin.ModelAdmin):
         return obj.poster.username
     poster_username.short_description = "username"
 
-    list_display = ('id', "poster_username", "has_attachment", "datetime", "teaser")
+    list_display = ('id', "poster_username", "has_attachment", "create_datetime", "update_datetime", "teaser")
     list_filter = ("forum", "poster")
     search_fields = ("text",)
 admin.site.register(Post, PostAdmin)

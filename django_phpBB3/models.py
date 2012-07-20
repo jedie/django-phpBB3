@@ -674,7 +674,7 @@ class Post(models.Model):
     def create_datetime(self):
         # FIXME: UTC or local time from user???
         return datetime.datetime.fromtimestamp(self.time)
-    def updated_datetime(self):
+    def update_datetime(self):
         # FIXME: UTC or local time from user???
         return datetime.datetime.fromtimestamp(self.edit_time)
 
