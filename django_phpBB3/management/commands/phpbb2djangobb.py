@@ -263,7 +263,7 @@ class Command(BaseCommand):
             user = user_dict[topic.poster.id]
             forum = forum_dict[topic.forum.id]
 
-            if topic.type in (1, 2):
+            if topic.type in (1, 2, 3):
                 # POST_NORMAL(0), POST_STICKY(1), POST_ANNOUNCE(2) or POST_GLOBAL(3)
                 # POST_GLOBAL not supported by DjangoBB
                 sticky = True
