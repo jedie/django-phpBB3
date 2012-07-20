@@ -13,7 +13,6 @@
 """
 
 import datetime
-import re
 
 from django.db import models
 from django.conf import settings
@@ -701,24 +700,6 @@ class Post(models.Model):
     def has_attachment(self):
         return bool(self.attachment)
     has_attachment.boolean = True
-
-    def get_cleaned_bbcode(self):
-        text = self.text
-        replace_list = [('&#58;', ':'), ('&#46;', '.'), ('&quot;', ''), ]
-        if self.bbcode_bitfield:
-            replace_list += [(':' + self.bbcode_uid, ''), ] #('quote=&quot;', 'quote='), ('&quot;:' + self.bbcode_uid, ''),
-        for word, replace_by in replace_list:
-            text = text.replace(word, replace_by)
-        return self.phpbb_html2bbcode(text)
-
-    def phpbb_html2bbcode(self, text):
-        email_pattern = (r'<!-- e --><a href="([^"]*)">(.*?)</a><!-- e -->', r' [url=\1]\2[/url] ')
-        emoticon_pattern = (r'<!-- s.*alt="([^"]*)".* s\1 -->', r' \1 ')
-        url_pattern = (r'<!-- m --><a class="postlink" href="([^"]*)">(.*?)</a><!-- m -->', r' [url=\1]\2[/url] ')
-        replace_list = [email_pattern, emoticon_pattern, url_pattern]
-        for pattern, replace_by in replace_list:
-            text = re.sub(pattern, replace_by, text, re.S)
-        return text
 
     def __unicode__(self):
         return u"Post %i: %s" % (self.id, self.teaser())
