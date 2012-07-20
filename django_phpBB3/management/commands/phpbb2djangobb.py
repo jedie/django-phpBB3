@@ -312,16 +312,18 @@ class Command(BaseCommand):
             else:
                 updated_by = user_dict[phpbb_post.edit_user]
 
-            obj = Post.objects.create(
+            obj, created = Post.objects.get_or_create(
                 topic=topic,
                 user=user,
-                created=phpbb_post.create_datetime(),
-                updated=phpbb_post.updated_datetime(),
-                updated_by=updated_by,
-                markup="bbcode",
-                body=phpbb_post.text,
-                #body_html=html, # would be generated in save()
-                user_ip=phpbb_post.poster_ip,
+                defaults={
+                    "created": phpbb_post.create_datetime(),
+                    "updated":phpbb_post.updated_datetime(),
+                    "updated_by": updated_by,
+                    "markup": "bbcode",
+                    "body": phpbb_post.text,
+                    #"body_html": html, # would be generated in save()
+                    "user_ip": phpbb_post.poster_ip,
+                    }
             )
             post_id_dict[phpbb_post.id] = obj.id
 
@@ -334,11 +336,10 @@ class Command(BaseCommand):
 #
 #        for topic, last_post_id in last_post_dict.items():
 #            last_post_phpbb_id = post_id_dict[last_post_id]
-#            
-#            last_post = 
+#
+#            last_post =
 #
 #            print "set last post %s to topic %s" % (last_post, topic)
 #
 #            topic.last_post = last_post
 #            topic.save()
-
