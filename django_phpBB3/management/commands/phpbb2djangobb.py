@@ -100,7 +100,7 @@ class Command(BaseCommand):
         self.stdout.write("\nmigration done.\n")
 
     def migrate_users(self, cleanup_users, moderator_groups):
-        self.stdout.write("Migrate phpbb_forum users...\n")
+        self.stdout.write("\n *** Migrate phpbb_forum users...\n")
 
         moderators = []
         user_dict = {}
@@ -186,7 +186,7 @@ class Command(BaseCommand):
         return obj
 
     def migrate_forums(self, moderators):
-        self.stdout.write("Migrate phpbb_forum entries...\n")
+        self.stdout.write("\n *** Migrate phpbb_forum entries...\n")
 
         phpbb_forums = phpbb_Forum.objects.all()
 
@@ -230,11 +230,11 @@ class Command(BaseCommand):
                 defaults={
                     "category":category,
                     "description":phpbb_forum.forum_desc,
-                    #"updated": phpbb_forum.last_post_datetime(),
-                    #    position
-                    #    post_count
-                    #    topic_count
-                    #    last_post
+
+                    # TODO: set 'position' by flattern the btree
+
+                    # These attributes would be set later in update_forum_stats():
+                    # post_count, last_post, topic_count
                 }
             )
             if created:
@@ -253,7 +253,7 @@ class Command(BaseCommand):
 
 
     def migrate_topic(self, user_dict, forum_dict):
-        self.stdout.write("Migrate phpBB topic entries...\n")
+        self.stdout.write("\n *** Migrate phpBB topic entries...\n")
 
         topic_dict = {}
         topics = phpbb_Topic.objects.all().order_by("time")
@@ -286,13 +286,13 @@ class Command(BaseCommand):
                 user=user,
                 name=topic.title,
                 created=topic.create_datetime(),
-                updated=topic.last_post_datetime(),
                 views=topic.views,
                 sticky=sticky,
                 closed=topic.locked(),
                 #subscribers=, # FIXME: ForumWatch / TopicWatch models are unsupported
-                post_count=topic.replies_real,
-                last_post=None, # will be set in migrate_posts()
+
+                # These attributes would be set later in update_topic_stats():
+                # updated, post_count, last_post
             )
             topic_dict[topic.id] = obj
 
@@ -302,7 +302,7 @@ class Command(BaseCommand):
 
 
     def migrate_posts(self, user_dict, topic_dict):
-        self.stdout.write("Migrate phpBB posts entries...\n")
+        self.stdout.write("\n *** Migrate phpBB posts entries...\n")
 
         posts = phpbb_Post.objects.all().order_by("time")
         total = posts.count()
@@ -345,7 +345,7 @@ class Command(BaseCommand):
 
 
     def update_topic_stats(self):
-        self.stdout.write("set topic stats...\n")
+        self.stdout.write("\n *** set topic stats...\n")
 
         topics = Topic.objects.all()
         total = topics.count()
@@ -376,7 +376,7 @@ class Command(BaseCommand):
 
 
     def update_forum_stats(self):
-        self.stdout.write("set forum stats...\n")
+        self.stdout.write("\n *** set forum stats...\n")
 
         for forum in Forum.objects.all():
             self.stdout.write("\tset stats for %s\n" % forum)
