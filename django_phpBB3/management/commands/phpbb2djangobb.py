@@ -385,7 +385,7 @@ class Command(BaseCommand):
             queryset = Post.objects.all().filter(topic__forum=forum)
             forum.post_count = queryset.count()
             try:
-                forum.last_post = queryset.latest("updated")
+                forum.last_post = queryset.latest("created")
             except Post.DoesNotExist:
                 # there is no post in this forum
                 pass
