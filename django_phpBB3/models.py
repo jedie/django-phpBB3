@@ -713,7 +713,7 @@ class Post(models.Model):
 
     def phpbb_html2bbcode(self, text):
         email_pattern = (r'<!-- e --><a href="([^"]*)">(.*?)</a><!-- e -->', r' [url=\1]\2[/url] ')
-        emoticon_pattern = (r'<!-- s.*alt="([^"]*)".* s\1 -->', r' \1 ')
+        emoticon_pattern = (r'<!-- s.*?alt="([^"]*)".*? s\1 -->', r' \1 ')
         url_pattern = (r'<!-- m --><a class="postlink" href="([^"]*)">(.*?)</a><!-- m -->', r' [url=\1]\2[/url] ')
         replace_list = [email_pattern, emoticon_pattern, url_pattern]
         for pattern, replace_by in replace_list:
