@@ -14,13 +14,13 @@
 
 import datetime
 import re
-from django_phpBB3.utils import clean_bbcode
-
 
 
 from django.db import models
 from django.conf import settings
 from django.utils.tzinfo import FixedOffset
+
+from django_phpBB3.utils import clean_bbcode, deentity
 
 
 def timestamp2datetime(timestamp, timezone=None):
@@ -733,7 +733,7 @@ class Topic(models.Model):
     """
     Topic in forums
     """
-    id = models.PositiveIntegerField(primary_key=True, db_column="topic_id",
+    id = models.AutoField(primary_key=True, db_column="topic_id",
         # mediumint(8) unsigned
         help_text="Primary key"
     )
@@ -902,6 +902,9 @@ class Topic(models.Model):
         default=0,
         help_text="Are users allowed to change their vote(s)? 1 (yes), 0(no)"
     )
+
+    def clean_title(self):
+        return deentity.replace_all(self.title)
 
     def moved(self):
         return self.status == TOPIC_MOVED

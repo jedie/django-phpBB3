@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
 from django.test import TestCase
 
-from django_phpBB3.models import Post
+from django_phpBB3.models import Post, Topic
 
 
 class PostTest(TestCase):
@@ -38,3 +38,11 @@ class PostTest(TestCase):
         )
 
 
+class TopicTest(TestCase):
+    def test_clean_title(self):
+        topic = Topic.objects.create(
+            title="A &quot;best practise&quot; &amp; questions."
+        )
+        self.assertEqual(topic.clean_title(),
+            'A "best practise" & questions.'
+        )

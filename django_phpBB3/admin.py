@@ -57,8 +57,12 @@ class TopicAdmin(admin.ModelAdmin):
     def username(self, obj):
         return obj.poster.username
 
-    list_display = ('id', "title", "username", "moved", "locked", "type", "create_datetime", "last_post_datetime", "last_view_datetime",)
-    list_display_links = ("title",)
+    list_display = ('id', "clean_title",
+        #"title",
+        "username", "moved", "locked", "type",
+        "create_datetime", "last_post_datetime", "last_view_datetime",
+    )
+    list_display_links = ("clean_title",)
     list_filter = ("status", "type", "forum", "poster")
     search_fields = ("title",)
 admin.site.register(Topic, TopicAdmin)

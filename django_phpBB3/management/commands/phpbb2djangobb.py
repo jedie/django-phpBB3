@@ -287,7 +287,7 @@ class Command(BaseCommand):
             obj = Topic.objects.create(
                 forum=forum,
                 user=user,
-                name=topic.title,
+                name=topic.clean_title(),
                 created=topic.create_datetime(),
                 views=topic.views,
                 sticky=sticky,
