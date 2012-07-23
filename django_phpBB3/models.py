@@ -14,6 +14,16 @@
 
 import datetime
 import re
+from django_phpBB3.utils import clean_bbcode
+
+if __name__ == "__main__":
+    import os
+    import sys
+    os.environ["DJANGO_SETTINGS_MODULE"] = "django_phpBB3.test_settings"
+    from django.core import management
+    #management.call_command("diffsettings", interactive=False)
+    management.call_command("test", "django_phpBB3", interactive=False)
+    sys.exit()
 
 from django.db import models
 from django.conf import settings
@@ -587,8 +597,25 @@ class Forum(models.Model):
 class Post(models.Model):
     """
     Topic posts
+    
+    >>> post = Post.objects.create(text=(
+    ...     'DjangoBB <!-- m --><a class="postlink" href="http://djangobb.org/">trac</a><!-- m --> page.'
+    ... ))
+    >>> post.get_cleaned_bbcode()
+    'DjangoBB [url=http://djangobb.org/]trac[/url] page.'
+    
+    >>> post = Post.objects.create(
+    ...     text=(
+    ...         'Look at [url=https&#58;//github&#46;com/jedie/PyLucid/views&#46;py:1234abcd]/views.py[/url:1234abcd]'
+    ...     ),
+    ...     bbcode_uid="1234abcd",
+    ...     bbcode_bitfield="foo", 
+    ... )
+    >>> post.get_cleaned_bbcode()
+    'Look at [url=https://github.com/jedie/PyLucid/views.py]/views.py[/url]'
+    
     """
-    id = models.PositiveIntegerField(primary_key=True, db_column="post_id",
+    id = models.AutoField(primary_key=True, db_column="post_id",
         # mediumint(8) unsigned
         help_text="primary key"
     )
@@ -703,22 +730,12 @@ class Post(models.Model):
     has_attachment.boolean = True
 
     def get_cleaned_bbcode(self):
-        text = self.text
-        replace_list = [('&#58;', ':'), ('&#46;', '.'), ('&quot;', ''), ]
         if self.bbcode_bitfield:
-            replace_list += [(':' + self.bbcode_uid, ''), ] #('quote=&quot;', 'quote='), ('&quot;:' + self.bbcode_uid, ''),
-        for word, replace_by in replace_list:
-            text = text.replace(word, replace_by)
-        return self.phpbb_html2bbcode(text)
+            bbcode_uid = self.bbcode_uid
+        else:
+            bbcode_uid = None
 
-    def phpbb_html2bbcode(self, text):
-        email_pattern = (r'<!-- e --><a href="([^"]*)">(.*?)</a><!-- e -->', r' [url=\1]\2[/url] ')
-        emoticon_pattern = (r'<!-- s.*?alt="([^"]*)".*? s\1 -->', r' \1 ')
-        url_pattern = (r'<!-- [m|w] --><a class="postlink" href="([^"]*)">(.*?)</a><!-- [m|w] -->', r' [url=\1]\2[/url] ')
-        replace_list = [email_pattern, emoticon_pattern, url_pattern]
-        for pattern, replace_by in replace_list:
-            text = re.sub(pattern, replace_by, text, re.S)
-        return text
+        return clean_bbcode(self.text, bbcode_uid)
 
     def __unicode__(self):
         return u"Post %i: %s" % (self.id, self.teaser())
