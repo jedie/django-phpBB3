@@ -14,8 +14,8 @@ Patches are welcome! Please send pull requests.
 
 We add two example projects:
 
-| **django_phpBB3_project**  | minimal project without extra depencies
-| **phpBB2DjangoBB_project** | DjangoBB example project which include the phpBB2DjangoBB migration command
+| **[[https://github.com/jedie/django-phpBB3/tree/master/django_phpBB3_project|django_phpBB3_project]]**  | minimal project without extra depencies
+| **[[https://github.com/jedie/django-phpBB3/tree/master/phpBB2DjangoBB_project|phpBB2DjangoBB_project]]** | DjangoBB example project which include the phpBB2DjangoBB migration command
 
 
 == test django-phpBB3 ==
@@ -54,9 +54,12 @@ You can startup a test server with, e.g:
 
 **not complete implemented, yet!**
 
-We implement a migration command. This exist in the phpbb2djangobb example project.
+The migration from phpBB3 to DjangoBB is implement as a migration command here: [[https://github.com/jedie/django-phpBB3/blob/master/django_phpBB3/management/commands/phpbb2djangobb.py|/django_phpBB3/management/commands/phpbb2djangobb.py]] 
 
-You must add to your {{{local_settings.py}}} this settings:
+To run the migration you can use the minimal {{{phpBB2DjangoBB}}} example project example.
+This project includes the DjangoBB forum app and django-phpBB3 app. Before start, you must install the dependencies!
+
+You must add to a {{{local_settings.py}}} into [[https://github.com/jedie/django-phpBB3/tree/master/phpBB2DjangoBB_project|/phpBB2DjangoBB_project/]] this settings:
 {{{
 # filesystem path to the /files/ sub directory of the phpBB installation:
 PHPBB_ATTACHMENT_PATH = "/path/to/phpBB/files/"
