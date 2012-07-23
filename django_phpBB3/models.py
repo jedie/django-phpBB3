@@ -16,14 +16,7 @@ import datetime
 import re
 from django_phpBB3.utils import clean_bbcode
 
-if __name__ == "__main__":
-    import os
-    import sys
-    os.environ["DJANGO_SETTINGS_MODULE"] = "django_phpBB3.test_settings"
-    from django.core import management
-    #management.call_command("diffsettings", interactive=False)
-    management.call_command("test", "django_phpBB3", interactive=False)
-    sys.exit()
+
 
 from django.db import models
 from django.conf import settings
@@ -597,23 +590,6 @@ class Forum(models.Model):
 class Post(models.Model):
     """
     Topic posts
-    
-    >>> post = Post.objects.create(text=(
-    ...     'DjangoBB <!-- m --><a class="postlink" href="http://djangobb.org/">trac</a><!-- m --> page.'
-    ... ))
-    >>> post.get_cleaned_bbcode()
-    'DjangoBB [url=http://djangobb.org/]trac[/url] page.'
-    
-    >>> post = Post.objects.create(
-    ...     text=(
-    ...         'Look at [url=https&#58;//github&#46;com/jedie/PyLucid/views&#46;py:1234abcd]/views.py[/url:1234abcd]'
-    ...     ),
-    ...     bbcode_uid="1234abcd",
-    ...     bbcode_bitfield="foo", 
-    ... )
-    >>> post.get_cleaned_bbcode()
-    'Look at [url=https://github.com/jedie/PyLucid/views.py]/views.py[/url]'
-    
     """
     id = models.AutoField(primary_key=True, db_column="post_id",
         # mediumint(8) unsigned
@@ -730,6 +706,9 @@ class Post(models.Model):
     has_attachment.boolean = True
 
     def get_cleaned_bbcode(self):
+        """
+        returns a cleaned version of the self.text bbcode.
+        """
         if self.bbcode_bitfield:
             bbcode_uid = self.bbcode_uid
         else:
