@@ -1,0 +1,3 @@
+Example project for phpBB3 to DjangoBB migration using django-phpBB3.
+
+more info: [[https://github.com/jedie/django-phpBB3#readme|/README.creole]]

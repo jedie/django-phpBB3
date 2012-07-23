@@ -10,7 +10,15 @@ So in the current state, access 'read-only' to the data ;)
 Patches are welcome! Please send pull requests. 
 
 
-== test ==
+== example projects ==
+
+We add two example projects:
+
+| **django_phpBB3_project**  | minimal project without extra depencies
+| **phpBB2DjangoBB_project** | DjangoBB example project which include the phpBB2DjangoBB migration command
+
+
+== test django-phpBB3 ==
 
 We added a test project for easy start in: [[https://github.com/jedie/django-phpBB3/tree/master/django_phpBB3_project|/django_phpBB3_project/]]
 
@@ -46,9 +54,12 @@ You can startup a test server with, e.g:
 
 **not complete implemented, yet!**
 
-We implement a migration command. To call it run this:
+We implement a migration command. This exist in the phpbb2djangobb example project.
+
+To call it run this:
 {{{
-./manage.py phpbb2djangobb
+cd phpBB2DjangoBB_project
+phpBB2DjangoBB_project$ ./manage.py phpbb2djangobb
 }}}
 
 === options ===

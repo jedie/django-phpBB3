@@ -3,4 +3,6 @@
 *.db3
 *.pyc
 *.pyo
+.settings
 local_settings.py
+django_phpBB3.egg-info
