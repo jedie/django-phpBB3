@@ -20,6 +20,12 @@ USE_I18N = True
 # calendars according to the current locale
 USE_L10N = True
 
+# We set it to "UTC" (same as Greenwich Mean Time, GMT-0, without daylight-saving time)
+TIME_ZONE = "UTC"
+
+# If you set this to False, Django will not use timezone-aware datetimes.
+USE_TZ = True
+
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
@@ -120,7 +126,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 # Haystack settings
-HAYSTACK_SITECONF = 'search_sites'
+HAYSTACK_SITECONF = 'phpBB2DjangoBB_project.search_sites'
 HAYSTACK_SEARCH_ENGINE = 'whoosh'
 HAYSTACK_WHOOSH_PATH = os.path.join(PROJECT_ROOT, 'djangobb_index')
 

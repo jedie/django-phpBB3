@@ -12,7 +12,7 @@
 if __name__ == "__main__":
     import os
     import sys
-    os.environ["DJANGO_SETTINGS_MODULE"] = "django_phpBB3_project.settings"
+    os.environ["DJANGO_SETTINGS_MODULE"] = "phpBB2DjangoBB_project.settings"
     from django.core import management
     print "reset 'djangobb_forum'...",
     management.call_command("reset", "djangobb_forum", interactive=False)
