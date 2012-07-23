@@ -267,6 +267,7 @@ class Command(BaseCommand):
             count += 1
             if time.time() > next_status:
                 self.stdout.write("\r\t%i/%i topics migrated...          " % (count, total))
+                self.stdout.flush()
                 next_status = time.time() + 1
 
             if topic.moved():
@@ -315,6 +316,7 @@ class Command(BaseCommand):
             count += 1
             if time.time() > next_status:
                 self.stdout.write("\r\t%i/%i posts migrated...          " % (count, total))
+                self.stdout.flush()
                 next_status = time.time() + 1
 
             if phpbb_post.has_attachment():
@@ -356,6 +358,7 @@ class Command(BaseCommand):
         for count, topic in enumerate(topics):
             if time.time() > next_status:
                 self.stdout.write("\r\t%i/%i topics...           " % (count, total))
+                self.stdout.flush()
                 next_status = time.time() + 1
 
             queryset = Post.objects.only("created", "updated").filter(topic=topic)
