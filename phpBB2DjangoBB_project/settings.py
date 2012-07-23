@@ -143,6 +143,10 @@ CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
 PHPBB_TABLE_PREFIX = u"phpbb3_"
 
+# filesystem path to the /files/ sub directory of the phpBB installation:
+# e.g.: = "/path/to/phpBB/files/"
+PHPBB_ATTACHMENT_PATH = None
+
 #------------------------------------------------------------------------------
 
 try:

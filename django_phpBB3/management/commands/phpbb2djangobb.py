@@ -9,9 +9,14 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
+from optparse import make_option
+import datetime
+import os
+import sys
+import time
+import shutil
+
 if __name__ == "__main__":
-    import os
-    import sys
     os.environ["DJANGO_SETTINGS_MODULE"] = "phpBB2DjangoBB_project.settings"
     from django.core import management
     print "reset 'djangobb_forum'...",
@@ -22,16 +27,14 @@ if __name__ == "__main__":
     )
     sys.exit()
 
-from optparse import make_option
-import datetime
-import time
-
-from django.db.models.signals import post_save
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandError
+from django.db.models.signals import post_save
 
-from postmarkup import render_bbcode
-from djangobb_forum.models import Category, Forum, Profile, TZ_CHOICES, Post, Topic
+from djangobb_forum import settings as forum_settings
+from djangobb_forum.models import Category, Forum, Profile, TZ_CHOICES, Post, Topic, \
+    Attachment
 from djangobb_forum import signals as djangobb_signals
 
 from django_phpBB3.models import Forum as phpbb_Forum
@@ -39,6 +42,7 @@ from django_phpBB3.models import Topic as phpbb_Topic
 from django_phpBB3.models import Group as phpbb_Group
 from django_phpBB3.models import User as phpbb_User
 from django_phpBB3.models import Post as phpbb_Post
+from django_phpBB3.models import Attachment as phpbb_Attachment
 
 
 def disable_auto_fields(model_class):
@@ -70,9 +74,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-#        self.update_topic_stats()
-#        self.update_forum_stats()
-#        sys.exit()
+        self.check_attachment_path()
 
         # disable DjangoBB signals for speedup
         post_save.disconnect(djangobb_signals.post_saved, sender=Post, dispatch_uid='djangobb_post_save')
@@ -98,6 +100,38 @@ class Command(BaseCommand):
         self.update_forum_stats()
 
         self.stdout.write("\nmigration done.\n")
+
+    def _warn(self, msg):
+        self.stdout.write(self.style.ERROR(msg))
+        self.stdout.flush()
+
+    def check_attachment_path(self):
+        path = getattr(settings, "PHPBB_ATTACHMENT_PATH", None)
+        if path is None:
+            raise CommandError(
+                "settings.PHPBB_ATTACHMENT_PATH was not set!"
+                " Please add it into your local_settings.py!"
+            )
+        if not os.path.isdir(path):
+            msg = (
+                "PHPBB_ATTACHMENT_PATH '%s' doesn't exists!"
+                " Please add it into your local_settings.py!"
+            ) % path
+            raise CommandError(msg)
+
+        for filename in (".htaccess", "index.htm"):
+            test_path = os.path.join(path, filename)
+            if not os.path.isfile(test_path):
+                self._warn("WARNING: file '%s' doesn't exists!\n" % test_path)
+
+        djangobb_path = os.path.join(settings.MEDIA_ROOT, forum_settings.ATTACHMENT_UPLOAD_TO)
+        if not os.path.isdir(djangobb_path):
+            msg = (
+                "DjangoBB attachment path '%s' doesn't exists!"
+                " Please check MEDIA_ROOT + ATTACHMENT_UPLOAD_TO in your local_settings.py!"
+            ) % djangobb_path
+            raise CommandError(msg)
+
 
     def migrate_users(self, cleanup_users, moderator_groups):
         self.stdout.write("\n *** Migrate phpbb_forum users...\n")
@@ -319,9 +353,6 @@ class Command(BaseCommand):
                 self.stdout.flush()
                 next_status = time.time() + 1
 
-            if phpbb_post.has_attachment():
-                self.stdout.write("\n\t *** TODO: transfer attachment!\n")
-
             topic = topic_dict[phpbb_post.topic.id]
             user = user_dict[phpbb_post.poster.id]
 
@@ -332,7 +363,7 @@ class Command(BaseCommand):
                 updated = None
                 updated_by = None
 
-            Post.objects.create(
+            post = Post.objects.create(
                 topic=topic,
                 user=user,
                 created=phpbb_post.create_datetime(),
@@ -343,6 +374,34 @@ class Command(BaseCommand):
                 #body_html=html, # would be generated in save()
                 user_ip=phpbb_post.poster_ip,
             )
+
+            if phpbb_post.has_attachment():
+                # copy attachment files
+                phpbb_attachment = phpbb_Attachment.objects.get(post_msg=phpbb_post)
+                src_path = os.path.join(settings.PHPBB_ATTACHMENT_PATH, phpbb_attachment.physical_filename)
+                if not os.path.isfile(src_path):
+                    self._warn("\n +++ ERROR: Attachment not found: '%s'" % src_path)
+                else:
+                    attachment = Attachment(
+                        size=phpbb_attachment.filesize,
+                        content_type=phpbb_attachment.mimetype,
+                        name=phpbb_attachment.real_filename,
+                        post=post
+                    )
+                    filename = "%d.0" % post.id
+                    dst_path = os.path.join(
+                        settings.MEDIA_ROOT, forum_settings.ATTACHMENT_UPLOAD_TO,
+                        filename
+                    )
+                    shutil.copy(src_path, dst_path)
+                    attachment.path = filename
+                    attachment.save()
+                    self.stdout.write(
+                        "\n\t *** Attachment %s copied in: %s\n" % (
+                            attachment, dst_path
+                        )
+                    )
+                    self.stdout.flush()
 
         duration = time.time() - start_time
         self.stdout.write("\n *** %i posts migrated in %isec.\n" % (count, duration))

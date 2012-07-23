@@ -56,7 +56,14 @@ You can startup a test server with, e.g:
 
 We implement a migration command. This exist in the phpbb2djangobb example project.
 
-To call it run this:
+You must add to your {{{local_settings.py}}} this settings:
+{{{
+# filesystem path to the /files/ sub directory of the phpBB installation:
+PHPBB_ATTACHMENT_PATH = "/path/to/phpBB/files/"
+}}}
+(You must also point the attachment directory from DjangoBB to a existing filesystem path.)
+
+Run the migration with:
 {{{
 cd phpBB2DjangoBB_project
 phpBB2DjangoBB_project$ ./manage.py phpbb2djangobb
@@ -93,7 +100,6 @@ Handling missing features in DjangoBB:
 
 TODOs:
 
-* Attachments sould be moved, too.
 * convert subscriptions
 
 ==== open questions =====
