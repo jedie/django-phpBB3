@@ -1,6 +1,5 @@
 include AUTHORS README.creole MANIFEST.in
-recursive-include * *.html *.css *.js *.creole
-recursive-include cli_scripts *.py
-include django_kippo/locale/*/LC_MESSAGES/django.* 
+recursive-include * *.py *.html *.css *.js *.creole
 recursive-exclude * *.py[co]
+recursive-exclude * *.db3
 recursive-exclude * local_settings.py

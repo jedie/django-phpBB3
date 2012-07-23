@@ -5,4 +5,5 @@
 *.pyo
 .settings
 local_settings.py
+dist
 django_phpBB3.egg-info
