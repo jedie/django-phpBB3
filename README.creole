@@ -1,10 +1,12 @@
 == Django-phpBB3 ==
 
-Django-phpBB3 provides the database models of a existing phpBB3 installation for easy migration into a other forum software.
+Django-phpBB3 provides the database models of a existing phpBB3 installation. This is usefull for all people who like to access the phpbb forum database from a django application.
 It's not a phpBB clone or a forum!
 
+Django-phpBB3 has also a script for migrate a phpBB3 forum into a DjangoBB forum. See below.
+
 Warning:
-In the current state, it's not guaranteed that changes trough the django admin will work with phpBB3! 
+Write access to the original phpBB database is not tested, yet. So it's not guaranteed that changes trough the django admin will work with phpBB3! 
 So in the current state, access 'read-only' to the data ;)
 
 Patches are welcome! Please send pull requests. 
