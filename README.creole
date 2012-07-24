@@ -88,8 +88,7 @@ Things that would not be transfered, yet:
 
 * Forum moderators
 * Category groups
-* sort of in Category / Forum would not be converted to position number
-* ForumWatch / TopicWatch can't be converted because the models are unsupported
+* sort of Category / Forum would not be converted to position number
 
 Handling missing features in DjangoBB: 
 
@@ -97,6 +96,7 @@ Handling missing features in DjangoBB:
 * //global posts// and //announcement// converted to normal sticky posts
 * sub forums would be flatten
 * //ghost moved posts// are ignored (only the moved post would be created)
+* ForumWatch are ignored
 
 
 ==== open questions =====
