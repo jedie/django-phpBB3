@@ -15,6 +15,7 @@ import os
 import sys
 import time
 import shutil
+import pprint
 
 if __name__ == "__main__":
     os.environ["DJANGO_SETTINGS_MODULE"] = "phpBB2DjangoBB_project.settings"
@@ -37,6 +38,7 @@ from djangobb_forum.models import Category, Forum, Profile, TZ_CHOICES, Post, To
     Attachment
 from djangobb_forum import signals as djangobb_signals
 
+from django_phpBB3.unsupported_models import get_topic_watch
 from django_phpBB3.models import Forum as phpbb_Forum
 from django_phpBB3.models import Topic as phpbb_Topic
 from django_phpBB3.models import Group as phpbb_Group
@@ -291,6 +293,12 @@ class Command(BaseCommand):
     def migrate_topic(self, user_dict, forum_dict):
         self.stdout.write("\n *** Migrate phpBB topic entries...\n")
 
+        self.stdout.write("\tget topic watch information...")
+        self.stdout.flush()
+        topic_watch = get_topic_watch()
+        self.stdout.write("OK\n")
+        self.stdout.flush()
+
         topic_dict = {}
         topics = phpbb_Topic.objects.all().order_by("time")
         total = topics.count()
@@ -326,11 +334,15 @@ class Command(BaseCommand):
                 views=topic.views,
                 sticky=sticky,
                 closed=topic.locked(),
-                #subscribers=, # FIXME: ForumWatch / TopicWatch models are unsupported
 
                 # These attributes would be set later in update_topic_stats():
                 # updated, post_count, last_post
             )
+            if topic.id in topic_watch:
+                subscribers = [user_dict[user_id] for user_id in topic_watch[topic.id]]
+                obj.subscribers = subscribers
+                obj.save()
+
             topic_dict[topic.id] = obj
 
         duration = time.time() - start_time

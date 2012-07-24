@@ -8,14 +8,73 @@
     
     more info:
         https://code.djangoproject.com/wiki/MultipleColumnPrimaryKeys
+        
+    You can access the tables via raw sql:
+        https://docs.djangoproject.com/en/1.4/topics/db/sql/#executing-custom-sql-directly
+    
+    Implemented functions to get information are:
+        * get_topic_watch()
 
     :copyleft: 2012 by the django-phpBB3 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
 
-from django.db import models
+import collections
+
+from django.db import models, connection
 from django.conf import settings
+
+
+TOPIC_WATCH_DB_TABLE = u"%stopics_watch" % settings.PHPBB_TABLE_PREFIX
+class TopicWatch(models.Model):
+    """
+    "notify me upon replies"
+    """
+    topic_id = models.PositiveIntegerField(
+        # mediumint(8) unsigned
+        default=0,
+    )
+    user = models.ForeignKey("User", related_name='+',
+        # mediumint(8) unsigned
+        default=0,
+    )
+    notify_status = models.PositiveSmallIntegerField(
+        # tinyint(1) unsigned
+        default=0,
+    )
+    class Meta:
+        db_table = TOPIC_WATCH_DB_TABLE
+
+
+def get_topic_watch(topic_id=None):
+    """
+    returns a dict with the topic watch information
+    dict scheme is:
+    {
+        "topic_id 1": ["user id 1", "user id 2" ... "user id n"],
+        "topic_id 2": ["user id 1", "user id 2" ... "user id n"],
+        ...
+        "topic_id n": ["user id 1", "user id 2" ... "user id n"],
+    }
+    """
+    cursor = connection.cursor()
+    if topic_id is None:
+        cursor.execute("SELECT topic_id, user_id FROM %s" % TOPIC_WATCH_DB_TABLE)
+    else:
+        cursor.execute(
+            "SELECT topic_id, user_id FROM %s WHERE topic_id = %%s" % TOPIC_WATCH_DB_TABLE,
+            [topic_id],
+        )
+
+    result = collections.defaultdict(list)
+    for topic_id, user_id in cursor.fetchall():
+        result[topic_id].append(user_id)
+
+    return result
+
+
+#------------------------------------------------------------------------------
 
 
 class AclGroup(models.Model):
@@ -205,26 +264,6 @@ class PrivmsgTo(models.Model):
     )
     class Meta:
         db_table = u"%sprivmsgs_to" % settings.PHPBB_TABLE_PREFIX
-
-
-class TopicWatch(models.Model):
-    """
-    "notify me upon replies"
-    """
-    topic_id = models.PositiveIntegerField(
-        # mediumint(8) unsigned
-        default=0,
-    )
-    user = models.ForeignKey("User", related_name='+',
-        # mediumint(8) unsigned
-        default=0,
-    )
-    notify_status = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=0,
-    )
-    class Meta:
-        db_table = u"%stopics_watch" % settings.PHPBB_TABLE_PREFIX
 
 
 class UserGroup(models.Model):
