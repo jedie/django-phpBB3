@@ -14,6 +14,12 @@ import sys
 
 from setuptools import setup, find_packages
 
+if "sdist" in sys.argv or "--version" in sys.argv:
+    # update the version string via gitattribute filter
+    import subprocess
+    subprocess.call(["rm", "django_phpBB3/__init__.py"])
+    subprocess.call(["/usr/bin/git", "checkout", "django_phpBB3/__init__.py"])
+
 from django_phpBB3 import VERSION_STRING
 
 
