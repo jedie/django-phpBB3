@@ -120,6 +120,10 @@ The SQL schema files from phpBB can be found here:
 
 == history
 
+* v0.1.3 - 27.07.2012
+** catch error if a post can't be migrated and continue migration 
+** remove django_authopenid and django_messages from phpbb2djangobb project settings
+** nicer output while migrating with eta time
 * v0.1.2 - 27.07.2012
 ** remove date from version string
 ** add this histroy list ;)
