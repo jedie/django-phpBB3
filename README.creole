@@ -102,7 +102,7 @@ Handling missing features in DjangoBB:
 
 TODO:
 
-* migrate private messages
+* add a separate command for migrate phpBB private messages to django-messages
 
 ==== open questions =====
 
@@ -117,6 +117,24 @@ Here some links for phpBB documentations:
 
 The SQL schema files from phpBB can be found here:
 * https://github.com/phpbb/phpbb3/tree/develop/phpBB/install/schemas
+
+== history
+
+* v0.1.2 - 27.07.2012
+** remove date from version string
+** add this histroy list ;)
+* v0.1.0 - 24.07.2012
+** migrate post subscriptions, too.
+* 23.07.2012
+** migrate phpBB3 file attachments, too.
+** bugfixes in bbcode cleanup
+** handle html entities in cleanup
+* 20.07.2012
+** bbcode cleanup contributed by nitely
+* 19.07.2012
+** start with phpBB3 migration command
+* 16.07.2012
+** project starts by Jens Diemer
 
 == Project links ==
 
