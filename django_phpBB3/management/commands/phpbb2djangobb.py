@@ -38,13 +38,15 @@ from djangobb_forum.models import Category, Forum, Profile, TZ_CHOICES, Post, To
     Attachment
 from djangobb_forum import signals as djangobb_signals
 
-from django_phpBB3.unsupported_models import get_topic_watch
-from django_phpBB3.models import Forum as phpbb_Forum
-from django_phpBB3.models import Topic as phpbb_Topic
-from django_phpBB3.models import Group as phpbb_Group
-from django_phpBB3.models import User as phpbb_User
-from django_phpBB3.models import Post as phpbb_Post
 from django_phpBB3.models import Attachment as phpbb_Attachment
+from django_phpBB3.models import Forum as phpbb_Forum
+from django_phpBB3.models import Group as phpbb_Group
+from django_phpBB3.models import Post as phpbb_Post
+from django_phpBB3.models import Topic as phpbb_Topic
+from django_phpBB3.models import User as phpbb_User
+from django_phpBB3.unsupported_models import get_topic_watch
+from django_phpBB3.utils import ProcessInfo, human_duration
+
 
 
 def disable_auto_fields(model_class):
@@ -302,15 +304,20 @@ class Command(BaseCommand):
         topic_dict = {}
         topics = phpbb_Topic.objects.all().order_by("time")
         total = topics.count()
+        process_info = ProcessInfo(total, use_last_rates=4)
         count = 0
         start_time = time.time()
         next_status = start_time + 0.25
         for topic in topics:
             count += 1
             if time.time() > next_status:
-                self.stdout.write("\r\t%i/%i topics migrated...          " % (count, total))
-                self.stdout.flush()
                 next_status = time.time() + 1
+                rest, eta, rate = process_info.update(count)
+                msg = (
+                    "\r\t%i/%i topics migrated... rest: %i - eta: %s (rate: %.1f/sec)         "
+                ) % (count, total, rest, eta, rate)
+                self.stdout.write(msg)
+                self.stdout.flush()
 
             if topic.moved():
                 # skip moved topics -> DjangoBB doesn't support them
@@ -346,7 +353,12 @@ class Command(BaseCommand):
             topic_dict[topic.id] = obj
 
         duration = time.time() - start_time
-        self.stdout.write("\n *** %i topics migrated in %isec.\n" % (count, duration))
+        rate = float(count) / duration
+        self.stdout.write(
+            "\r *** %i topics migrated in %s (rate: %.1f/sec)\n" % (
+                count, human_duration(duration), rate
+            )
+        )
         return topic_dict
 
 
@@ -355,15 +367,20 @@ class Command(BaseCommand):
 
         posts = phpbb_Post.objects.all().order_by("time")
         total = posts.count()
+        process_info = ProcessInfo(total, use_last_rates=4)
         count = 0
         start_time = time.time()
         next_status = start_time + 0.25
         for phpbb_post in posts:
             count += 1
             if time.time() > next_status:
-                self.stdout.write("\r\t%i/%i posts migrated...          " % (count, total))
-                self.stdout.flush()
                 next_status = time.time() + 1
+                rest, eta, rate = process_info.update(count)
+                msg = (
+                    "\r\t%i/%i posts migrated... rest: %i - eta: %s (rate: %.1f/sec)         "
+                ) % (count, total, rest, eta, rate)
+                self.stdout.write(msg)
+                self.stdout.flush()
 
             topic = topic_dict[phpbb_post.topic.id]
             user = user_dict[phpbb_post.poster.id]
@@ -424,21 +441,30 @@ class Command(BaseCommand):
                     self.stdout.flush()
 
         duration = time.time() - start_time
-        self.stdout.write("\n *** %i posts migrated in %isec.\n" % (count, duration))
-
+        rate = float(count) / duration
+        self.stdout.write(
+            "\r *** %i posts migrated in %s (rate: %.1f/sec)\n" % (
+                count, human_duration(duration), rate
+            )
+        )
 
     def update_topic_stats(self):
         self.stdout.write("\n *** set topic stats...\n")
 
         topics = Topic.objects.all()
         total = topics.count()
+        process_info = ProcessInfo(total, use_last_rates=4)
         start_time = time.time()
         next_status = time.time() + 0.25
         for count, topic in enumerate(topics):
             if time.time() > next_status:
-                self.stdout.write("\r\t%i/%i topics...           " % (count, total))
-                self.stdout.flush()
                 next_status = time.time() + 1
+                rest, eta, rate = process_info.update(count)
+                msg = (
+                    "\r\t%i/%i topics... rest: %i - eta: %s (rate: %.1f/sec)         "
+                ) % (count, total, rest, eta, rate)
+                self.stdout.write(msg)
+                self.stdout.flush()
 
             queryset = Post.objects.only("created", "updated").filter(topic=topic)
             topic.post_count = queryset.count()
@@ -456,8 +482,12 @@ class Command(BaseCommand):
             topic.save()
 
         duration = time.time() - start_time
-        self.stdout.write("\n *** %i topic stats set in %isec.\n" % (count, duration))
-
+        rate = float(count) / duration
+        self.stdout.write(
+            "\r *** %i topic stats set in %s (rate: %.1f/sec)\n" % (
+                count, human_duration(duration), rate
+            )
+        )
 
     def update_forum_stats(self):
         self.stdout.write("\n *** set forum stats...\n")

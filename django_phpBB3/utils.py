@@ -3,7 +3,7 @@
 """
     django-phpBB3 utils
     ~~~~~~~~~~~~~~~~~~~
-    
+
     Deentity stuff borrowed from python-creole.
 
     :copyleft: 2012 by the django-phpBB3 team, see AUTHORS for more details.
@@ -12,6 +12,7 @@
 
 import re
 import htmlentitydefs as entities
+import time
 
 EMAIL_RE = (
     re.compile(r' ?<!-- e --><a href="([^"]*)">(.*?)</a><!-- e --> ?', re.S),
@@ -45,7 +46,7 @@ class Deentity(object):
     >>> d = Deentity()
     >>> d.replace_all(u"-=[&nbsp;&gt;&#62;&#x3E;nice&lt;&#60;&#x3C;&nbsp;]=-")
     u'-=[ >>>nice<<< ]=-'
-        
+
     >>> d.replace_all(u"-=[M&uuml;hlheim]=-") # uuml - latin small letter u with diaeresis
     u'-=[M\\xfchlheim]=-'
 
@@ -106,7 +107,7 @@ def clean_bbcode(text, bbcode_uid=None):
     """
     >>> clean_bbcode('DjangoBB <!-- m --><a class="postlink" href="http://djangobb.org/">trac</a><!-- m --> page.')
     'DjangoBB [url=http://djangobb.org/]trac[/url] page.'
-    
+
     >>> clean_bbcode(
     ...     u'Look at [url=https&#58;//github&#46;com/jedie/PyLucid/views&#46;py:1234abcd]/views.py[/url:1234abcd]',
     ...     bbcode_uid=u"1234abcd"
@@ -119,6 +120,76 @@ def clean_bbcode(text, bbcode_uid=None):
     text = deentity.replace_all(text)
 
     return phpbb_html2bbcode(text)
+
+
+def human_duration(t):
+    """
+    Converts a time duration into a friendly text representation.
+
+    >>> human_duration("type error")
+    Traceback (most recent call last):
+        ...
+    TypeError: human_duration() argument must be integer or float
+
+    >>> human_duration(0.01)
+    u'10.0 ms'
+    >>> human_duration(0.9)
+    u'900.0 ms'
+    >>> human_duration(65.5)
+    u'1.1 min'
+    >>> human_duration((60 * 60)-1)
+    u'59.0 min'
+    >>> human_duration(60*60)
+    u'1.0 hours'
+    >>> human_duration(1.05*60*60)
+    u'1.1 hours'
+    >>> human_duration(2.54 * 60 * 60 * 24 * 365)
+    u'2.5 years'
+    """
+    if not isinstance(t, (int, float)):
+        raise TypeError("human_duration() argument must be integer or float")
+
+    chunks = (
+      (60 * 60 * 24 * 365, u'years'),
+      (60 * 60 * 24 * 30, u'months'),
+      (60 * 60 * 24 * 7, u'weeks'),
+      (60 * 60 * 24, u'days'),
+      (60 * 60, u'hours'),
+    )
+
+    if t < 1:
+        return u"%.1f ms" % round(t * 1000, 1)
+    if t < 60:
+        return u"%.1f sec" % round(t, 1)
+    if t < 60 * 60:
+        return u"%.1f min" % round(t / 60, 1)
+
+    for seconds, name in chunks:
+        count = t / seconds
+        if count >= 1:
+            count = round(count, 1)
+            break
+    return u"%(number).1f %(type)s" % {'number': count, 'type': name}
+
+
+class ProcessInfo(object):
+    def __init__(self, total, use_last_rates=4):
+        self.total = total
+        self.use_last_rates = use_last_rates
+        self.last_count = 0
+        self.last_update = self.start_time = time.time()
+        self.rate_info = []
+
+    def update(self, count):
+        current_duration = time.time() - self.last_update
+        current_rate = float(count) / current_duration
+        self.rate_info.append(current_rate)
+        self.rate_info = self.rate_info[-self.use_last_rates:]
+        smoothed_rate = sum(self.rate_info) / len(self.rate_info)
+        rest = self.total - count
+        eta = rest / smoothed_rate
+        human_eta = human_duration(eta)
+        return rest, human_eta, smoothed_rate
 
 
 if __name__ == "__main__":
