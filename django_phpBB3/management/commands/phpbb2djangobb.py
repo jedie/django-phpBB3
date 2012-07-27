@@ -104,8 +104,8 @@ class Command(BaseCommand):
         self.stdout.write("\nmigration done.\n")
 
     def _warn(self, msg):
-        self.stdout.write(self.style.ERROR(msg))
-        self.stdout.flush()
+        self.stderr.write(self.style.ERROR(msg))
+        self.stderr.flush()
 
     def check_attachment_path(self):
         path = getattr(settings, "PHPBB_ATTACHMENT_PATH", None)
@@ -375,24 +375,32 @@ class Command(BaseCommand):
                 updated = None
                 updated_by = None
 
-            post = Post.objects.create(
-                topic=topic,
-                user=user,
-                created=phpbb_post.create_datetime(),
-                updated=updated,
-                updated_by=updated_by,
-                markup="bbcode",
-                body=phpbb_post.get_cleaned_bbcode(),
-                #body_html=html, # would be generated in save()
-                user_ip=phpbb_post.poster_ip,
-            )
+            try:
+                post = Post.objects.create(
+                    topic=topic,
+                    user=user,
+                    created=phpbb_post.create_datetime(),
+                    updated=updated,
+                    updated_by=updated_by,
+                    markup="bbcode",
+                    body=phpbb_post.get_cleaned_bbcode(),
+                    #body_html=html, # would be generated in save()
+                    user_ip=phpbb_post.poster_ip,
+                )
+            except Exception, err:
+                msg = (
+                    "\n +++ ERROR: creating Post entry for phpBB3 post (ID: %s):\n"
+                    "%s\n"
+                ) % (phpbb_post.id, err)
+                self._warn(msg)
+                continue
 
             if phpbb_post.has_attachment():
                 # copy attachment files
                 phpbb_attachment = phpbb_Attachment.objects.get(post_msg=phpbb_post)
                 src_path = os.path.join(settings.PHPBB_ATTACHMENT_PATH, phpbb_attachment.physical_filename)
                 if not os.path.isfile(src_path):
-                    self._warn("\n +++ ERROR: Attachment not found: '%s'" % src_path)
+                    self._warn("\n +++ ERROR: Attachment not found: '%s'\n" % src_path)
                 else:
                     attachment = Attachment(
                         size=phpbb_attachment.filesize,
