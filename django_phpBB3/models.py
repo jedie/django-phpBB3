@@ -2317,29 +2317,6 @@ class StyleTheme(models.Model):
     class Meta:
         db_table = u"%sstyles_theme" % settings.PHPBB_TABLE_PREFIX
 
-
-
-class TopicPosted(models.Model):
-    """
-    Who posted to which topic (used for the small dots in viewforum)
-    """
-    id = models.PositiveIntegerField(primary_key=True, db_column="user_id",
-        # mediumint(8) unsigned
-        default=0,
-        help_text="primary key"
-    )
-    id = models.PositiveIntegerField(primary_key=True, db_column="topic_id",
-        # mediumint(8) unsigned
-        default=0,
-        help_text="primary key"
-    )
-    topic_posted = models.PositiveSmallIntegerField(
-        # tinyint(1) unsigned
-        default=0,
-    )
-    class Meta:
-        db_table = u"%stopics_posted" % settings.PHPBB_TABLE_PREFIX
-
 class TopicTrack(models.Model):
     """
     Unread post information is stored here

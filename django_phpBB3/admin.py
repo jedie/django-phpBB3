@@ -11,7 +11,7 @@ from django_phpBB3.models import AclOption, AclRole, AclRoleData, \
     ProfileFieldLang, ProfileLang, Rank, Report, ReportReasons, \
     SearchResult, SearchWordlist, Session, Sitelist, \
     Smilie, Style, StyleImageset, StyleImagesetData, StyleTemplate, \
-    StyleTemplateData, StyleTheme, Topic, TopicPosted, TopicTrack, \
+    StyleTemplateData, StyleTheme, Topic, TopicTrack, \
     User, Warning, Word, Zebra
 
 
@@ -383,13 +383,6 @@ class StyleThemeAdmin(admin.ModelAdmin):
     """
     pass
 admin.site.register(StyleTheme, StyleThemeAdmin)
-
-class TopicPostedAdmin(admin.ModelAdmin):
-    """
-    Who posted to which topic (used for the small dots in viewforum)
-    """
-    pass
-admin.site.register(TopicPosted, TopicPostedAdmin)
 
 class TopicTrackAdmin(admin.ModelAdmin):
     """
