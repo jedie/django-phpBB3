@@ -385,3 +385,18 @@ class ForumTrack(models.Model):
     )
     class Meta:
         db_table = u"%sforums_track" % settings.PHPBB_TABLE_PREFIX
+
+
+class LoginAttempt(models.Model):
+    """
+    tbd
+    """
+    attempt_ip = models.CharField(max_length=40)
+    attempt_browser = models.CharField(max_length=150)
+    attempt_forwarded_for = models.CharField(max_length=255)
+    attempt_time = models.IntegerField()
+    user_id = models.IntegerField()
+    username = models.CharField(max_length=255)
+    username_clean = models.CharField(max_length=255)
+    class Meta:
+        db_table = u"%slogin_attempts" % settings.PHPBB_TABLE_PREFIX

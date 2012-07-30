@@ -7,7 +7,7 @@ from django_phpBB3.models import AclOption, AclRole, AclRoleData, \
     Attachment, Banlist, Bbcode, Bookmark, Bot, \
     CaptchaQuestions, Config, Confirm, Disallow, Draft, ExtensionGroup, Extension, \
     Forum, Group, Icon, Lang, Log, \
-    LoginAttempt, Module, PollOption, Post, Privmsg, \
+    Module, PollOption, Post, Privmsg, \
     PrivmsgFolder, PrivmsgRules, ProfileField, ProfileFieldData, \
     ProfileFieldLang, ProfileLang, QaConfirm, Rank, Report, ReportReasons, \
     SearchResult, SearchWordlist, SearchWordmatch, Session, Sitelist, \
@@ -230,13 +230,6 @@ class LangAdmin(admin.ModelAdmin):
     """
     pass
 admin.site.register(Lang, LangAdmin)
-
-class LoginAttemptAdmin(admin.ModelAdmin):
-    """
-    tbd
-    """
-    pass
-admin.site.register(LoginAttempt, LoginAttemptAdmin)
 
 class ModuleAdmin(admin.ModelAdmin):
     """
