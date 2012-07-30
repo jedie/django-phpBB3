@@ -1382,6 +1382,8 @@ class Disallow(models.Model):
     disallow_username = models.CharField(max_length=255,
         # varchar(255)
     )
+    def __unicode__(self):
+        return self.disallow_username
     class Meta:
         db_table = u"%sdisallow" % settings.PHPBB_TABLE_PREFIX
 
