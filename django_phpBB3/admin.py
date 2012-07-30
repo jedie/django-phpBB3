@@ -9,7 +9,7 @@ from django_phpBB3.models import AclOption, AclRole, AclRoleData, \
     Forum, Group, Icon, Lang, Log, Module, Post, Privmsg, \
     PrivmsgFolder, PrivmsgRules, ProfileField, ProfileFieldData, \
     ProfileFieldLang, ProfileLang, Rank, Report, ReportReasons, \
-    SearchResult, SearchWordlist, SearchWordmatch, Session, Sitelist, \
+    SearchResult, SearchWordlist, Session, Sitelist, \
     Smilie, Style, StyleImageset, StyleImagesetData, StyleTemplate, \
     StyleTemplateData, StyleTheme, Topic, TopicPosted, TopicTrack, \
     User, Warning, Word, Zebra
@@ -320,13 +320,6 @@ class SearchWordlistAdmin(admin.ModelAdmin):
     """
     pass
 admin.site.register(SearchWordlist, SearchWordlistAdmin)
-
-class SearchWordmatchAdmin(admin.ModelAdmin):
-    """
-    Associate a post with indexed words
-    """
-    pass
-admin.site.register(SearchWordmatch, SearchWordmatchAdmin)
 
 class SessionAdmin(admin.ModelAdmin):
     """

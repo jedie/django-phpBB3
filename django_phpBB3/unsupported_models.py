@@ -434,3 +434,23 @@ class QaConfirm(models.Model):
     confirm_type = models.IntegerField()
     class Meta:
         db_table = u"%sqa_confirm" % settings.PHPBB_TABLE_PREFIX
+
+
+class SearchWordmatch(models.Model):
+    """
+    Associate a post with indexed words
+    """
+    post_id = models.PositiveIntegerField(
+        # mediumint(8) unsigned
+        default=0,
+    )
+    word_id = models.PositiveIntegerField(
+        # mediumint(8) unsigned
+        default=0,
+    )
+    title_match = models.PositiveSmallIntegerField(unique=True,
+        # tinyint(1) unsigned
+        default=0,
+    )
+    class Meta:
+        db_table = u"%ssearch_wordmatch" % settings.PHPBB_TABLE_PREFIX
