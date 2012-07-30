@@ -1340,11 +1340,9 @@ class CaptchaQuestions(models.Model):
 class Confirm(models.Model):
     """
     Contains session information for confirm pages ("are you sure you want to delete foo")
+    
+    Note: Not really supported mode, because no field is really unique!!!
     """
-    id = models.CharField(max_length=96, primary_key=True, db_column="confirm_id",
-        # char(32)
-        help_text="primary key"
-    )
     id = models.CharField(max_length=96, primary_key=True, db_column="session_id",
         # char(32)
         help_text="primary key, The session ID associated with the registration attempt."
