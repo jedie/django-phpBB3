@@ -191,6 +191,10 @@ class Command(BaseCommand):
             tz = TZ_CHOICES[int(phpbb_user.timezone)][0]
             #print tz
 
+            # TODO: migrate language and avatar, too!
+            # see:
+            # https://github.com/jedie/django-phpBB3/issues/6
+            # https://github.com/jedie/django-phpBB3/issues/7
             user_profile, created = Profile.objects.get_or_create(
                 user=django_user,
                 defaults={
