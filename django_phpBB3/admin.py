@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from django_phpBB3.models import AclOption, AclRole, AclRoleData, \
     Attachment, Banlist, Bbcode, Bookmark, Bot, \
     CaptchaQuestions, Config, Confirm, Disallow, Draft, ExtensionGroup, Extension, \
-    Forum, ForumTrack, Group, Icon, Lang, Log, \
+    Forum, Group, Icon, Lang, Log, \
     LoginAttempt, Module, PollOption, Post, Privmsg, \
     PrivmsgFolder, PrivmsgRules, ProfileField, ProfileFieldData, \
     ProfileFieldLang, ProfileLang, QaConfirm, Rank, Report, ReportReasons, \
@@ -216,13 +216,6 @@ class ExtensionAdmin(admin.ModelAdmin):
     """
     pass
 admin.site.register(Extension, ExtensionAdmin)
-
-class ForumTrackAdmin(admin.ModelAdmin):
-    """
-    Unread post information is stored here
-    """
-    pass
-admin.site.register(ForumTrack, ForumTrackAdmin)
 
 class IconAdmin(admin.ModelAdmin):
     """

@@ -363,3 +363,25 @@ class CaptchaAnswers(models.Model):
     answer_text = models.CharField(max_length=255)
     class Meta:
         db_table = u"%scaptcha_answers" % settings.PHPBB_TABLE_PREFIX
+
+
+class ForumTrack(models.Model):
+    """
+    Unread post information is stored here
+    """
+    user = models.PositiveIntegerField(primary_key=True, db_column="user_id",
+        # mediumint(8) unsigned
+        default=0,
+        help_text="primary key"
+    )
+    forum = models.PositiveIntegerField(primary_key=True, db_column="forum_id",
+        # mediumint(8) unsigned
+        default=0,
+        help_text="primary key"
+    )
+    mark_time = models.PositiveIntegerField(
+        # int(11) unsigned
+        default=0,
+    )
+    class Meta:
+        db_table = u"%sforums_track" % settings.PHPBB_TABLE_PREFIX

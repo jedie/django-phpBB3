@@ -1476,29 +1476,6 @@ class Extension(models.Model):
     class Meta:
         db_table = u"%sextensions" % settings.PHPBB_TABLE_PREFIX
 
-
-class ForumTrack(models.Model):
-    """
-    Unread post information is stored here
-    """
-    id = models.PositiveIntegerField(primary_key=True, db_column="user_id",
-        # mediumint(8) unsigned
-        default=0,
-        help_text="primary key"
-    )
-    id = models.PositiveIntegerField(primary_key=True, db_column="forum_id",
-        # mediumint(8) unsigned
-        default=0,
-        help_text="primary key"
-    )
-    mark_time = models.PositiveIntegerField(
-        # int(11) unsigned
-        default=0,
-    )
-    class Meta:
-        db_table = u"%sforums_track" % settings.PHPBB_TABLE_PREFIX
-
-
 class Icon(models.Model):
     """
     Post icons
