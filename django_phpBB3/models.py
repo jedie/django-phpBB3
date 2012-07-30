@@ -2265,9 +2265,9 @@ class StyleTemplate(models.Model):
 
 class StyleTemplateData(models.Model):
     """
-    tbd
+    FIXME: template_id is a ForeignKey to StyleTemplate?
     """
-    template_id = models.IntegerField(
+    template = models.IntegerField(primary_key=True, db_column="template_id",
         # tinyint(4)
     )
     template_filename = models.CharField(max_length=100,
