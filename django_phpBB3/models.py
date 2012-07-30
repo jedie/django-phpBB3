@@ -1202,42 +1202,6 @@ class AclRoleData(models.Model):
     class Meta:
         db_table = u"%sacl_roles_data" % settings.PHPBB_TABLE_PREFIX
 
-class AclUser(models.Model):
-    """
-    Permission roles and/or individual permissions assigned to users
-    """
-    # user_id = models.IntegerField()
-    user = models.ForeignKey("User", blank=True,
-        # mediumint(8) unsigned
-        default=0,
-        help_text="{{fk|users|user_id}}"
-    )
-    # forum_id = models.IntegerField()
-    forum = models.ForeignKey("Forum", blank=True,
-        # mediumint(8) unsigned
-        default=0,
-        help_text="{{fk|forums|forum_id}}"
-    )
-    # auth_option_id = models.IntegerField()
-    auth_option = models.ForeignKey("AclOption", blank=True,
-        # mediumint(8) unsigned
-        default=0,
-        help_text="{{fk|acl_options|auth_option_id}}"
-    )
-    # auth_role_id = models.IntegerField()
-    auth_role = models.ForeignKey("AclRole", blank=True,
-        # mediumint(8) unsigned
-        default=0,
-        help_text="{{fk|acl_roles|role_id}}"
-    )
-    auth_setting = models.IntegerField(
-        # tinyint(2)
-        default=0,
-        help_text="ACL_YES, ACL_NO or ACL_NEVER "
-    )
-    class Meta:
-        db_table = u"%sacl_users" % settings.PHPBB_TABLE_PREFIX
-
 
 class Banlist(models.Model):
     """
@@ -1277,6 +1241,7 @@ class Banlist(models.Model):
     )
     class Meta:
         db_table = u"%sbanlist" % settings.PHPBB_TABLE_PREFIX
+
 
 class Bbcode(models.Model):
     """

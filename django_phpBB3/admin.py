@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
 from django_phpBB3.models import AclOption, AclRole, AclRoleData, \
-    AclUser, Attachment, Banlist, Bbcode, Bookmark, Bot, CaptchaAnswers, \
+    Attachment, Banlist, Bbcode, Bookmark, Bot, CaptchaAnswers, \
     CaptchaQuestions, Config, Confirm, Disallow, Draft, ExtensionGroup, Extension, \
     Forum, ForumTrack, Group, Icon, Lang, Log, \
     LoginAttempt, Module, PollOption, Post, Privmsg, \
@@ -142,13 +142,6 @@ class AclRoleDataAdmin(admin.ModelAdmin):
     """
     pass
 admin.site.register(AclRoleData, AclRoleDataAdmin)
-
-class AclUserAdmin(admin.ModelAdmin):
-    """
-    Permission roles and/or individual permissions assigned to users
-    """
-    pass
-admin.site.register(AclUser, AclUserAdmin)
 
 class BanlistAdmin(admin.ModelAdmin):
     """
