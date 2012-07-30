@@ -1328,12 +1328,6 @@ class Bot(models.Model):
     class Meta:
         db_table = u"%sbots" % settings.PHPBB_TABLE_PREFIX
 
-class CaptchaAnswers(models.Model):
-    question_id = models.IntegerField()
-    answer_text = models.CharField(max_length=255)
-    class Meta:
-        db_table = u"%scaptcha_answers" % settings.PHPBB_TABLE_PREFIX
-
 class CaptchaQuestions(models.Model):
     id = models.IntegerField(primary_key=True, db_column="question_id")
     strict = models.IntegerField()

@@ -353,3 +353,13 @@ class AclUser(models.Model):
     )
     class Meta:
         db_table = u"%sacl_users" % settings.PHPBB_TABLE_PREFIX
+
+
+class CaptchaAnswers(models.Model):
+    """
+    is like a many-to-one model for CaptchaQuestions, but has no primary key.
+    """
+    question_id = models.IntegerField()
+    answer_text = models.CharField(max_length=255)
+    class Meta:
+        db_table = u"%scaptcha_answers" % settings.PHPBB_TABLE_PREFIX

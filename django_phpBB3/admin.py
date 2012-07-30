@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
 from django_phpBB3.models import AclOption, AclRole, AclRoleData, \
-    Attachment, Banlist, Bbcode, Bookmark, Bot, CaptchaAnswers, \
+    Attachment, Banlist, Bbcode, Bookmark, Bot, \
     CaptchaQuestions, Config, Confirm, Disallow, Draft, ExtensionGroup, Extension, \
     Forum, ForumTrack, Group, Icon, Lang, Log, \
     LoginAttempt, Module, PollOption, Post, Privmsg, \
@@ -170,10 +170,6 @@ class BotAdmin(admin.ModelAdmin):
     """
     pass
 admin.site.register(Bot, BotAdmin)
-
-class CaptchaAnswersAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(CaptchaAnswers, CaptchaAnswersAdmin)
 
 class CaptchaQuestionsAdmin(admin.ModelAdmin):
     pass
