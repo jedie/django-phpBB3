@@ -4,12 +4,11 @@ from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
 from django_phpBB3.models import AclOption, AclRole, AclRoleData, \
-    Attachment, Banlist, Bbcode, Bookmark, Bot, \
-    CaptchaQuestions, Config, Confirm, Disallow, Draft, ExtensionGroup, Extension, \
-    Forum, Group, Icon, Lang, Log, \
-    Module, PollOption, Post, Privmsg, \
+    Attachment, Banlist, Bbcode, Bookmark, Bot, CaptchaQuestions, \
+    Config, Confirm, Disallow, Draft, ExtensionGroup, Extension, \
+    Forum, Group, Icon, Lang, Log, Module, Post, Privmsg, \
     PrivmsgFolder, PrivmsgRules, ProfileField, ProfileFieldData, \
-    ProfileFieldLang, ProfileLang, QaConfirm, Rank, Report, ReportReasons, \
+    ProfileFieldLang, ProfileLang, Rank, Report, ReportReasons, \
     SearchResult, SearchWordlist, SearchWordmatch, Session, Sitelist, \
     Smilie, Style, StyleImageset, StyleImagesetData, StyleTemplate, \
     StyleTemplateData, StyleTheme, Topic, TopicPosted, TopicTrack, \
@@ -238,13 +237,6 @@ class ModuleAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Module, ModuleAdmin)
 
-class PollOptionAdmin(admin.ModelAdmin):
-    """
-    Options text of all votes ("Yes", "No", "Maybe"...)
-    """
-    pass
-admin.site.register(PollOption, PollOptionAdmin)
-
 class PrivmsgAdmin(admin.ModelAdmin):
     """
     Private messages text
@@ -293,10 +285,6 @@ class ProfileLangAdmin(admin.ModelAdmin):
     """
     pass
 admin.site.register(ProfileLang, ProfileLangAdmin)
-
-class QaConfirmAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(QaConfirm, QaConfirmAdmin)
 
 class RankAdmin(admin.ModelAdmin):
     """

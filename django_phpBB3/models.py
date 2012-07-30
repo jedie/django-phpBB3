@@ -1625,27 +1625,6 @@ class Module(models.Model):
     class Meta:
         db_table = u"%smodules" % settings.PHPBB_TABLE_PREFIX
 
-class PollOption(models.Model):
-    """
-    Options text of all votes ("Yes", "No", "Maybe"...)
-    """
-    poll_option_id = models.IntegerField(
-        # tinyint(4)
-        default=0,
-    )
-    topic = models.ForeignKey("Topic", blank=True,
-        # mediumint(8) unsigned
-        default=0,
-    )
-    poll_option_text = models.TextField(
-        # text
-    )
-    poll_option_total = models.PositiveIntegerField(
-        # mediumint(8) unsigned
-        default=0,
-    )
-    class Meta:
-        db_table = u"%spoll_options" % settings.PHPBB_TABLE_PREFIX
 
 class Privmsg(models.Model):
     """
@@ -1946,16 +1925,6 @@ class ProfileLang(models.Model):
     )
     class Meta:
         db_table = u"%sprofile_lang" % settings.PHPBB_TABLE_PREFIX
-
-class QaConfirm(models.Model):
-    session_id = models.CharField(max_length=96)
-    confirm_id = models.CharField(max_length=96)
-    lang_iso = models.CharField(max_length=30)
-    question_id = models.IntegerField()
-    attempts = models.IntegerField()
-    confirm_type = models.IntegerField()
-    class Meta:
-        db_table = u"%sqa_confirm" % settings.PHPBB_TABLE_PREFIX
 
 class Rank(models.Model):
     """
