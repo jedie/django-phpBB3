@@ -1105,7 +1105,7 @@ class Config(models.Model):
     """
     id = models.CharField(max_length=255, primary_key=True, db_column="config_name",
         # varchar(255)
-        help_text="primary key"
+        help_text="config name, primary key"
     )
     config_value = models.CharField(max_length=255,
         # varchar(255)
@@ -1117,7 +1117,7 @@ class Config(models.Model):
         help_text="Is dynamic?"
     )
     def __unicode__(self):
-            return u"%s: %s" % (self.config_name, self.config_value)
+            return u"%s: %s" % (self.id, self.config_value)
     class Meta:
         db_table = u"%sconfig" % settings.PHPBB_TABLE_PREFIX
 
