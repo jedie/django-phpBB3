@@ -103,8 +103,8 @@ Handling missing features in DjangoBB:
 TODO:
 
 * Bugfix for user post count migration - https://github.com/jedie/django-phpBB3/issues/6
-* migrate use language and his avatar - https://github.com/jedie/django-phpBB3/issues/7
-* add a separate command for migrate phpBB private messages to django-messages
+* migrate user avatar - https://github.com/jedie/django-phpBB3/issues/7
+* add a separate command for migrate phpBB private messages to django-messages (very low priority, patches are welcome)
 
 ==== open questions =====
 
@@ -122,6 +122,8 @@ The SQL schema files from phpBB can be found here:
 
 == history
 
+* v0.1.5 - 31.07.2012
+** migrate user language, too.
 * v0.1.4 - 30.07.2012
 ** [[https://github.com/jedie/django-phpBB3/compare/de68647c86bf...6d3bfb623b24|many bugfixes in models]].
 * v0.1.3 - 27.07.2012

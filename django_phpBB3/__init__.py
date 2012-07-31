@@ -11,7 +11,7 @@
 import re
 
 
-__version__ = (0, 1, 4)
+__version__ = (0, 1, 5)
 VERSION_STRING = '.'.join(str(part) for part in __version__)
 
 
