@@ -140,6 +140,9 @@ class Command(BaseCommand):
     def migrate_users(self, cleanup_users, moderator_groups):
         self.stdout.write("\n *** Migrate phpbb_forum users...\n")
 
+        lang_codes = [i[0] for i in settings.LANGUAGES]
+        default_lang = settings.LANGUAGE_CODE.split("-")[0]
+
         moderators = []
         user_dict = {}
         phpbb_users = phpbb_User.objects.all()
@@ -191,10 +194,15 @@ class Command(BaseCommand):
             tz = TZ_CHOICES[int(phpbb_user.timezone)][0]
             #print tz
 
-            # TODO: migrate language and avatar, too!
+            # TODO: migrate avatar, too!
             # see:
             # https://github.com/jedie/django-phpBB3/issues/6
-            # https://github.com/jedie/django-phpBB3/issues/7
+
+            if phpbb_user.lang in lang_codes:
+                language = phpbb_user.lang
+            else:
+                language = default_lang
+
             user_profile, created = Profile.objects.get_or_create(
                 user=django_user,
                 defaults={
@@ -205,6 +213,7 @@ class Command(BaseCommand):
                     "yahoo": phpbb_user.yim,
 
                     "time_zone": tz,
+                    "language":language,
 
                     "jabber":phpbb_user.jabber,
                     "icq":phpbb_user.icq,
