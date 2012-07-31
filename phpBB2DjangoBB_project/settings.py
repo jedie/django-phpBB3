@@ -144,6 +144,10 @@ PHPBB_TABLE_PREFIX = u"phpbb3_"
 # e.g.: = "/path/to/phpBB/files/"
 PHPBB_ATTACHMENT_PATH = None
 
+# for redirect example views
+# e.g.: domain.tld/phpbb/viewtopic.php?t=123 -> phpbb 
+OLD_PHPBB_URL_PREFIX = "phpbb"
+
 #------------------------------------------------------------------------------
 
 try:
