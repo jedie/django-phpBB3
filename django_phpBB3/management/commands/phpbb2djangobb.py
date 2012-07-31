@@ -347,6 +347,7 @@ class Command(BaseCommand):
                 sticky = False
 
             obj = Topic.objects.create(
+                id=topic.id,
                 forum=forum,
                 user=user,
                 name=topic.clean_title(),
@@ -407,6 +408,7 @@ class Command(BaseCommand):
 
             try:
                 post = Post.objects.create(
+                    id=phpbb_post.id,
                     topic=topic,
                     user=user,
                     created=phpbb_post.create_datetime(),
