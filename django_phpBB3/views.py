@@ -15,20 +15,28 @@ from django.shortcuts import get_object_or_404
 from djangobb_forum.models import Post, Topic
 
 
-def phpbb2django_topic(request):
+def redirect_phpbb2django(request):
     """
-    example view for redirect old phpBB3 topic urls to DjangoBB topic urls
+    example view for redirect old phpBB3 topic/post urls to DjangoBB urls.
     """
-    raw_topic_id = request.GET.get("t")
-    if not raw_topic_id:
+    if "t" in request.GET:
+        key = "t"
+        model_class = Topic
+    elif "p" in request.GET:
+        key = "p"
+        model_class = Post
+    else:
         raise Http404("No ID is GET parameter.")
 
+    raw_id = request.GET[key]
+
     try:
-        topic_id = int(raw_topic_id)
+        id = int(raw_id)
     except ValueError:
         raise Http404("ID is not a integer.")
 
-    queryset = Topic.objects.only("id")
-    topic = get_object_or_404(queryset, id=topic_id)
-    url = topic.get_absolute_url()
+    queryset = model_class.objects.only("id")
+    instance = get_object_or_404(queryset, id=id)
+    url = instance.get_absolute_url()
+
     return HttpResponsePermanentRedirect(url)
