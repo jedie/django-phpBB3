@@ -72,6 +72,13 @@ cd phpBB2DjangoBB_project
 phpBB2DjangoBB_project$ ./manage.py phpbb2djangobb
 }}}
 
+Note: You should update the haystack search index with e.g.:
+{{{
+phpBB2DjangoBB_project$ ./manage.py update_index --verbosity=2
+}}}
+more information: http://django-haystack.readthedocs.org/en/latest/management_commands.html
+
+
 === options ===
 ==== cleanup_users ====
 
