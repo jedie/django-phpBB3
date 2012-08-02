@@ -1,0 +1,14 @@
+#
+# Here a example how to redirect phpBB3 urls to DjangoBB urls
+#
+
+# http://httpd.apache.org/docs/2.0/mod/mod_rewrite.html
+RewriteEngine On
+
+RewriteCond %{QUERY_STRING} (^|&)p=([0-9]+)(&|$) [NC]
+RewriteRule ^viewtopic\.php$ /forum/post/%2/? [L,R=301,NC]
+
+RewriteCond %{QUERY_STRING} (^|&)t=([0-9]+)(&|$) [NC]
+RewriteRule ^viewtopic\.php$ /forum/topic/%2/? [L,R=301,NC]
+
+RewriteRule ^(.*)$ /forum/? [L,R=301]
