@@ -72,11 +72,19 @@ cd phpBB2DjangoBB_project
 phpBB2DjangoBB_project$ ./manage.py phpbb2djangobb
 }}}
 
-Note: You should update the haystack search index with e.g.:
+==== after migration ====
+
+You must update the haystack search index with e.g.:
 {{{
 phpBB2DjangoBB_project$ ./manage.py update_index --verbosity=2
 }}}
 more information: http://django-haystack.readthedocs.org/en/latest/management_commands.html
+
+Depend on the used database you must reset sequences.
+{{{
+Sequences are indexes used by some database engines to track the next available number for automatically incremented fields.
+}}}
+more info: https://docs.djangoproject.com/en/dev/ref/django-admin/#sqlsequencereset-appname-appname
 
 
 === options ===
