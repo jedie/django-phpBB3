@@ -114,6 +114,7 @@ Handling missing features in DjangoBB:
 * sub forums would be flatten
 * //ghost moved posts// are ignored (only the moved post would be created)
 * ForumWatch are ignored
+* Guest posts would be mapped to a new "Anonymous" user (has unusable password and no email address). Note: guest posts are planed in DjangoBB, see: http://support.djangobb.org/topic/98/
 
 TODO:
 
