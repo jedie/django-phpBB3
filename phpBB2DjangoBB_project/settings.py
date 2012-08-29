@@ -148,6 +148,9 @@ PHPBB_ATTACHMENT_PATH = None
 # e.g.: domain.tld/phpbb/viewtopic.php?t=123 -> phpbb 
 OLD_PHPBB_URL_PREFIX = "phpbb"
 
+# Exists the captcha_questions database table? FIXME: In which case does it exists?
+PHPBB_CAPTCHA_QUESTIONS_MODEL_EXIST = False
+
 #------------------------------------------------------------------------------
 
 try:

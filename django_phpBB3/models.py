@@ -1328,14 +1328,20 @@ class Bot(models.Model):
     class Meta:
         db_table = u"%sbots" % settings.PHPBB_TABLE_PREFIX
 
-class CaptchaQuestions(models.Model):
-    id = models.IntegerField(primary_key=True, db_column="question_id")
-    strict = models.IntegerField()
-    lang_id = models.IntegerField()
-    lang_iso = models.CharField(max_length=30)
-    question_text = models.TextField()
-    class Meta:
-        db_table = u"%scaptcha_questions" % settings.PHPBB_TABLE_PREFIX
+
+if settings.PHPBB_CAPTCHA_QUESTIONS_MODEL_EXIST:
+    class CaptchaQuestions(models.Model):
+        """
+        FIXME: This table doesn't exist in every case???
+        """
+        id = models.IntegerField(primary_key=True, db_column="question_id")
+        strict = models.IntegerField()
+        lang_id = models.IntegerField()
+        lang_iso = models.CharField(max_length=30)
+        question_text = models.TextField()
+        class Meta:
+            db_table = u"%scaptcha_questions" % settings.PHPBB_TABLE_PREFIX
+
 
 class Confirm(models.Model):
     """

@@ -149,6 +149,9 @@ LOGGING = {
 
 PHPBB_TABLE_PREFIX = u"phpbb3_"
 
+# Exists the captcha_questions database table? FIXME: In which case does it exists?
+PHPBB_CAPTCHA_QUESTIONS_MODEL_EXIST = False
+
 #------------------------------------------------------------------------------
 
 try:

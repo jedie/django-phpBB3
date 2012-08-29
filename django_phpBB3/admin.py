@@ -1,10 +1,11 @@
 # coding: utf-8
 
+from django.conf import settings
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
 from django_phpBB3.models import AclOption, AclRole, AclRoleData, \
-    Attachment, Banlist, Bbcode, Bookmark, Bot, CaptchaQuestions, \
+    Attachment, Banlist, Bbcode, Bookmark, Bot, \
     Config, Confirm, Disallow, Draft, ExtensionGroup, Extension, \
     Forum, Group, Icon, Lang, Log, Module, Post, Privmsg, \
     PrivmsgFolder, PrivmsgRules, ProfileField, ProfileFieldData, \
@@ -14,6 +15,8 @@ from django_phpBB3.models import AclOption, AclRole, AclRoleData, \
     StyleTemplateData, StyleTheme, Topic, TopicTrack, \
     User, Warning, Word, Zebra
 
+if settings.PHPBB_CAPTCHA_QUESTIONS_MODEL_EXIST:
+    from django_phpBB3.models import CaptchaQuestions
 
 #
 #These classes would need Django to support composite keys:
@@ -170,9 +173,12 @@ class BotAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Bot, BotAdmin)
 
-class CaptchaQuestionsAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(CaptchaQuestions, CaptchaQuestionsAdmin)
+
+if settings.PHPBB_CAPTCHA_QUESTIONS_MODEL_EXIST:
+    class CaptchaQuestionsAdmin(admin.ModelAdmin):
+        pass
+    admin.site.register(CaptchaQuestions, CaptchaQuestionsAdmin)
+
 
 class ConfigAdmin(admin.ModelAdmin):
     """
