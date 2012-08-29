@@ -1,17 +1,6 @@
 # coding: utf-8
 
-"""
-    we add the committer date to the version number by a .gitattributes filter
-    
-    more info about this here:
-    https://github.com/jedie/python-code-snippets/tree/master/CodeSnippets/git/#readme
-"""
-
-
-import re
-
-
-__version__ = (0, 1, 5)
+__version__ = (0, 1, 6, "pre")
 VERSION_STRING = '.'.join(str(part) for part in __version__)
 
 
