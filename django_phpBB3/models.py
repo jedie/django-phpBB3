@@ -909,7 +909,9 @@ class Topic(models.Model):
     )
 
     def clean_title(self):
-        return deentity.replace_all(self.title)
+        title = deentity.replace_all(self.title)
+        title = smart_unicode(title)
+        return title
 
     def moved(self):
         return self.status == TOPIC_MOVED

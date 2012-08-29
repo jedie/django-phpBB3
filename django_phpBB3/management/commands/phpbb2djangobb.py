@@ -168,6 +168,10 @@ class Command(BaseCommand):
                 # can't be None in User model:
                 last_login = datetime.datetime(year=datetime.MINYEAR, month=1, day=1)
 
+            # FIXME:
+            #     * Clean username (remove non-ascii)
+            #     * check doublicates via email compare 
+
             django_user, created = User.objects.get_or_create(
                 username=phpbb_user.username,
                 defaults={
@@ -231,12 +235,12 @@ class Command(BaseCommand):
 
     def get_or_create_category(self, phpbb_forum):
         obj, created = Category.objects.get_or_create(
-            name=phpbb_forum.forum_name
+            name=smart_unicode(phpbb_forum.forum_name)
         )
         if created:
-            self.stdout.write(u"\tCategory '%s' created.\n" % smart_unicode(obj.name))
+            self.stdout.write(u"\tCategory '%s' created.\n" % obj.name)
         else:
-            self.stdout.write(u"\tCategory '%s' exists.\n" % smart_unicode(obj.name))
+            self.stdout.write(u"\tCategory '%s' exists.\n" % obj.name)
         return obj
 
     def migrate_forums(self, moderators):
@@ -280,7 +284,7 @@ class Command(BaseCommand):
                 category_dict[parent.id] = category
 
             obj, created = Forum.objects.get_or_create(
-                name=phpbb_forum.forum_name,
+                name=smart_unicode(phpbb_forum.forum_name),
                 defaults={
                     "category":category,
                     "description":phpbb_forum.forum_desc,
@@ -421,6 +425,7 @@ class Command(BaseCommand):
                     user_ip=phpbb_post.poster_ip,
                 )
             except Exception, err:
+                raise
                 msg = (
                     "\n +++ ERROR: creating Post entry for phpBB3 post (ID: %s):\n"
                     "%s\n"
