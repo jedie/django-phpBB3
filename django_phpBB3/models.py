@@ -16,8 +16,9 @@ import datetime
 import re
 
 
-from django.db import models
 from django.conf import settings
+from django.db import models
+from django.utils.encoding import smart_unicode
 from django.utils.tzinfo import FixedOffset
 
 from django_phpBB3.utils import clean_bbcode, deentity
@@ -405,7 +406,7 @@ class User(models.Model):
         return timestamp2datetime(self.lastvisit, self.timezone)
 
     def __unicode__(self):
-        return self.username
+        return smart_unicode(self.username)
 
     class Meta:
         db_table = u"%susers" % settings.PHPBB_TABLE_PREFIX
@@ -582,7 +583,8 @@ class Forum(models.Model):
         return timestamp2datetime(self.forum_last_post_time, timezone=None)
 
     def __unicode__(self):
-        return self.forum_name
+        return smart_unicode(self.forum_name)
+
     class Meta:
         db_table = u"%sforums" % settings.PHPBB_TABLE_PREFIX
 
@@ -699,7 +701,8 @@ class Post(models.Model):
         return timestamp2datetime(self.edit_time, timezone=None)
 
     def teaser(self):
-        return u" ".join(self.text.splitlines())[:50] + u"..."
+        text = smart_unicode(self.text)
+        return u" ".join(text.splitlines())[:50] + u"..."
 
     def has_attachment(self):
         return bool(self.attachment)
@@ -714,7 +717,9 @@ class Post(models.Model):
         else:
             bbcode_uid = None
 
-        return clean_bbcode(self.text, bbcode_uid)
+        text = smart_unicode(self.text)
+        bbcode = clean_bbcode(text, bbcode_uid)
+        return bbcode
 
     def __unicode__(self):
         return u"Post %i: %s" % (self.id, self.teaser())
@@ -921,7 +926,8 @@ class Topic(models.Model):
         return timestamp2datetime(self.last_view_time)
 
     def __unicode__(self):
-        return self.title
+        return smart_unicode(self.title)
+
     class Meta:
         db_table = u"%stopics" % settings.PHPBB_TABLE_PREFIX
         ordering = ['-time']
@@ -1004,7 +1010,8 @@ class Group(models.Model):
         default=1,
     )
     def __unicode__(self):
-        return self.name
+        return smart_unicode(self.name)
+
     class Meta:
         db_table = u"%sgroups" % settings.PHPBB_TABLE_PREFIX
 
@@ -1324,7 +1331,8 @@ class Bot(models.Model):
         # varchar(255)
     )
     def __unicode__(self):
-        return self.bot_name
+        return smart_unicode(self.bot_name)
+
     class Meta:
         db_table = u"%sbots" % settings.PHPBB_TABLE_PREFIX
 
@@ -1387,7 +1395,7 @@ class Disallow(models.Model):
         # varchar(255)
     )
     def __unicode__(self):
-        return self.disallow_username
+        return smart_unicode(self.disallow_username)
     class Meta:
         db_table = u"%sdisallow" % settings.PHPBB_TABLE_PREFIX
 
@@ -1510,7 +1518,7 @@ class Icon(models.Model):
         default=1,
     )
     def __unicode__(self):
-        return self.icons_url
+        return smart_unicode(self.icons_url)
     class Meta:
         db_table = u"%sicons" % settings.PHPBB_TABLE_PREFIX
 
@@ -1955,7 +1963,7 @@ class Rank(models.Model):
         # varchar(255)
     )
     def __unicode__(self):
-        return self.rank_title
+        return smart_unicode(self.rank_title)
     class Meta:
         db_table = u"%sranks" % settings.PHPBB_TABLE_PREFIX
 
@@ -2201,7 +2209,7 @@ class Style(models.Model):
         default=0,
     )
     def __unicode__(self):
-        return self.style_name
+        return smart_unicode(self.style_name)
     class Meta:
         db_table = u"%sstyles" % settings.PHPBB_TABLE_PREFIX
 
