@@ -5,9 +5,15 @@ It's not a phpBB clone or a forum!
 
 Django-phpBB3 has also a script for migrate a phpBB3 forum into a [[http://djangobb.org/|DjangoBB forum]]. See below.
 
+Notes:
+* There are a few mismatches between the origin phpBB3 Database schema and the {{{models.py}}} form Django-phpBB3. Because of this: Creating the phpBB3 tables via {{{syncdb}}} will not work with phpBB3.
+** phpBB3 used often {{{0}}} for a not set value, but we need a real {{{null}}} value in db (to get {{{None}}} back) 
+* phpBB3 Models with composite keys are unsupported, but stored in [[https://github.com/jedie/django-phpBB3/blob/master/django_phpBB3/unsupported_models.py|django_phpBB3/unsupported_models.py]]
+
 Warning:
 Write access to the original phpBB database is not tested, yet. So it's not guaranteed that changes trough the django admin will work with phpBB3! 
-So in the current state, access 'read-only' to the data ;)
+So, in the current state, you should only access 'read-only' to the origin phpBB3 data ;)
+
 
 Patches are welcome! Please send pull requests. 
 
@@ -17,7 +23,7 @@ Patches are welcome! Please send pull requests.
 We add two example projects:
 
 | **[[https://github.com/jedie/django-phpBB3/tree/master/django_phpBB3_project|django_phpBB3_project]]**  | minimal project without extra depencies
-| **[[https://github.com/jedie/django-phpBB3/tree/master/phpBB2DjangoBB_project|phpBB2DjangoBB_project]]** | DjangoBB example project which include the phpBB2DjangoBB migration command
+| **[[https://github.com/jedie/django-phpBB3/tree/master/phpBB2DjangoBB_project|phpBB2DjangoBB_project]]** | DjangoBB example project for use the phpBB2DjangoBB migration command
 
 
 == setup ==
@@ -91,6 +97,9 @@ At least you need these settings:
 # filesystem path to the /files/ sub directory of the phpBB installation:
 PHPBB_ATTACHMENT_PATH = "/path/to/phpBB/files/"
 
+# database table prefix (default is: "phpbb3_")
+#PHPBB_TABLE_PREFIX = "phpbb_"
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
@@ -103,6 +112,16 @@ DATABASES = {
 }
 }}}
 (You must also point the attachment directory from DjangoBB to a existing filesystem path.)
+
+
+**Before you start:** You should check if database encoding settings are ok.
+e.g. in default ubuntu/debian setup a mysql server will use {{{latin-1}}} !
+So before you start, you should correct this. e.g.:
+{{{
+ALTER DATABASE test DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci
+}}}
+**Make a SQL Backup before doing anything!!!**
+
 
 Run the migration with {{{./manage.py phpbb2djangobb}}}, e.g:
 {{{
@@ -138,8 +157,7 @@ Add {{{--cleanup_users=x}}} to setup which users are migrate, where **x** is a n
 | **3** | email + lastvisit and has created at least one post
 
 
-=== migration notes ===
-==== limitations ====
+=== migration limitations ===
 
 Things that would not be transfered, yet:
 
@@ -163,9 +181,34 @@ TODO:
 * migrate user avatar - https://github.com/jedie/django-phpBB3/issues/7
 * add a separate command for migrate phpBB private messages to django-messages (very low priority, patches are welcome)
 
-==== open questions =====
+=== migration - open questions ====
 
 * Are the phpBB times in {{{phpbb_posts}}} in UTC oder in local time from user?
+* How to handle non-ascii characters in nick names?
+
+
+=== developer info around migration ===
+
+Example how to create the phpBB3 tables with the origin schema, without phpBB3 installation and using SQLite:
+{{{
+~$ cd DjangoBB_env/
+~/DjangoBB_env$ source bin/activate
+(DjangoBB_env)~/DjangoBB_env$ cd src/django-phpbb3/phpBB2DjangoBB_project
+
+# Get the origin CREATE TABLE file for SQLite:
+(DjangoBB_env).../phpBB2DjangoBB_project$ wget https://github.com/phpbb/phpbb3/raw/master/phpBB/install/schemas/sqlite_schema.sql
+
+# Only needed if syncdb was run in the past:
+(DjangoBB_env).../phpBB2DjangoBB_project$ ./manage.py reset django_phpBB3
+
+# start sqlite shell
+(DjangoBB_env).../phpBB2DjangoBB_project$ ./manage.py dbshell
+SQLite version 3.7.9 2011-11-01 00:52:41
+Enter ".help" for instructions
+Enter SQL statements terminated with a ";"
+sqlite> .read sqlite_schema.sql
+
+}}}
 
 
 == phpBB3 links ==
@@ -177,8 +220,12 @@ Here some links for phpBB documentations:
 The SQL schema files from phpBB can be found here:
 * https://github.com/phpbb/phpbb3/tree/develop/phpBB/install/schemas
 
+
 == history
 
+* v0.1.6.pre
+** Add more information in README
+** Fix some unicode errors
 * v0.1.5 - 31.07.2012
 ** [[https://github.com/jedie/django-phpBB3/commit/170f035b076fb5e7b54a1453b298679653c2719b|migrate user language, too]].
 * v0.1.4 - 30.07.2012
@@ -202,6 +249,7 @@ The SQL schema files from phpBB can be found here:
 ** start with phpBB3 migration command
 * 16.07.2012
 ** project starts by Jens Diemer
+
 
 == Project links ==
 
