@@ -10,9 +10,12 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-import re
 import htmlentitydefs as entities
+import re
 import time
+
+from django.utils.encoding import force_unicode
+
 
 EMAIL_RE = (
     re.compile(r' ?<!-- e --><a href="([^"]*)">(.*?)</a><!-- e --> ?', re.S),
@@ -106,7 +109,7 @@ def phpbb_html2bbcode(text):
 def clean_bbcode(text, bbcode_uid=None):
     """
     >>> clean_bbcode('DjangoBB <!-- m --><a class="postlink" href="http://djangobb.org/">trac</a><!-- m --> page.')
-    'DjangoBB [url=http://djangobb.org/]trac[/url] page.'
+    u'DjangoBB [url=http://djangobb.org/]trac[/url] page.'
 
     >>> clean_bbcode(
     ...     u'Look at [url=https&#58;//github&#46;com/jedie/PyLucid/views&#46;py:1234abcd]/views.py[/url:1234abcd]',
@@ -114,6 +117,8 @@ def clean_bbcode(text, bbcode_uid=None):
     ... )
     u'Look at [url=https://github.com/jedie/PyLucid/views.py]/views.py[/url]'
     """
+    text = force_unicode(text)
+
     if bbcode_uid is not None:
         text = text.replace(u":%s" % bbcode_uid, u"")
 
