@@ -69,9 +69,9 @@ class Deentity(object):
 
     def replace_named(self, text):
         """ named entity """
-        if text == "nbsp":
+        if text == u"nbsp":
             # Non breaking spaces is not in htmlentitydefs
-            return " "
+            return u" "
         else:
             codepoint = entities.name2codepoint[text]
             return unichr(codepoint)
@@ -95,8 +95,8 @@ deentity = Deentity()
 
 def phpbb_html2bbcode(text):
     """
-    >>> phpbb_html2bbcode('DjangoBB <!-- m --><a class="postlink" href="http://djangobb.org/">trac</a><!-- m --> page.')
-    'DjangoBB [url=http://djangobb.org/]trac[/url] page.'
+    >>> phpbb_html2bbcode(u'DjangoBB <!-- m --><a class="postlink" href="http://djangobb.org/">trac</a><!-- m --> page.')
+    u'DjangoBB [url=http://djangobb.org/]trac[/url] page.'
     """
     for regex, replace_by in BBCODE_REPLACES:
         text = regex.sub(replace_by, text)
@@ -115,7 +115,7 @@ def clean_bbcode(text, bbcode_uid=None):
     u'Look at [url=https://github.com/jedie/PyLucid/views.py]/views.py[/url]'
     """
     if bbcode_uid is not None:
-        text = text.replace(":%s" % bbcode_uid, "")
+        text = text.replace(u":%s" % bbcode_uid, u"")
 
     text = deentity.replace_all(text)
 
