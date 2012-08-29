@@ -3,7 +3,7 @@
 """
     migrate phpBB3 to DjangoBB
     ~~~~~~~~~~~~~~~~~~~~~~~~~~
-    
+
 
     :copyleft: 2012 by the django-phpBB3 team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
@@ -16,7 +16,7 @@ import sys
 import time
 import shutil
 import pprint
-from django.utils.encoding import smart_str
+from django.utils.encoding import smart_unicode
 
 if __name__ == "__main__":
     os.environ["DJANGO_SETTINGS_MODULE"] = "phpBB2DjangoBB_project.settings"
@@ -53,7 +53,7 @@ from django_phpBB3.utils import ProcessInfo, human_duration
 def disable_auto_fields(model_class):
     """
     Hack: It's needed to disable "auto_now_add" to set a old datetime
-    
+
     see also: http://stackoverflow.com/questions/7499767/temporarily-disable-auto-now-auto-now-add
     """
     ATTR_NAMES = ("auto_now", "auto_now_add")
@@ -104,15 +104,11 @@ class Command(BaseCommand):
         self.update_topic_stats()
         self.update_forum_stats()
 
-        self.stdout_write(u"\nmigration done.\n")
+        self.stdout.write(u"\nmigration done.\n")
 
     def _warn(self, msg):
-        self.stderr.write(smart_str(self.style.ERROR(msg)))
+        self.stderr.write(self.style.ERROR(msg))
         self.stderr.flush()
-
-    def stdout_write(self, msg):
-        msg = smart_str(msg)
-        self.stdout.write(msg)
 
     def check_attachment_path(self):
         path = getattr(settings, "PHPBB_ATTACHMENT_PATH", None)
@@ -143,7 +139,7 @@ class Command(BaseCommand):
 
 
     def migrate_users(self, cleanup_users, moderator_groups):
-        self.stdout_write(u"\n *** Migrate phpbb_forum users...\n")
+        self.stdout.write(u"\n *** Migrate phpbb_forum users...\n")
 
         lang_codes = [i[0] for i in settings.LANGUAGES]
         default_lang = settings.LANGUAGE_CODE.split("-")[0]
@@ -156,15 +152,15 @@ class Command(BaseCommand):
                 # Only users with has no posts can be skip.
                 if cleanup_users >= 1:
                     if not phpbb_user.email:
-                        self.stdout_write(u"\t * Skip '%s' (no email)\n" % phpbb_user)
+                        self.stdout.write(u"\t * Skip '%s' (no email)\n" % smart_unicode(phpbb_user.username))
                         continue
                 if cleanup_users >= 2:
                     if not phpbb_user.lastvisit:
-                        self.stdout_write(u"\t * Skip '%s' (no lastvisit)\n" % phpbb_user)
+                        self.stdout.write(u"\t * Skip '%s' (no lastvisit)\n" % smart_unicode(phpbb_user.username))
                         continue
                 if cleanup_users >= 3:
                     if not phpbb_user.posts:
-                        self.stdout_write(u"\t * Skip '%s' (no posts)\n" % phpbb_user)
+                        self.stdout.write(u"\t * Skip '%s' (no posts)\n" % smart_unicode(phpbb_user.username))
                         continue
 
             last_login = phpbb_user.lastvisit_datetime()
@@ -184,14 +180,14 @@ class Command(BaseCommand):
                 }
             )
             if created:
-                self.stdout_write(u"\tUser '%s' created.\n" % django_user)
+                self.stdout.write(u"\tUser '%s' created.\n" % smart_unicode(django_user.username))
                 django_user.set_unusable_password()
                 django_user.save()
             else:
-                self.stdout_write(u"\tUser '%s' exists.\n" % django_user)
+                self.stdout.write(u"\tUser '%s' exists.\n" % smart_unicode(django_user.username))
 
             if phpbb_user.group in moderator_groups:
-                self.stdout_write(u"\t *** Mark user '%s' as global forum moderator\n" % phpbb_user)
+                self.stdout.write(u"\t *** Mark user '%s' as global forum moderator\n" % phpbb_user)
                 moderators.append(django_user)
 
             user_dict[phpbb_user.id] = django_user
@@ -227,9 +223,9 @@ class Command(BaseCommand):
                 }
             )
             if created:
-                self.stdout_write(u"\t - User profile for '%s' created.\n" % django_user)
+                self.stdout.write(u"\t - User profile for '%s' created.\n" % smart_unicode(django_user.username))
             else:
-                self.stdout_write(u"\t - User profile for '%s' exists.\n" % django_user)
+                self.stdout.write(u"\t - User profile for '%s' exists.\n" % smart_unicode(django_user.username))
 
         return user_dict, moderators
 
@@ -238,13 +234,13 @@ class Command(BaseCommand):
             name=phpbb_forum.forum_name
         )
         if created:
-            self.stdout_write(u"\tCategory '%s' created.\n" % obj.name)
+            self.stdout.write(u"\tCategory '%s' created.\n" % obj.name)
         else:
-            self.stdout_write(u"\tCategory '%s' exists.\n" % obj.name)
+            self.stdout.write(u"\tCategory '%s' exists.\n" % obj.name)
         return obj
 
     def migrate_forums(self, moderators):
-        self.stdout_write(u"\n *** Migrate phpbb_forum entries...\n")
+        self.stdout.write(u"\n *** Migrate phpbb_forum entries...\n")
 
         phpbb_forums = phpbb_Forum.objects.all()
 
@@ -296,27 +292,27 @@ class Command(BaseCommand):
                 }
             )
             if created:
-                self.stdout_write(u"\tForum '%s' created.\n" % obj.name)
+                self.stdout.write(u"\tForum '%s' created.\n" % obj.name)
             else:
-                self.stdout_write(u"\tForum '%s' exists.\n" % obj.name)
+                self.stdout.write(u"\tForum '%s' exists.\n" % obj.name)
 
             forum_dict[phpbb_forum.id] = obj
 
             for moderator in moderators:
                 obj.moderators.add(moderator)
             obj.save()
-            self.stdout_write(u"\t - moderators: %s\n" % obj.moderators.all())
+            self.stdout.write(u"\t - moderators: %s\n" % obj.moderators.all())
 
         return forum_dict
 
 
     def migrate_topic(self, user_dict, forum_dict):
-        self.stdout_write(u"\n *** Migrate phpBB topic entries...\n")
+        self.stdout.write(u"\n *** Migrate phpBB topic entries...\n")
 
-        self.stdout_write(u"\tget topic watch information...")
+        self.stdout.write(u"\tget topic watch information...")
         self.stdout.flush()
         topic_watch = get_topic_watch()
-        self.stdout_write(u"OK\n")
+        self.stdout.write(u"OK\n")
         self.stdout.flush()
 
         topic_dict = {}
@@ -334,7 +330,7 @@ class Command(BaseCommand):
                 msg = (
                     "\r\t%i/%i topics migrated... rest: %i - eta: %s (rate: %.1f/sec)         "
                 ) % (count, total, rest, eta, rate)
-                self.stdout_write(msg)
+                self.stdout.write(msg)
                 self.stdout.flush()
 
             if topic.moved():
@@ -373,7 +369,7 @@ class Command(BaseCommand):
 
         duration = time.time() - start_time
         rate = float(count) / duration
-        self.stdout_write(
+        self.stdout.write(
             "\r *** %i topics migrated in %s (rate: %.1f/sec)\n" % (
                 count, human_duration(duration), rate
             )
@@ -382,7 +378,7 @@ class Command(BaseCommand):
 
 
     def migrate_posts(self, user_dict, topic_dict):
-        self.stdout_write(u"\n *** Migrate phpBB posts entries...\n")
+        self.stdout.write(u"\n *** Migrate phpBB posts entries...\n")
 
         posts = phpbb_Post.objects.all().order_by("time")
         total = posts.count()
@@ -398,7 +394,7 @@ class Command(BaseCommand):
                 msg = (
                     "\r\t%i/%i posts migrated... rest: %i - eta: %s (rate: %.1f/sec)         "
                 ) % (count, total, rest, eta, rate)
-                self.stdout_write(msg)
+                self.stdout.write(msg)
                 self.stdout.flush()
 
             topic = topic_dict[phpbb_post.topic.id]
@@ -434,42 +430,43 @@ class Command(BaseCommand):
 
             if phpbb_post.has_attachment():
                 # copy attachment files
-                phpbb_attachment = phpbb_Attachment.objects.get(post_msg=phpbb_post)
-                src_path = os.path.join(settings.PHPBB_ATTACHMENT_PATH, phpbb_attachment.physical_filename)
-                if not os.path.isfile(src_path):
-                    self._warn("\n +++ ERROR: Attachment not found: '%s'\n" % src_path)
-                else:
-                    attachment = Attachment(
-                        size=phpbb_attachment.filesize,
-                        content_type=phpbb_attachment.mimetype,
-                        name=phpbb_attachment.real_filename,
-                        post=post
-                    )
-                    filename = "%d.0" % post.id
-                    dst_path = os.path.join(
-                        settings.MEDIA_ROOT, forum_settings.ATTACHMENT_UPLOAD_TO,
-                        filename
-                    )
-                    shutil.copy(src_path, dst_path)
-                    attachment.path = filename
-                    attachment.save()
-                    self.stdout_write(
-                        "\n\t *** Attachment %s copied in: %s\n" % (
-                            attachment, dst_path
+                phpbb_attachments = phpbb_Attachment.objects.filter(post_msg=phpbb_post)
+                for phpbb_attachment in phpbb_attachments:
+                    src_path = os.path.join(settings.PHPBB_ATTACHMENT_PATH, phpbb_attachment.physical_filename)
+                    if not os.path.isfile(src_path):
+                        self._warn("\n +++ ERROR: Attachment not found: '%s'\n" % src_path)
+                    else:
+                        attachment = Attachment(
+                            size=phpbb_attachment.filesize,
+                            content_type=phpbb_attachment.mimetype,
+                            name=phpbb_attachment.real_filename,
+                            post=post
                         )
-                    )
-                    self.stdout.flush()
+                        filename = "%d.0" % post.id
+                        dst_path = os.path.join(
+                            settings.MEDIA_ROOT, forum_settings.ATTACHMENT_UPLOAD_TO,
+                            filename
+                        )
+                        shutil.copy(src_path, dst_path)
+                        attachment.path = filename
+                        attachment.save()
+                        self.stdout.write(
+                            "\n\t *** Attachment %s copied in: %s\n" % (
+                                attachment.name, dst_path
+                            )
+                        )
+                        self.stdout.flush()
 
         duration = time.time() - start_time
         rate = float(count) / duration
-        self.stdout_write(
+        self.stdout.write(
             "\r *** %i posts migrated in %s (rate: %.1f/sec)\n" % (
                 count, human_duration(duration), rate
             )
         )
 
     def update_topic_stats(self):
-        self.stdout_write(u"\n *** set topic stats...\n")
+        self.stdout.write(u"\n *** set topic stats...\n")
 
         topics = Topic.objects.all()
         total = topics.count()
@@ -483,7 +480,7 @@ class Command(BaseCommand):
                 msg = (
                     "\r\t%i/%i topics... rest: %i - eta: %s (rate: %.1f/sec)         "
                 ) % (count, total, rest, eta, rate)
-                self.stdout_write(msg)
+                self.stdout.write(msg)
                 self.stdout.flush()
 
             queryset = Post.objects.only("created", "updated").filter(topic=topic)
@@ -503,17 +500,17 @@ class Command(BaseCommand):
 
         duration = time.time() - start_time
         rate = float(count) / duration
-        self.stdout_write(
+        self.stdout.write(
             "\r *** %i topic stats set in %s (rate: %.1f/sec)\n" % (
                 count, human_duration(duration), rate
             )
         )
 
     def update_forum_stats(self):
-        self.stdout_write(u"\n *** set forum stats...\n")
+        self.stdout.write(u"\n *** set forum stats...\n")
 
         for forum in Forum.objects.all():
-            self.stdout_write(u"\tset stats for %s\n" % forum)
+            self.stdout.write(u"\tset stats for %s\n" % forum)
             queryset = Post.objects.all().filter(topic__forum=forum)
             forum.post_count = queryset.count()
             try:
