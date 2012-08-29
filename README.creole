@@ -177,6 +177,7 @@ Handling missing features in DjangoBB:
 
 TODO:
 
+* How to handle non-ascii characters in nick names?
 * Bugfix for user post count migration - https://github.com/jedie/django-phpBB3/issues/6
 * migrate user avatar - https://github.com/jedie/django-phpBB3/issues/7
 * add a separate command for migrate phpBB private messages to django-messages (very low priority, patches are welcome)
@@ -184,7 +185,6 @@ TODO:
 === migration - open questions ====
 
 * Are the phpBB times in {{{phpbb_posts}}} in UTC oder in local time from user?
-* How to handle non-ascii characters in nick names?
 
 
 == phpBB3 links ==
@@ -199,9 +199,9 @@ The SQL schema files from phpBB can be found here:
 
 == history
 
-* v0.1.6.pre
+* v0.1.6
 ** Add more information in README
-** Fix some unicode errors
+** Fix unicode errors
 * v0.1.5 - 31.07.2012
 ** [[https://github.com/jedie/django-phpBB3/commit/170f035b076fb5e7b54a1453b298679653c2719b|migrate user language, too]].
 * v0.1.4 - 30.07.2012
