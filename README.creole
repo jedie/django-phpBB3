@@ -187,30 +187,6 @@ TODO:
 * How to handle non-ascii characters in nick names?
 
 
-=== developer info around migration ===
-
-Example how to create the phpBB3 tables with the origin schema, without phpBB3 installation and using SQLite:
-{{{
-~$ cd DjangoBB_env/
-~/DjangoBB_env$ source bin/activate
-(DjangoBB_env)~/DjangoBB_env$ cd src/django-phpbb3/phpBB2DjangoBB_project
-
-# Get the origin CREATE TABLE file for SQLite:
-(DjangoBB_env).../phpBB2DjangoBB_project$ wget https://github.com/phpbb/phpbb3/raw/master/phpBB/install/schemas/sqlite_schema.sql
-
-# Only needed if syncdb was run in the past:
-(DjangoBB_env).../phpBB2DjangoBB_project$ ./manage.py reset django_phpBB3
-
-# start sqlite shell
-(DjangoBB_env).../phpBB2DjangoBB_project$ ./manage.py dbshell
-SQLite version 3.7.9 2011-11-01 00:52:41
-Enter ".help" for instructions
-Enter SQL statements terminated with a ";"
-sqlite> .read sqlite_schema.sql
-
-}}}
-
-
 == phpBB3 links ==
 
 Here some links for phpBB documentations:
