@@ -131,7 +131,7 @@ Run the migration with {{{./manage.py phpbb2djangobb}}}, e.g:
 (DjangoBB_env).../phpBB2DjangoBB_project$ ./manage.py phpbb2djangobb
 }}}
 
-==== after migration ====
+=== after migration ===
 
 You must update the haystack search index with e.g.:
 {{{
