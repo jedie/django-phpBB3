@@ -4,7 +4,10 @@ from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.views.generic.simple import direct_to_template
+
 from django_phpBB3.views import redirect_phpbb2django
+
+from phpBB2DjangoBB_project.views import migrate
 
 
 admin.autodiscover()
@@ -16,6 +19,9 @@ urlpatterns = patterns('',
         r"^%s/viewtopic.php" % settings.OLD_PHPBB_URL_PREFIX,
         redirect_phpbb2django
     ),
+
+    # for developing only
+    (r'^migrate/', migrate),
 
     # Admin
     (r'^admin/', include(admin.site.urls)),
