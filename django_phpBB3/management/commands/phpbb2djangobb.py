@@ -234,9 +234,9 @@ class Command(BaseCommand):
             name=phpbb_forum.forum_name
         )
         if created:
-            self.stdout.write(u"\tCategory '%s' created.\n" % obj.name)
+            self.stdout.write(u"\tCategory '%s' created.\n" % smart_unicode(obj.name))
         else:
-            self.stdout.write(u"\tCategory '%s' exists.\n" % obj.name)
+            self.stdout.write(u"\tCategory '%s' exists.\n" % smart_unicode(obj.name))
         return obj
 
     def migrate_forums(self, moderators):
@@ -292,9 +292,9 @@ class Command(BaseCommand):
                 }
             )
             if created:
-                self.stdout.write(u"\tForum '%s' created.\n" % obj.name)
+                self.stdout.write(u"\tForum '%s' created.\n" % smart_unicode(obj.name))
             else:
-                self.stdout.write(u"\tForum '%s' exists.\n" % obj.name)
+                self.stdout.write(u"\tForum '%s' exists.\n" % smart_unicode(obj.name))
 
             forum_dict[phpbb_forum.id] = obj
 
