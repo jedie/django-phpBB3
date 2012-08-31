@@ -230,6 +230,12 @@ The SQL schema files from phpBB can be found here:
 == Project links ==
 
 | Homepage     | https://github.com/jedie/django-phpBB3
-| IRC          | [[http://www.pylucid.org/permalink/304/irc-channel|#pylucid on freenode.net]]
-| Forum Thread | http://support.djangobb.org/topic/300/
 | PyPi         | http://pypi.python.org/pypi/django-phpBB3/
+
+=== contact ===
+
+Come into the conversation, besides the github communication features:
+
+| Forum   | http://www.pylucid.org/en/forum/11/
+| IRC     | #pylucid on freenode.net (Yes, the PyLucid channel...)
+| webchat | http://webchat.freenode.net/?channels=pylucid
