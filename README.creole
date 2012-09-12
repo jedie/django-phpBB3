@@ -200,7 +200,10 @@ The SQL schema files from phpBB can be found here:
 
 == history
 
-* v0.1.6
+* v0.1.7.pre - 12.09.2012
+** Bugfix in migration: clean user signature, too.
+** Don't check PHPBB_ATTACHMENT_PATH if no attachments exists in phpBB3 forum.
+* v0.1.6 - 29.08.2012
 ** Add more information in README
 ** Fix unicode errors
 * v0.1.5 - 31.07.2012

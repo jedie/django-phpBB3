@@ -214,11 +214,13 @@ class Command(BaseCommand):
             else:
                 language = default_lang
 
+            cleaned_signature = phpbb_user.get_cleaned_signature()
+
             user_profile, created = Profile.objects.get_or_create(
                 user=django_user,
                 defaults={
                     "site": phpbb_user.website,
-                    "signature": phpbb_user.sig,
+                    "signature": cleaned_signature,
                     #"signature_html": phpbb_user.sig,
                     "post_count": phpbb_user.posts,
                     "yahoo": phpbb_user.yim,

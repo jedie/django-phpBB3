@@ -405,6 +405,19 @@ class User(models.Model):
     def lastvisit_datetime(self):
         return timestamp2datetime(self.lastvisit, self.timezone)
 
+    def get_cleaned_signature(self):
+        """
+        returns a cleaned version of the self.sig bbcode.
+        """
+        if self.sig_bbcode_bitfield:
+            bbcode_uid = self.sig_bbcode_uid
+        else:
+            bbcode_uid = None
+
+        text = smart_unicode(self.sig)
+        bbcode = clean_bbcode(text, bbcode_uid)
+        return bbcode
+
     def __unicode__(self):
         return smart_unicode(self.username)
 
