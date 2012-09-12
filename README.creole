@@ -34,10 +34,21 @@ We add two example projects:
 ~/DjangoBB_env$ source bin/activate
 (DjangoBB_env)~/DjangoBB_env$ pip install django-phpBB3 # Will also install Django
 }}}
+Or if you will use the most recent git version:
+{{{
+# install git read-only clone (Will also install Django):
+(DjangoBB_env)~/DjangoBB_env$ pip install -e git+git://github.com/jedie/django-phpBB3.git#egg=django-phpBB3
+}}}
 
 If you would like to test/use the DjangoBB migration install this:
 {{{
 (DjangoBB_env)~/DjangoBB_env$ pip install -e git+git://github.com/slav0nic/DjangoBB.git#egg=DjangoBB
+(DjangoBB_env)~/DjangoBB_env$ pip install Whoosh
+}}}
+
+Maybe you want my **dev** branch of DjangoBB (More info in [[https://github.com/jedie/DjangoBB/wiki|My DjangoBB github wiki page]]):
+{{{
+(DjangoBB_env)~/DjangoBB_env$ pip install -e git+git://github.com/jedie/DjangoBB.git@dev#egg=DjangoBB
 (DjangoBB_env)~/DjangoBB_env$ pip install Whoosh
 }}}
 
