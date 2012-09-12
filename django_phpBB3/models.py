@@ -122,7 +122,7 @@ class User(models.Model):
         default=0,
         help_text="A hash of the user's email address."
     )
-    birthday = models.CharField(max_length=10, db_column="user_birthday",
+    birthday = models.CharField(max_length=10, db_column="user_birthday", blank=True,
         # varchar(10)
         help_text="The user's birthday, in the form of dd-mm-yyyy."
     )
@@ -141,7 +141,7 @@ class User(models.Model):
         default=0,
         help_text="The time of the latest post of the user, UNIX timestamp"
     )
-    lastpage = models.CharField(max_length=200, db_column="user_lastpage",
+    lastpage = models.CharField(max_length=200, db_column="user_lastpage", blank=True,
         # varchar(200)
         help_text="The last page visited by the user."
     )
@@ -210,12 +210,12 @@ class User(models.Model):
         help_text="Style the user uses to browse the board. {{fk|styles|style_id}}"
     )
     # user_rank = models.IntegerField()
-    rank = models.ForeignKey("Rank", db_column="user_rank", blank=True,
+    rank = PhpBBForeignKey("Rank", db_column="user_rank", blank=True, null=True,
         # mediumint(8) unsigned
         default=0,
         help_text="User's rank. {{fk|ranks|rank_id}}"
     )
-    colour = models.CharField(max_length=6, db_column="user_colour",
+    colour = models.CharField(max_length=6, db_column="user_colour", blank=True,
         # varchar(6)
         help_text="User's colour, hex code."
     )
