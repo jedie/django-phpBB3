@@ -71,6 +71,7 @@ DATABASES = {
 # settings for phpBB3 migration:
 
 # filesystem path to the /files/ sub directory of the phpBB installation:
+# Set to None, if your phpBB3 forum has no attachments
 PHPBB_ATTACHMENT_PATH = "/path/to/phpBB/files/"
 }}}
 

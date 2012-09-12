@@ -21,9 +21,9 @@ from django.utils.encoding import smart_unicode
 if __name__ == "__main__":
     os.environ["DJANGO_SETTINGS_MODULE"] = "phpBB2DjangoBB_project.settings"
     from django.core import management
-    print "reset 'djangobb_forum'...",
-    management.call_command("reset", "djangobb_forum", interactive=False)
-    print "OK"
+#    print "reset 'djangobb_forum'...",
+#    management.call_command("reset", "djangobb_forum", interactive=False)
+#    print "OK"
     management.call_command("phpbb2djangobb",
         cleanup_users=3
     )
@@ -111,6 +111,12 @@ class Command(BaseCommand):
         self.stderr.flush()
 
     def check_attachment_path(self):
+        attachment_count = phpbb_Attachment.objects.count()
+        self.stdout.write(self.style.INFO("This phpBB3 Forum has %i Attachment(s).\n" % attachment_count))
+        if attachment_count == 0:
+            # Don't check paths if no attachments exists.
+            return
+
         path = getattr(settings, "PHPBB_ATTACHMENT_PATH", None)
         if path is None:
             raise CommandError(
