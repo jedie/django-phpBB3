@@ -1,9 +1,13 @@
+/.git
+.pydevproject
+/.settings
 *.log
 *.pot
 *.db3
-*.pyc
-*.pyo
+*.py[co]
 .settings
 local_settings.py
-dist
-django_phpBB3.egg-info
+*~
+*.egg-info
+/dist
+/build
