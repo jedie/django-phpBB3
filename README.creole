@@ -209,6 +209,7 @@ The SQL schema files from phpBB can be found here:
 * v0.1.7.pre - 12.09.2012
 ** Bugfix in migration: clean user signature, too.
 ** Don't check PHPBB_ATTACHMENT_PATH if no attachments exists in phpBB3 forum.
+** [[https://github.com/jedie/django-phpBB3/issues/9#issuecomment-8494830|Handle UnicodeEncodeError in migration output]]
 * v0.1.6 - 29.08.2012
 ** Add more information in README
 ** Fix unicode errors
