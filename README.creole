@@ -52,62 +52,8 @@ Maybe you want my **dev** branch of DjangoBB (More info in [[https://github.com/
 (DjangoBB_env)~/DjangoBB_env$ pip install Whoosh
 }}}
 
-=== init database ===
-
-If you will test the two example projects, you need to initialises the database, e.g.:
+=== local_settings.py example ===
 {{{
-~$ cd DjangoBB_env/
-~/DjangoBB_env$ source bin/activate
-(DjangoBB_env)~/DjangoBB_env$ cd src/django-phpbb3/phpBB2DjangoBB_project
-(DjangoBB_env).../phpBB2DjangoBB_project$ ./manage.py syncdb --all
-(DjangoBB_env).../phpBB2DjangoBB_project$ ./manage.py migrate --fake
-}}}
-
-== test django-phpBB3 ==
-
-We added a test project for easy start in: [[https://github.com/jedie/django-phpBB3/tree/master/django_phpBB3_project|/django_phpBB3_project/]]
-
-Create a {{{local_settings.py}}} in {{{/django_phpBB3_project/}}}
-At least you must setup {{{DATABASES}}}, e.g:
-{{{
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'phpbb3', # Or path to database file if using sqlite3.
-        'USER': 'phpbb3', # Not used with sqlite3.
-        'PASSWORD': 'foo bar', # Not used with sqlite3.
-        'HOST': '', # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '', # Set to empty string for default. Not used with sqlite3.
-    }
-}
-}}}
-optional settings, that you can change in your {{{local_settings.py}}} are:
-{{{
-# The prefix of the phpBB3 installation - default: u"phpbb3_"
-PHPBB_TABLE_PREFIX = u"phpbb3_"
-}}}
-
-You must initialises the database (see above).
-
-You can startup a test server with, e.g:
-{{{
-./manage.py runserver --traceback --insecure
-}}}
-
-
-== migrate a phpBB3 installation to DjangoBB ==
-
-The migration from phpBB3 to DjangoBB is implement as a migration command here: [[https://github.com/jedie/django-phpBB3/blob/master/django_phpBB3/management/commands/phpbb2djangobb.py|/django_phpBB3/management/commands/phpbb2djangobb.py]] 
-
-To run the migration you can use the minimal {{{phpBB2DjangoBB}}} example project example.
-This project includes the DjangoBB forum app and django-phpBB3 app. Before start, you must install the dependencies!
-
-You must create a {{{local_settings.py}}} into [[https://github.com/jedie/django-phpBB3/tree/master/phpBB2DjangoBB_project|/phpBB2DjangoBB_project/]].
-At least you need these settings:
-{{{
-# filesystem path to the /files/ sub directory of the phpBB installation:
-PHPBB_ATTACHMENT_PATH = "/path/to/phpBB/files/"
-
 # database table prefix (default is: "phpbb3_")
 #PHPBB_TABLE_PREFIX = "phpbb_"
 
@@ -121,12 +67,55 @@ DATABASES = {
         'PORT': '', # Set to empty string for default. Not used with sqlite3.
     }
 }
+
+# settings for phpBB3 migration:
+
+# filesystem path to the /files/ sub directory of the phpBB installation:
+PHPBB_ATTACHMENT_PATH = "/path/to/phpBB/files/"
 }}}
-(You must also point the attachment directory from DjangoBB to a existing filesystem path.)
+
+=== init database ===
+
+If you will test the two example projects, you need to initialises the database, e.g.:
+{{{
+~$ cd DjangoBB_env/
+~/DjangoBB_env$ source bin/activate
+(DjangoBB_env)~/DjangoBB_env$ cd src/django-phpbb3/phpBB2DjangoBB_project
+(DjangoBB_env).../phpBB2DjangoBB_project$ # create local_settings.py here, see above!
+(DjangoBB_env).../phpBB2DjangoBB_project$ ./manage.py syncdb --all
+(DjangoBB_env).../phpBB2DjangoBB_project$ ./manage.py migrate --fake
+}}}
+
+== test django-phpBB3 ==
+
+We added a test project for easy start in: [[https://github.com/jedie/django-phpBB3/tree/master/django_phpBB3_project|/django_phpBB3_project/]]
+
+Create a {{{local_settings.py}}} into {{{/django_phpBB3_project/}}} see example above.
+
+You must initialises the database (see above).
+
+You can startup a test server with, e.g:
+{{{
+./manage.py runserver --traceback --insecure
+}}}
 
 
-**Before you start:** You should check if database encoding settings are ok.
-e.g. in default ubuntu/debian setup a mysql server will use {{{latin-1}}} !
+== migrate a phpBB3 installation to DjangoBB ==
+
+We add a example project for a phpBB3 migration in: [[https://github.com/jedie/django-phpBB3/tree/master/phpBB2DjangoBB_project|/phpBB2DjangoBB_project/]]
+
+The migration from phpBB3 to DjangoBB is implement as a migration command here: [[https://github.com/jedie/django-phpBB3/blob/master/django_phpBB3/management/commands/phpbb2djangobb.py|/django_phpBB3/management/commands/phpbb2djangobb.py]] 
+
+To run the migration you can use the minimal {{{phpBB2DjangoBB}}} example project example.
+This project includes the DjangoBB forum app and django-phpBB3 app. Before start, you must install the dependencies!
+
+You must create a {{{local_settings.py}}} into {{{/phpBB2DjangoBB_project/}}} see example above.
+
+
+**Before you start migration:** You should check if database encoding settings are ok.
+To check, login and check in //admin / Django_phpBB3 / **Posts**// if non-ascii characters are ok.
+
+Typical problem are: e.g. in default ubuntu/debian setup a mysql server will use {{{latin-1}}} !
 So before you start, you should correct this. e.g.:
 {{{
 ALTER DATABASE test DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci
