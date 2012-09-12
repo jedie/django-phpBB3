@@ -187,6 +187,12 @@ TODO:
 
 * Are the phpBB times in {{{phpbb_posts}}} in UTC oder in local time from user?
 
+=== troubleshooting ===
+
+You get {{{UnicodeEncodeError}}} in the terminal while running migration?
+Solution: You must set either your locale, or the ​PYTHONIOENCODING environment variable, according to your terminal's encoding — in most cases, utf-8.
+More info can be found [[https://github.com/jedie/django-phpBB3/issues/9#issuecomment-8494830|in the comment of issues 9]]
+
 
 == phpBB3 links ==
 
