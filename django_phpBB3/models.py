@@ -659,7 +659,7 @@ class Post(models.Model):
     attachment = models.PositiveSmallIntegerField(db_column="post_attachment",
         # tinyint(1) unsigned
         default=0,
-        help_text="| 1=This post has at least one attachment&lt;br/>0=no attachments in this post"
+        help_text="1=This post has at least one attachment 0=no attachments in this post"
     )
     bbcode_bitfield = models.CharField(max_length=255,
         # varchar(255)
