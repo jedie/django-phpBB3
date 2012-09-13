@@ -15,16 +15,15 @@ import os
 import sys
 import time
 import shutil
-import pprint
 
 if __name__ == "__main__":
     os.environ["DJANGO_SETTINGS_MODULE"] = "phpBB2DjangoBB_project.settings"
     from django.core import management
-    print "reset 'djangobb_forum'...",
-    management.call_command("reset", "djangobb_forum", interactive=False)
-    print "OK"
-    management.call_command("phpbb2djangobb",
-        cleanup_users=3
+#    print "reset 'djangobb_forum'...",
+#    management.call_command("reset", "djangobb_forum", interactive=False)
+#    print "OK"
+    management.call_command("phpbb2djangobb", cleanup_users=3,
+        flush_djangobb=True
     )
     sys.exit()
 
@@ -48,6 +47,12 @@ from django_phpBB3.models import User as phpbb_User
 from django_phpBB3.unsupported_models import get_topic_watch
 from django_phpBB3.utils import ProcessInfo, human_duration
 
+try:
+    from pip.util import get_terminal_size
+except ImportError:
+    TERMINAL_WIDTH = 79
+else:
+    TERMINAL_WIDTH = get_terminal_size()[0] - 1
 
 OUT_ENCODING = sys.stdout.encoding or sys.getfilesystemencoding()
 
@@ -76,10 +81,21 @@ class Command(BaseCommand):
             type='choice', choices=['0', '1', '2', '3'],
             help='Which user to migrate: 0:all users, 1:with email, 2:+lastvisit (default), 3:+has post'
         ),
-
+        make_option('--flush_djangobb', action='store_true',
+            help='Delete all DjangoBB forum models, before migration. (For testing, only)'
+        ),
     )
 
     def handle(self, *args, **options):
+        self.verbosity = int(options.get('verbosity'))
+
+        flush_djangobb = options.get("flush_djangobb", False)
+        if flush_djangobb:
+            for ModelClass in (Category, Forum, Profile, Post, Topic, Attachment):
+                count = ModelClass.objects.all().count()
+                self.out(" *** Delete %i '%s' model entries..." % (count, ModelClass.__name__))
+                ModelClass.objects.all().delete()
+                self.out("OK\n")
 
         self.check_attachment_path()
 
@@ -106,25 +122,43 @@ class Command(BaseCommand):
         self.update_topic_stats()
         self.update_forum_stats()
 
-        self._out(u"\nmigration done.\n")
+        self.out(u"\nmigration done.\n")
 
-    def _warn(self, msg):
-        msg = smart_str(msg, encoding=OUT_ENCODING, errors="replace")
-        self.stderr.write(self.style.ERROR(msg))
-        self.stderr.flush()
-
-    def _out(self, msg):
+    def _out_encode(self, msg):
         # see: https://github.com/jedie/django-phpBB3/issues/9#issuecomment-8494830
         msg = smart_str(msg, encoding=OUT_ENCODING, errors="replace")
-        self.stdout.write(msg)
+        msg = msg.replace("\t", "    ") # Helpful in out_update()
+        return msg
 
-    def _err(self, msg):
-        msg = smart_str(msg, encoding=OUT_ENCODING, errors="replace")
-        self.stderr.write(msg)
+    def warn(self, msg):
+        self.stderr.write(self.style.ERROR(self._out_encode(msg)))
+        self.stderr.flush()
+
+    def out(self, msg):
+        self.stdout.write(self._out_encode(msg))
+        self.stdout.flush()
+
+    def err(self, msg):
+        self.stderr.write(self._out_encode(msg))
+        self.stdout.flush()
+
+    def _out_justify(self, msg):
+        self.stdout.write(msg.ljust(TERMINAL_WIDTH))
+
+    def out_update(self, msg):
+        msg = self._out_encode(msg)
+        self.stdout.write("\r")
+        self._out_justify(msg)
+        self.stdout.flush()
+
+    def out_overwrite(self, msg):
+        self.out_update(msg)
+        self.stdout.write("\n")
+        self.stdout.flush()
 
     def check_attachment_path(self):
         attachment_count = phpbb_Attachment.objects.count()
-        self._out(self.style.NOTICE("This phpBB3 Forum has %i Attachment(s).\n" % attachment_count))
+        self.out(self.style.NOTICE("This phpBB3 Forum has %i Attachment(s).\n" % attachment_count))
         if attachment_count == 0:
             # Don't check paths if no attachments exists.
             return
@@ -145,7 +179,7 @@ class Command(BaseCommand):
         for filename in (".htaccess", "index.htm"):
             test_path = os.path.join(path, filename)
             if not os.path.isfile(test_path):
-                self._warn("WARNING: file '%s' doesn't exists!\n" % test_path)
+                self.warn("WARNING: file '%s' doesn't exists!\n" % test_path)
 
         djangobb_path = os.path.join(settings.MEDIA_ROOT, forum_settings.ATTACHMENT_UPLOAD_TO)
         if not os.path.isdir(djangobb_path):
@@ -157,7 +191,7 @@ class Command(BaseCommand):
 
 
     def migrate_users(self, cleanup_users, moderator_groups):
-        self._out(u"\n *** Migrate phpbb_forum users...\n")
+        self.out(u"\n *** Migrate phpbb_forum users...\n")
 
         lang_codes = [i[0] for i in settings.LANGUAGES]
         default_lang = settings.LANGUAGE_CODE.split("-")[0]
@@ -165,20 +199,49 @@ class Command(BaseCommand):
         moderators = []
         user_dict = {}
         phpbb_users = phpbb_User.objects.all()
+
+        total = phpbb_users.count()
+        process_info = ProcessInfo(total, use_last_rates=4)
+        count = 0
+        skip_count = 0
+        start_time = time.time()
+        next_status = start_time + 0.25
         for phpbb_user in phpbb_users:
+            count += 1
+            if time.time() > next_status:
+                next_status = time.time() + 1
+                rest, eta, rate = process_info.update(count)
+                self.out_update(
+                    "\t%i/%i users migrated %i skiped... rest: %i - eta: %s (rate: %.1f/sec)" % (
+                        count, total, skip_count, rest, eta, rate
+                    )
+                )
+
             if not phpbb_user.posts:
                 # Only users with has no posts can be skip.
                 if cleanup_users >= 1:
                     if not phpbb_user.email:
-                        self._out(u"\t * Skip '%s' (no email)\n" % smart_unicode(phpbb_user.username))
+                        skip_count += 1
+                        if self.verbosity >= 2:
+                            self.out_overwrite(
+                                u"\t * Skip '%s' (no email)" % smart_unicode(phpbb_user.username)
+                            )
                         continue
                 if cleanup_users >= 2:
                     if not phpbb_user.lastvisit:
-                        self._out(u"\t * Skip '%s' (no lastvisit)\n" % smart_unicode(phpbb_user.username))
+                        skip_count += 1
+                        if self.verbosity >= 2:
+                            self.out_overwrite(
+                                u"\t * Skip '%s' (no lastvisit)" % smart_unicode(phpbb_user.username)
+                            )
                         continue
                 if cleanup_users >= 3:
                     if not phpbb_user.posts:
-                        self._out(u"\t * Skip '%s' (no posts)\n" % smart_unicode(phpbb_user.username))
+                        skip_count += 1
+                        if self.verbosity >= 2:
+                            self.out_overwrite(
+                                u"\t * Skip '%s' (no posts)" % smart_unicode(phpbb_user.username)
+                            )
                         continue
 
             last_login = phpbb_user.lastvisit_datetime()
@@ -202,14 +265,23 @@ class Command(BaseCommand):
                 }
             )
             if created:
-                self._out(u"\tUser '%s' created.\n" % smart_unicode(django_user.username))
+                if self.verbosity >= 2:
+                    self.out_overwrite(
+                        u"\tUser '%s' created." % smart_unicode(django_user.username)
+                    )
                 django_user.set_unusable_password()
                 django_user.save()
             else:
-                self._out(u"\tUser '%s' exists.\n" % smart_unicode(django_user.username))
+                if self.verbosity >= 2:
+                    self.out_overwrite(
+                        u"\tUser '%s' exists." % smart_unicode(django_user.username)
+                    )
 
             if phpbb_user.group in moderator_groups:
-                self._out(u"\t *** Mark user '%s' as global forum moderator\n" % phpbb_user)
+                if self.verbosity >= 1:
+                    self.out_overwrite(
+                        u"\t *** Mark user '%s' as global forum moderator" % phpbb_user
+                    )
                 moderators.append(django_user)
 
             user_dict[phpbb_user.id] = django_user
@@ -247,9 +319,23 @@ class Command(BaseCommand):
                 }
             )
             if created:
-                self._out(u"\t - User profile for '%s' created.\n" % smart_unicode(django_user.username))
+                if self.verbosity >= 2:
+                    self.out_overwrite(
+                        u"\t - User profile for '%s' created." % smart_unicode(django_user.username)
+                    )
             else:
-                self._out(u"\t - User profile for '%s' exists.\n" % smart_unicode(django_user.username))
+                if self.verbosity >= 2:
+                    self.out_overwrite(
+                        u"\t - User profile for '%s' exists." % smart_unicode(django_user.username)
+                    )
+
+        duration = time.time() - start_time
+        rate = float(count) / duration
+        self.out_overwrite(
+            u" *** %i users migrated %i skiped in %s (rate: %.1f/sec)" % (
+                count, skip_count, human_duration(duration), rate
+            )
+        )
 
         return user_dict, moderators
 
@@ -258,13 +344,13 @@ class Command(BaseCommand):
             name=smart_unicode(phpbb_forum.forum_name)
         )
         if created:
-            self._out(u"\tCategory '%s' created.\n" % obj.name)
+            self.out(u"\tCategory '%s' created.\n" % obj.name)
         else:
-            self._out(u"\tCategory '%s' exists.\n" % obj.name)
+            self.out(u"\tCategory '%s' exists.\n" % obj.name)
         return obj
 
     def migrate_forums(self, moderators):
-        self._out(u"\n *** Migrate phpbb_forum entries...\n")
+        self.out(u"\n *** Migrate phpbb_forum entries...\n")
 
         phpbb_forums = phpbb_Forum.objects.all()
 
@@ -316,27 +402,27 @@ class Command(BaseCommand):
                 }
             )
             if created:
-                self._out(u"\tForum '%s' created.\n" % smart_unicode(obj.name))
+                self.out(u"\tForum '%s' created.\n" % smart_unicode(obj.name))
             else:
-                self._out(u"\tForum '%s' exists.\n" % smart_unicode(obj.name))
+                self.out(u"\tForum '%s' exists.\n" % smart_unicode(obj.name))
 
             forum_dict[phpbb_forum.id] = obj
 
             for moderator in moderators:
                 obj.moderators.add(moderator)
             obj.save()
-            self._out(u"\t - moderators: %s\n" % obj.moderators.all())
+            self.out(u"\t - moderators: %s\n" % obj.moderators.all())
 
         return forum_dict
 
 
     def migrate_topic(self, user_dict, forum_dict):
-        self._out(u"\n *** Migrate phpBB topic entries...\n")
+        self.out(u"\n *** Migrate phpBB topic entries...\n")
 
-        self._out(u"\tget topic watch information...")
+        self.out(u"\tget topic watch information...")
         self.stdout.flush()
         topic_watch = get_topic_watch()
-        self._out(u"OK\n")
+        self.out(u"OK\n")
         self.stdout.flush()
 
         topic_dict = {}
@@ -351,11 +437,11 @@ class Command(BaseCommand):
             if time.time() > next_status:
                 next_status = time.time() + 1
                 rest, eta, rate = process_info.update(count)
-                msg = (
-                    "\r\t%i/%i topics migrated... rest: %i - eta: %s (rate: %.1f/sec)         "
-                ) % (count, total, rest, eta, rate)
-                self._out(msg)
-                self.stdout.flush()
+                self.out_update(
+                    "\t%i/%i topics migrated... rest: %i - eta: %s (rate: %.1f/sec)" % (
+                        count, total, rest, eta, rate
+                    )
+                )
 
             if topic.moved():
                 # skip moved topics -> DjangoBB doesn't support them
@@ -393,8 +479,8 @@ class Command(BaseCommand):
 
         duration = time.time() - start_time
         rate = float(count) / duration
-        self._out(
-            "\r *** %i topics migrated in %s (rate: %.1f/sec)\n" % (
+        self.out_overwrite(
+            " *** %i topics migrated in %s (rate: %.1f/sec)" % (
                 count, human_duration(duration), rate
             )
         )
@@ -402,7 +488,7 @@ class Command(BaseCommand):
 
 
     def migrate_posts(self, user_dict, topic_dict):
-        self._out(u"\n *** Migrate phpBB posts entries...\n")
+        self.out(u"\n *** Migrate phpBB posts entries...\n")
 
         posts = phpbb_Post.objects.all().order_by("time")
         total = posts.count()
@@ -415,11 +501,11 @@ class Command(BaseCommand):
             if time.time() > next_status:
                 next_status = time.time() + 1
                 rest, eta, rate = process_info.update(count)
-                msg = (
-                    "\r\t%i/%i posts migrated... rest: %i - eta: %s (rate: %.1f/sec)         "
-                ) % (count, total, rest, eta, rate)
-                self._out(msg)
-                self.stdout.flush()
+                self.out_update(
+                    "\t%i/%i posts migrated... rest: %i - eta: %s (rate: %.1f/sec)" % (
+                        count, total, rest, eta, rate
+                    )
+                )
 
             topic = topic_dict[phpbb_post.topic.id]
             user = user_dict[phpbb_post.poster.id]
@@ -450,7 +536,7 @@ class Command(BaseCommand):
                     "\n +++ ERROR: creating Post entry for phpBB3 post (ID: %s):\n"
                     "%s\n"
                 ) % (phpbb_post.id, err)
-                self._warn(msg)
+                self.warn(msg)
                 continue
 
             if phpbb_post.has_attachment():
@@ -459,7 +545,7 @@ class Command(BaseCommand):
                 for phpbb_attachment in phpbb_attachments:
                     src_path = os.path.join(settings.PHPBB_ATTACHMENT_PATH, phpbb_attachment.physical_filename)
                     if not os.path.isfile(src_path):
-                        self._warn("\n +++ ERROR: Attachment not found: '%s'\n" % src_path)
+                        self.warn("\r\n +++ ERROR: Attachment not found: '%s'\n" % src_path)
                     else:
                         attachment = Attachment(
                             size=phpbb_attachment.filesize,
@@ -475,23 +561,22 @@ class Command(BaseCommand):
                         shutil.copy(src_path, dst_path)
                         attachment.path = filename
                         attachment.save()
-                        self._out(
-                            "\n\t *** Attachment %s copied in: %s\n" % (
+                        self.out_overwrite(
+                            "\t *** Attachment %s copied in: %s" % (
                                 attachment.name, dst_path
                             )
                         )
-                        self.stdout.flush()
 
         duration = time.time() - start_time
         rate = float(count) / duration
-        self._out(
-            "\r *** %i posts migrated in %s (rate: %.1f/sec)\n" % (
+        self.out_overwrite(
+            " *** %i posts migrated in %s (rate: %.1f/sec)" % (
                 count, human_duration(duration), rate
             )
         )
 
     def update_topic_stats(self):
-        self._out(u"\n *** set topic stats...\n")
+        self.out(u"\n *** set topic stats...\n")
 
         topics = Topic.objects.all()
         total = topics.count()
@@ -502,11 +587,11 @@ class Command(BaseCommand):
             if time.time() > next_status:
                 next_status = time.time() + 1
                 rest, eta, rate = process_info.update(count)
-                msg = (
-                    "\r\t%i/%i topics... rest: %i - eta: %s (rate: %.1f/sec)         "
-                ) % (count, total, rest, eta, rate)
-                self._out(msg)
-                self.stdout.flush()
+                self.out_update(
+                    "\t%i/%i topics... rest: %i - eta: %s (rate: %.1f/sec)" % (
+                        count, total, rest, eta, rate
+                    )
+                )
 
             queryset = Post.objects.only("created", "updated").filter(topic=topic)
             topic.post_count = queryset.count()
@@ -525,17 +610,17 @@ class Command(BaseCommand):
 
         duration = time.time() - start_time
         rate = float(count) / duration
-        self._out(
-            "\r *** %i topic stats set in %s (rate: %.1f/sec)\n" % (
+        self.out_overwrite(
+            " *** %i topic stats set in %s (rate: %.1f/sec)" % (
                 count, human_duration(duration), rate
             )
         )
 
     def update_forum_stats(self):
-        self._out(u"\n *** set forum stats...\n")
+        self.out(u"\n *** set forum stats...\n")
 
         for forum in Forum.objects.all():
-            self._out(u"\tset stats for %s\n" % forum)
+            self.out(u"\tset stats for %s\n" % forum)
             queryset = Post.objects.all().filter(topic__forum=forum)
             forum.post_count = queryset.count()
             try:
