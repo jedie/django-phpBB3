@@ -63,6 +63,14 @@ class PhpBBForeignKey(models.ForeignKey):
     """
     phpBB stores a None ForeignKey as a numeric 0
     """
+    def __init__(self, *args, **kwargs):
+        kwargs2 = {
+            "blank": True, "null": True,
+            "default": 0,
+        }
+        kwargs2.update(kwargs)
+        super(PhpBBForeignKey, self).__init__(*args, **kwargs2)
+
     def to_python(self, value):
         if value in ("", None, 0):
             return None
@@ -104,9 +112,8 @@ class User(models.Model):
         help_text="A cached copy of the user's computed permissions."
     )
     # user_perm_from = models.ForeignKey(, db_column="# user_perm_from"
-    perm_from = PhpBBForeignKey("User", db_column="user_perm_from", blank=True, null=True,
-        # mediumint(8) unsigned
-        default=0,
+    perm_from = PhpBBForeignKey("User", db_column="user_perm_from",
+        # mediumint(8) unsigned - default=0,
         help_text="The id of the user whose permissions are being tested. {{fk|users|user_id}}"
     )
     ip = models.CharField(max_length=40, db_column="user_ip", blank=True,
@@ -237,9 +244,8 @@ class User(models.Model):
         help_text="Style the user uses to browse the board. {{fk|styles|style_id}}"
     )
     # user_rank = models.IntegerField()
-    rank = PhpBBForeignKey("Rank", db_column="user_rank", blank=True, null=True,
-        # mediumint(8) unsigned
-        default=0,
+    rank = PhpBBForeignKey("Rank", db_column="user_rank",
+        # mediumint(8) unsigned - default=0,
         help_text="User's rank. {{fk|ranks|rank_id}}"
     )
     colour = models.CharField(max_length=6, db_column="user_colour", blank=True,
@@ -645,9 +651,8 @@ class Post(models.Model):
         # mediumint(8) unsigned
         default=0,
     )
-    poster = models.ForeignKey("User", blank=True,
-        # mediumint(8) unsigned
-        default=0,
+    poster = PhpBBForeignKey("User",
+        # mediumint(8) unsigned - default=0,
     )
     icon = models.ForeignKey("Icon", blank=True,
         # mediumint(8) unsigned
@@ -783,15 +788,13 @@ class Topic(models.Model):
         help_text="Primary key"
     )
     # forum_id = models.IntegerField()
-    forum = PhpBBForeignKey("Forum", blank=True,
-        # mediumint(8) unsigned
-        default=0,
+    forum = PhpBBForeignKey("Forum",
+        # mediumint(8) unsigned - default=0,
         help_text="{{fk|forums|forum_id}}"
     )
     # icon_id = models.IntegerField()
-    icon = PhpBBForeignKey("Icon", blank=True,
-        # mediumint(8) unsigned
-        default=0,
+    icon = PhpBBForeignKey("Icon",
+        # mediumint(8) unsigned - default=0,
         help_text="{{fk|icons|icon_id}}"
     )
     attachment = models.PositiveSmallIntegerField(db_column="topic_attachment",
@@ -814,9 +817,8 @@ class Topic(models.Model):
         help_text="The title of the topic."
     )
     # topic_poster = models.IntegerField()
-    poster = PhpBBForeignKey("User", db_column="topic_poster", blank=True,
-        # mediumint(8) unsigned
-        default=0,
+    poster = PhpBBForeignKey("User", db_column="topic_poster",
+        # mediumint(8) unsigned - default=0,
         help_text="{{fk|users|user_id}}"
     )
     time = models.PositiveIntegerField(db_column="topic_time",
@@ -855,9 +857,8 @@ class Topic(models.Model):
         help_text="[[Constants|POST_NORMAL]](0), POST_STICKY(1), POST_ANNOUNCE(2) or POST_GLOBAL(3)"
     )
     # topic_first_post_id = models.IntegerField()
-    first_post = PhpBBForeignKey("Post", related_name='+', blank=True, db_column="topic_first_post_id",
-        # mediumint(8) unsigned
-        default=0,
+    first_post = PhpBBForeignKey("Post", related_name='+', db_column="topic_first_post_id",
+        # mediumint(8) unsigned - default=0,
         help_text="{{fk|posts|post_id}}"
     )
     first_poster_name = models.CharField(max_length=255, db_column="topic_first_poster_name",
@@ -869,15 +870,13 @@ class Topic(models.Model):
         help_text="The colour of the topic creator's default user group."
     )
     # topic_last_post_id = models.IntegerField()
-    last_post = PhpBBForeignKey("Post", related_name='+', blank=True, db_column="topic_last_post_id",
-        # mediumint(8) unsigned
-        default=0,
+    last_post = PhpBBForeignKey("Post", related_name='+', db_column="topic_last_post_id",
+        # mediumint(8) unsigned - default=0,
         help_text="{{fk|posts|post_id}}"
     )
     # topic_last_poster_id = models.IntegerField()
-    last_poster = PhpBBForeignKey("User", related_name='+', blank=True, db_column="topic_last_poster_id",
-        # mediumint(8) unsigned
-        default=0,
+    last_poster = PhpBBForeignKey("User", related_name='+', db_column="topic_last_poster_id",
+        # mediumint(8) unsigned - default=0,
         help_text="{{fk|users|user_id}}"
     )
     last_poster_name = models.CharField(max_length=255, db_column="topic_last_poster_name",
@@ -913,9 +912,8 @@ class Topic(models.Model):
         help_text="Has this topic been bumped? 1 (yes), 0(no)"
     )
     # topic_bumper = models.IntegerField()
-    bumper = PhpBBForeignKey("User", related_name='+', db_column="topic_bumper", blank=True, null=True,
-        # mediumint(8) unsigned
-        default=0,
+    bumper = PhpBBForeignKey("User", related_name='+', db_column="topic_bumper",
+        # mediumint(8) unsigned - default=0,
         help_text="{{fk|users|user_id}}"
     )
     poll_title = models.CharField(max_length=255,
@@ -1084,9 +1082,8 @@ class Attachment(models.Model):
         help_text="1 if attachment is used inside private message, 0 if used inside post"
     )
     # poster_id = models.IntegerField()
-    poster = models.ForeignKey("User", blank=True,
-        # mediumint(8) unsigned
-        default=0,
+    poster = PhpBBForeignKey("User",
+        # mediumint(8) unsigned - default=0,
         help_text="{{fk|users|user_id}}"
     )
     is_orphan = models.PositiveSmallIntegerField(
