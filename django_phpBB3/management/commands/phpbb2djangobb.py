@@ -12,9 +12,10 @@
 from optparse import make_option
 import datetime
 import os
+import shutil
 import sys
 import time
-import shutil
+import traceback
 
 if __name__ == "__main__":
     os.environ["DJANGO_SETTINGS_MODULE"] = "phpBB2DjangoBB_project.settings"
@@ -54,6 +55,13 @@ except ImportError:
 else:
     TERMINAL_WIDTH = get_terminal_size()[0] - 1
 
+
+try:
+    import pudb as debugger # http://pypi.python.org/pypi/pudb
+except ImportError:
+    import pdb as debugger
+
+
 OUT_ENCODING = sys.stdout.encoding or sys.getfilesystemencoding()
 
 
@@ -87,6 +95,15 @@ class Command(BaseCommand):
     )
 
     def handle(self, *args, **options):
+        try:
+            self._handle(*args, **options)
+        except Exception:
+            print "-"*TERMINAL_WIDTH
+            traceback.print_exc()
+            print "-"*TERMINAL_WIDTH
+            debugger.post_mortem()
+
+    def _handle(self, *args, **options):
         self.verbosity = int(options.get('verbosity'))
 
         flush_djangobb = options.get("flush_djangobb", False)
