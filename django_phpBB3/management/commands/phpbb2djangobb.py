@@ -249,10 +249,6 @@ class Command(BaseCommand):
                 # can't be None in User model:
                 last_login = datetime.datetime(year=datetime.MINYEAR, month=1, day=1)
 
-            # FIXME:
-            #     * Clean username (remove non-ascii)
-            #     * check duplicates via email compare 
-
             django_user, created = User.objects.get_or_create(
                 username=phpbb_user.username,
                 defaults={
