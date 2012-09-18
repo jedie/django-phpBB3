@@ -15,7 +15,6 @@
 import datetime
 import re
 
-
 from django.conf import settings
 from django.db import models
 from django.utils.encoding import smart_unicode
@@ -41,14 +40,42 @@ def timestamp2datetime(timestamp, timezone=None):
     return datetime.datetime.fromtimestamp(timestamp, tzinfo)
 
 
+
+class PhpBBReverseSingleRelatedObjectDescriptor(models.fields.related.ReverseSingleRelatedObjectDescriptor):
+    """
+    Same as original, but accepts 0 also as none related objects.
+    """
+    def __get__(self, instance, instance_type=None):
+        if instance is None:
+            return self
+
+        try:
+            return getattr(instance, self.cache_name)
+        except AttributeError:
+            val = getattr(instance, self.field.attname)
+            if val in (0, None, ""):
+                return None
+
+        return super(PhpBBReverseSingleRelatedObjectDescriptor, self).__get__(instance, instance_type)
+
+
 class PhpBBForeignKey(models.ForeignKey):
     """
     phpBB stores a None ForeignKey as a numeric 0
     """
+    def to_python(self, value):
+        if value in ("", None, 0):
+            return None
+        return super(PhpBBForeignKey, self).to_python(value)
+
     def get_db_prep_save(self, value, connection):
-        if value in ("", None):
-            value = 0
+        if value in ("", None, 0):
+            return None
         return super(PhpBBForeignKey, self).get_db_prep_save(value, connection)
+
+    def contribute_to_class(self, cls, name):
+        super(PhpBBForeignKey, self).contribute_to_class(cls, name)
+        setattr(cls, self.name, PhpBBReverseSingleRelatedObjectDescriptor(self))
 
 #------------------------------------------------------------------------------
 # important models first:
@@ -756,13 +783,13 @@ class Topic(models.Model):
         help_text="Primary key"
     )
     # forum_id = models.IntegerField()
-    forum = models.ForeignKey("Forum", blank=True,
+    forum = PhpBBForeignKey("Forum", blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|forums|forum_id}}"
     )
     # icon_id = models.IntegerField()
-    icon = models.ForeignKey("Icon", blank=True,
+    icon = PhpBBForeignKey("Icon", blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|icons|icon_id}}"
@@ -787,7 +814,7 @@ class Topic(models.Model):
         help_text="The title of the topic."
     )
     # topic_poster = models.IntegerField()
-    poster = models.ForeignKey("User", db_column="topic_poster", blank=True,
+    poster = PhpBBForeignKey("User", db_column="topic_poster", blank=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
@@ -828,7 +855,7 @@ class Topic(models.Model):
         help_text="[[Constants|POST_NORMAL]](0), POST_STICKY(1), POST_ANNOUNCE(2) or POST_GLOBAL(3)"
     )
     # topic_first_post_id = models.IntegerField()
-    first_post = models.ForeignKey("Post", related_name='+', blank=True, db_column="topic_first_post_id",
+    first_post = PhpBBForeignKey("Post", related_name='+', blank=True, db_column="topic_first_post_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|posts|post_id}}"
@@ -842,13 +869,13 @@ class Topic(models.Model):
         help_text="The colour of the topic creator's default user group."
     )
     # topic_last_post_id = models.IntegerField()
-    last_post = models.ForeignKey("Post", related_name='+', blank=True, db_column="topic_last_post_id",
+    last_post = PhpBBForeignKey("Post", related_name='+', blank=True, db_column="topic_last_post_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|posts|post_id}}"
     )
     # topic_last_poster_id = models.IntegerField()
-    last_poster = models.ForeignKey("User", related_name='+', blank=True, db_column="topic_last_poster_id",
+    last_poster = PhpBBForeignKey("User", related_name='+', blank=True, db_column="topic_last_poster_id",
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
@@ -886,7 +913,7 @@ class Topic(models.Model):
         help_text="Has this topic been bumped? 1 (yes), 0(no)"
     )
     # topic_bumper = models.IntegerField()
-    bumper = models.ForeignKey("User", related_name='+', db_column="topic_bumper", blank=True,
+    bumper = PhpBBForeignKey("User", related_name='+', db_column="topic_bumper", blank=True, null=True,
         # mediumint(8) unsigned
         default=0,
         help_text="{{fk|users|user_id}}"
