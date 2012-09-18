@@ -82,6 +82,8 @@ def disable_auto_fields(model_class):
 class Command(BaseCommand):
     help = 'migrate a phpBB3 installation to DjangoBB'
     option_list = BaseCommand.option_list + (
+        make_option('--noinput', action='store_false', dest='interactive', default=True,
+            help='Tells Django to NOT prompt the user for input of any kind.'),
         make_option('--cleanup_users',
             action='store',
             dest='cleanup_users',
@@ -105,6 +107,7 @@ class Command(BaseCommand):
 
     def _handle(self, *args, **options):
         self.verbosity = int(options.get('verbosity'))
+        self.interactive = options.get('interactive')
 
         flush_djangobb = options.get("flush_djangobb", False)
         if flush_djangobb:
@@ -115,6 +118,7 @@ class Command(BaseCommand):
                 self.out("OK\n")
 
         self.check_attachment_path()
+        self.check_models()
 
         # disable DjangoBB signals for speedup
         post_save.disconnect(djangobb_signals.post_saved, sender=Post, dispatch_uid='djangobb_post_save')
@@ -206,6 +210,24 @@ class Command(BaseCommand):
             ) % djangobb_path
             raise CommandError(msg)
 
+    def check_models(self):
+        has_entries = False
+        for ModelClass in (Category, Forum, Profile, Post, Topic, Attachment):
+            count = ModelClass.objects.all().count()
+            if count != 0:
+                has_entries = True
+                self.err("ERROR: '%s' model has %i entries!\n" % (ModelClass.__name__, count))
+        if has_entries:
+            self.warn("Maybe you have missed to add '--flush_djangobb' ?\n")
+            if self.interactive:
+                confirm = raw_input("\nContinue? (yes/no): ")
+                while 1:
+                    if confirm.lower().startswith("n"):
+                        sys.exit("-1")
+                    if confirm.lower() != "yes":
+                        confirm = raw_input('Please enter either "yes" or "no": ')
+                        continue
+                    break
 
     def migrate_users(self, cleanup_users, moderator_groups):
         self.out(u"\n *** Migrate phpbb_forum users...\n")
@@ -235,6 +257,8 @@ class Command(BaseCommand):
                 )
 
             if not phpbb_user.posts:
+                #assert phpbb_user.has_content() == False
+
                 # Only users with has no posts can be skip.
                 if cleanup_users >= 1:
                     if not phpbb_user.email:
@@ -428,7 +452,6 @@ class Command(BaseCommand):
 
         return forum_dict
 
-
     def migrate_topic(self, user_dict, forum_dict):
         self.out(u"\n *** Migrate phpBB topic entries...\n")
 
@@ -437,6 +460,8 @@ class Command(BaseCommand):
         topic_watch = get_topic_watch()
         self.out(u"OK\n")
         self.stdout.flush()
+
+        anonymous_user = User.objects.get(username="Anonymous") # Pseudo account from phpBB
 
         topic_dict = {}
         topics = phpbb_Topic.objects.all().order_by("time")
@@ -460,8 +485,18 @@ class Command(BaseCommand):
                 # skip moved topics -> DjangoBB doesn't support them
                 continue
 
-            user = user_dict[topic.poster.id]
-            forum = forum_dict[topic.forum.id]
+            phpbb_user_id = topic.poster_id #topic.poster.id
+            try:
+                user = user_dict[phpbb_user_id]
+            except KeyError:
+                self.out_overwrite(self.style.NOTICE(
+                    "topic %i poster: phpBB User with ID %i doesn't exist. Use Anonymous." % (
+                        topic.id, phpbb_user_id
+                    )
+                ))
+                user = anonymous_user
+
+            forum = forum_dict[topic.forum_id]
 
             if topic.type in (1, 2, 3):
                 # convert sticky, announce and global post to sticky
@@ -484,7 +519,15 @@ class Command(BaseCommand):
                 # updated, post_count, last_post
             )
             if topic.id in topic_watch:
-                subscribers = [user_dict[user_id] for user_id in topic_watch[topic.id]]
+                subscribers = []
+                phpbb_user_ids = topic_watch[topic.id]
+                for phpbb_user_id in phpbb_user_ids:
+                    try:
+                        user = user_dict[phpbb_user_id]
+                    except KeyError:
+                        continue # Skip not existing users.
+                    subscribers.append(user)
+
                 obj.subscribers = subscribers
                 obj.save()
 

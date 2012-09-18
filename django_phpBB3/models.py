@@ -432,6 +432,18 @@ class User(models.Model):
     reminded = models.IntegerField(db_column="user_reminded",)
     reminded_time = models.IntegerField(db_column="user_reminded_time",)
 
+    def has_content(self):
+        """
+        Manually check if user has a post or topic
+        """
+        if Topic.objects.all().filter(poster=self).count():
+            return True
+        if Post.objects.all().filter(poster=self).count():
+            return True
+        if Attachment.objects.all().filter(poster=self).count():
+            return True
+        return False
+
     def registration_datetime(self):
         return timestamp2datetime(self.regdate, self.timezone)
 

@@ -220,6 +220,7 @@ The SQL schema files from phpBB can be found here:
 == history
 
 * v0.1.7.pre - 12.09.2012
+** Bugfix: Handle not existing phpBB users - Map to Anonymous user.
 ** Add support for pudb debugger (optional) and fallback to pdb
 ** Bugfix in migration: clean user signature, too.
 ** Don't check PHPBB_ATTACHMENT_PATH if no attachments exists in phpBB3 forum.
