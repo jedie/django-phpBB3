@@ -136,8 +136,8 @@ class Command(BaseCommand):
 
         forum_dict = self.migrate_forums(moderators)
 
-        topic_dict = self.migrate_topic(user_dict, forum_dict)
-        self.migrate_posts(user_dict, topic_dict)
+        self.migrate_topic(user_dict, forum_dict)
+        self.migrate_posts(user_dict)
 
         # needed if signals disabled, see above
         self.update_topic_stats()
@@ -463,7 +463,6 @@ class Command(BaseCommand):
 
         anonymous_user = User.objects.get(username="Anonymous") # Pseudo account from phpBB
 
-        topic_dict = {}
         topics = phpbb_Topic.objects.all().order_by("time")
         total = topics.count()
         process_info = ProcessInfo(total, use_last_rates=4)
@@ -531,8 +530,6 @@ class Command(BaseCommand):
                 obj.subscribers = subscribers
                 obj.save()
 
-            topic_dict[topic.id] = obj
-
         duration = time.time() - start_time
         rate = float(count) / duration
         self.out_overwrite(
@@ -540,11 +537,11 @@ class Command(BaseCommand):
                 count, human_duration(duration), rate
             )
         )
-        return topic_dict
 
-
-    def migrate_posts(self, user_dict, topic_dict):
+    def migrate_posts(self, user_dict):
         self.out(u"\n *** Migrate phpBB posts entries...\n")
+
+        anonymous_user = User.objects.get(username="Anonymous") # Pseudo account from phpBB
 
         posts = phpbb_Post.objects.all().order_by("time")
         total = posts.count()
@@ -563,8 +560,26 @@ class Command(BaseCommand):
                     )
                 )
 
-            topic = topic_dict[phpbb_post.topic.id]
-            user = user_dict[phpbb_post.poster.id]
+            topic_id = phpbb_post.topic_id
+            try:
+                topic = Topic.objects.get(id=topic_id)
+            except Topic.DoesNotExist:
+                self.out_overwrite(self.style.NOTICE(
+                    "topic for post %i doesn't exist! Skip post." % phpbb_post.id
+                ))
+                continue
+
+            phpbb_user_id = phpbb_post.poster_id
+            try:
+                user = user_dict[phpbb_user_id]
+            except KeyError:
+                self.out_overwrite(self.style.NOTICE(
+                    "phpBB User with ID %i doesn't exist for post %i. Use Anonymous." % (
+                        phpbb_user_id, phpbb_post.id
+                    )
+                ))
+                user = anonymous_user
+
 
             if phpbb_post.edit_user > 0 and phpbb_post.edit_time > 0:
                 updated = phpbb_post.update_datetime()
