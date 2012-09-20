@@ -34,6 +34,8 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db.models.signals import post_save
 from django.utils.encoding import smart_unicode, smart_str
 
+from haystack import site
+
 from djangobb_forum import settings as forum_settings
 from djangobb_forum.models import Category, Forum, Profile, TZ_CHOICES, Post, Topic, \
     Attachment
@@ -123,6 +125,9 @@ class Command(BaseCommand):
         # disable DjangoBB signals for speedup
         post_save.disconnect(djangobb_signals.post_saved, sender=Post, dispatch_uid='djangobb_post_save')
         post_save.disconnect(djangobb_signals.topic_saved, sender=Topic, dispatch_uid='djangobb_topic_save')
+
+        # Speedup migration by disable haystack search index creation.
+        site.unregister(Post)
 
         #disable_auto_fields(Forum)
         disable_auto_fields(Topic)
