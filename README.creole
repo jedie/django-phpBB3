@@ -261,6 +261,11 @@ The SQL schema files from phpBB can be found here:
 | Homepage     | https://github.com/jedie/django-phpBB3
 | PyPi         | http://pypi.python.org/pypi/django-phpBB3/
 
+=== donation ===
+
+* [[http://flattr.com/thing/03352794dbef7081256c14e349fb58fc|Flattr this!]]
+* Send [[http://www.bitcoin.org/|Bitcoins]] to {{{1YJk2JTMyDrZ8oTHkMhTaQtRWqSgrHPiS}}}
+
 === contact ===
 
 Come into the conversation, besides the github communication features:
