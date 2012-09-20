@@ -76,7 +76,10 @@ class Deentity(object):
             # Non breaking spaces is not in htmlentitydefs
             return u" "
         else:
-            codepoint = entities.name2codepoint[text]
+            try:
+                codepoint = entities.name2codepoint[text]
+            except KeyError:
+                return text
             return unichr(codepoint)
 
     def replace_all(self, content):
@@ -116,6 +119,12 @@ def clean_bbcode(text, bbcode_uid=None):
     ...     bbcode_uid=u"1234abcd"
     ... )
     u'Look at [url=https://github.com/jedie/PyLucid/views.py]/views.py[/url]'
+    
+    >>> clean_bbcode(
+    ...     u"[code:1234abcd]What's &broken; hey?[/code:1234abcd]",
+    ...     bbcode_uid=u"1234abcd"
+    ... )
+    u"[code]What's broken hey?[/code]"
     """
     text = force_unicode(text)
 
