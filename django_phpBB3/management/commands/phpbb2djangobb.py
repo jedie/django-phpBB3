@@ -583,7 +583,10 @@ class Command(BaseCommand):
 
             if phpbb_post.edit_user > 0 and phpbb_post.edit_time > 0:
                 updated = phpbb_post.update_datetime()
-                updated_by = user_dict[phpbb_post.edit_user]
+                try:
+                    updated_by = user_dict[phpbb_post.edit_user]
+                except KeyError:
+                    updated_by = anonymous_user
             else:
                 updated = None
                 updated_by = None
