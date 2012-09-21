@@ -23,9 +23,8 @@ if __name__ == "__main__":
 #    print "reset 'djangobb_forum'...",
 #    management.call_command("reset", "djangobb_forum", interactive=False)
 #    print "OK"
-    management.call_command("phpbb2djangobb", cleanup_users=3,
-        flush_djangobb=True
-    )
+    management.call_command("phpbb2djangobb", flush_djangobb=True, interactive=False)
+    management.call_command("phpbb2djangobb", cleanup_users=3)
     sys.exit()
 
 from django.conf import settings
@@ -94,7 +93,7 @@ class Command(BaseCommand):
             help='Which user to migrate: 0:all users, 1:with email, 2:+lastvisit (default), 3:+has post'
         ),
         make_option('--flush_djangobb', action='store_true',
-            help='Delete all DjangoBB forum models, before migration. (For testing, only)'
+            help='Delete all DjangoBB forum models. (For testing, only)'
         ),
     )
 
@@ -113,11 +112,24 @@ class Command(BaseCommand):
 
         flush_djangobb = options.get("flush_djangobb", False)
         if flush_djangobb:
+            self.warn("Delete all DjangoBB data.")
+            if self.interactive:
+                confirm = raw_input("\nContinue? (yes/no): ")
+                while 1:
+                    if confirm.lower().startswith("n"):
+                        sys.exit("-1")
+                    if confirm.lower() != "yes":
+                        confirm = raw_input('Please enter either "yes" or "no": ')
+                        continue
+                    break
+
             for ModelClass in (Category, Forum, Profile, Post, Topic, Attachment):
                 count = ModelClass.objects.all().count()
                 self.out(" *** Delete %i '%s' model entries..." % (count, ModelClass.__name__))
                 ModelClass.objects.all().delete()
                 self.out("OK\n")
+
+            return
 
         self.check_attachment_path()
         self.check_models()
