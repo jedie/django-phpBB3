@@ -34,6 +34,8 @@ We add two example projects:
 ~/DjangoBB_env$ source bin/activate
 (DjangoBB_env)~/DjangoBB_env$ pip install django-phpBB3 # Will also install Django
 }}}
+(If default python interpreter is <2.7: Use: {{{virtualenv -p python2.7 DjangoBB_env}}} - see below)
+
 Or if you will use the most recent git version:
 {{{
 # install git read-only clone (Will also install Django):
@@ -193,12 +195,24 @@ A nick will be accepted in login depend on the login form you use in your projec
 
 * Are the phpBB times in {{{phpbb_posts}}} in UTC oder in local time from user?
 
+
 === troubleshooting ===
 
-You get {{{UnicodeEncodeError}}} in the terminal while running migration?
+==== HTMLParseError while post migration ====
+Maybe you used a older Python Version than 2.7 In older versions the {{{HTMLParser}}} is not so robust as in 2.7.
+To create a virtualenv with a other Python Version do e.g.:
+{{{
+~$ virtualenv -p python2.7 DjangoBB_env
+}}}
+Work-a-round if you can't create a virtualenv with a newer Python interpreter:
+set: {{{settings.DJANGOBB_SMILES_SUPPORT = False}}}
+See also: https://github.com/jedie/django-phpBB3/issues/14
+
+==== UnicodeEncodeError in the terminal while running migration ====
 Solution: You must set either your locale, or the ​PYTHONIOENCODING environment variable, according to your terminal's encoding — in most cases, utf-8.
 More info can be found [[https://github.com/jedie/django-phpBB3/issues/9#issuecomment-8494830|in the comment of issues 9]]
 
+==== How to debug migration ====
 We use python built-in pdb module for debug a migration traceback.
 [[http://pypi.python.org/pypi/pudb|pudb]] is used, if installed. To install it, run e.g.: 
 {{{
@@ -206,6 +220,7 @@ We use python built-in pdb module for debug a migration traceback.
 ~/DjangoBB_env$ source bin/activate
 (DjangoBB_env)~/DjangoBB_env$ pip install pudb
 }}}
+
 
 == phpBB3 links ==
 
