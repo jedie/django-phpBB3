@@ -187,6 +187,14 @@ def human_duration(t):
 
 
 class ProcessInfo(object):
+    """
+    >>> p = ProcessInfo(100)
+    >>> p.update(1)[0]
+    99
+    >>> p = ProcessInfo(100)
+    >>> p.update(0)
+    (100, u'-', 0.0)
+    """
     def __init__(self, total, use_last_rates=4):
         self.total = total
         self.use_last_rates = use_last_rates
@@ -201,7 +209,11 @@ class ProcessInfo(object):
         self.rate_info = self.rate_info[-self.use_last_rates:]
         smoothed_rate = sum(self.rate_info) / len(self.rate_info)
         rest = self.total - count
-        eta = rest / smoothed_rate
+        try:
+            eta = rest / smoothed_rate
+        except ZeroDivisionError:
+            # e.g. called before a "count+=1"
+            return self.total, u"-", 0.0
         human_eta = human_duration(eta)
         return rest, human_eta, smoothed_rate
 
