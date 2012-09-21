@@ -24,11 +24,15 @@ if __name__ == "__main__":
 #    management.call_command("reset", "djangobb_forum", interactive=False)
 #    print "OK"
     management.call_command("phpbb2djangobb", flush_djangobb=True, interactive=False)
-    management.call_command("phpbb2djangobb", max_entries=10)
-    #management.call_command("phpbb2djangobb", cleanup_users=3)
+    management.call_command("phpbb2djangobb",
+        max_entries=50,
+#        only_users=True,
+#        cleanup_users=3,
+    )
     sys.exit()
 
 from django.conf import settings
+from django.contrib.auth.hashers import UNUSABLE_PASSWORD
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models.signals import post_save
@@ -93,6 +97,9 @@ class Command(BaseCommand):
             type='choice', choices=['0', '1', '2', '3'],
             help='Which user to migrate: 0:all users, 1:with email, 2:+lastvisit (default), 3:+has post'
         ),
+        make_option('--only_users', action='store_true',
+            help='Migrate/update only the phpBB users to django users'
+        ),
         make_option('--flush_djangobb', action='store_true',
             help='Delete all DjangoBB forum models. (For testing, only)'
         ),
@@ -114,6 +121,7 @@ class Command(BaseCommand):
         self.verbosity = int(options.get('verbosity'))
         self.interactive = options.get('interactive')
 
+        only_users = options.get("only_users", False)
         flush_djangobb = options.get("flush_djangobb", False)
         if flush_djangobb:
             self._flush_djangobb()
@@ -142,6 +150,9 @@ class Command(BaseCommand):
             name__in=["ADMINISTRATORS", "GLOBAL_MODERATORS"]
         )
         user_dict, moderators = self.migrate_users(cleanup_users, moderator_groups)
+        if only_users:
+            self.out(u"\nmigrate only users done.\n")
+            return
 
         forum_dict = self.migrate_forums(moderators)
 
@@ -319,12 +330,15 @@ class Command(BaseCommand):
                 # can't be None in User model:
                 last_login = datetime.datetime(year=datetime.MINYEAR, month=1, day=1)
 
+            is_moderator = phpbb_user.group in moderator_groups
+            is_active = phpbb_user.inactive_time == 0
+
             django_user, created = User.objects.get_or_create(
                 username=phpbb_user.username,
                 defaults={
                     "email":phpbb_user.email,
-                    "is_staff": False,
-                    "is_active": False,
+                    "is_staff": is_moderator,
+                    "is_active": is_active,
                     "is_superuser": False,
                     "last_login": last_login,
                     "date_joined": phpbb_user.registration_datetime(),
@@ -335,15 +349,16 @@ class Command(BaseCommand):
                     self.out_overwrite(
                         u"\tUser '%s' created." % smart_unicode(django_user.username)
                     )
-                django_user.set_unusable_password()
-                django_user.save()
             else:
                 if self.verbosity >= 2:
                     self.out_overwrite(
                         u"\tUser '%s' exists." % smart_unicode(django_user.username)
                     )
+                django_user.is_staff = is_moderator
+                django_user.is_active = is_active
+                django_user.save()
 
-            if phpbb_user.group in moderator_groups:
+            if is_moderator:
                 if self.verbosity >= 1:
                     self.out_overwrite(
                         u"\t *** Mark user '%s' as global forum moderator" % phpbb_user
@@ -481,6 +496,26 @@ class Command(BaseCommand):
 
         return forum_dict
 
+    _anonymous_user = None
+    def _get_anonymous_user(self):
+        """
+        Pseudo account from phpBB
+        Used to assign user to topics/posts from deleted users
+        """
+        if self._anonymous_user is None:
+            self._anonymous_user, created = User.objects.get_or_create(# Pseudo account from phpBB
+                username="Anonymous",
+                defaults={
+                    "password": UNUSABLE_PASSWORD,
+                    "is_superuser": False,
+                    "is_staff": False,
+                    "is_active": False,
+                }
+            )
+            if created:
+                self.out(u"Anonymous User created")
+        return self._anonymous_user
+
     def migrate_topic(self, user_dict, forum_dict):
         self.out(u"\n *** Migrate phpBB topic entries...\n")
 
@@ -490,7 +525,7 @@ class Command(BaseCommand):
         self.out(u"OK\n")
         self.stdout.flush()
 
-        anonymous_user = User.objects.get(username="Anonymous") # Pseudo account from phpBB
+        anonymous_user = self._get_anonymous_user() # Pseudo account from phpBB
 
         topics = phpbb_Topic.objects.all().order_by("time")
         total = topics.count()
@@ -572,7 +607,7 @@ class Command(BaseCommand):
     def migrate_posts(self, user_dict):
         self.out(u"\n *** Migrate phpBB posts entries...\n")
 
-        anonymous_user = User.objects.get(username="Anonymous") # Pseudo account from phpBB
+        anonymous_user = self._get_anonymous_user() # Pseudo account from phpBB
 
         posts = phpbb_Post.objects.all().order_by("time")
         total = posts.count()

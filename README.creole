@@ -249,6 +249,11 @@ The SQL schema files from phpBB can be found here:
 
 == history
 
+* v0.2.1 - 21.09.2012
+** Add "is_staff" flag to all "global moderators"
+** Set "is_active" flag depent on "user_inactive_time"
+** Add {{{--only_users}}} for only migrate/update users.
+** Use {{{get_or_create}} for getting the pseudo "Anonymous" user account
 * v0.2.0 - 21.09.2012
 ** Speedup migration by disable haystack search index creation.
 ** Bugfix: Handle not existing phpBB users -> Map to Anonymous user.
