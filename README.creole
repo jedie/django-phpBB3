@@ -249,7 +249,7 @@ The SQL schema files from phpBB can be found here:
 ** Don't check PHPBB_ATTACHMENT_PATH if no attachments exists in phpBB3 forum.
 ** [[https://github.com/jedie/django-phpBB3/issues/9#issuecomment-8494830|Avoid UnicodeEncodeError in migration output]]
 ** Speedup user migration by stats only output
-** Add {{{--flush_djangobb}}} in migration command for testing. 
+** Add {{{--flush_djangobb}}} and {{{--max_entries}}} in migration command for testing. 
 * v0.1.6 - 29.08.2012
 ** Add more information in README
 ** Fix unicode errors

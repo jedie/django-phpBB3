@@ -24,7 +24,8 @@ if __name__ == "__main__":
 #    management.call_command("reset", "djangobb_forum", interactive=False)
 #    print "OK"
     management.call_command("phpbb2djangobb", flush_djangobb=True, interactive=False)
-    management.call_command("phpbb2djangobb", cleanup_users=3)
+    management.call_command("phpbb2djangobb", max_entries=10)
+    #management.call_command("phpbb2djangobb", cleanup_users=3)
     sys.exit()
 
 from django.conf import settings
@@ -95,6 +96,9 @@ class Command(BaseCommand):
         make_option('--flush_djangobb', action='store_true',
             help='Delete all DjangoBB forum models. (For testing, only)'
         ),
+        make_option('--max_entries', type="int",
+            help='Migrate only a few users/topics/posts. (For testing, only)'
+        ),
     )
 
     def handle(self, *args, **options):
@@ -130,6 +134,10 @@ class Command(BaseCommand):
                 self.out("OK\n")
 
             return
+
+        self.max_entries = options.get("max_entries")
+        if self.max_entries:
+            self.warn("Migrate with max entries: %i !\n" % self.max_entries)
 
         self.check_attachment_path()
         self.check_models()
@@ -258,12 +266,14 @@ class Command(BaseCommand):
 
         total = phpbb_users.count()
         process_info = ProcessInfo(total, use_last_rates=4)
-        count = 0
         skip_count = 0
         start_time = time.time()
         next_status = start_time + 0.25
-        for phpbb_user in phpbb_users:
-            count += 1
+        for count, phpbb_user in enumerate(phpbb_users, 1):
+            if self.max_entries and count >= self.max_entries:
+                self.warn("Skip rest of users because max_entries used!")
+                break
+
             if time.time() > next_status:
                 next_status = time.time() + 1
                 rest, eta, rate = process_info.update(count)
@@ -483,11 +493,13 @@ class Command(BaseCommand):
         topics = phpbb_Topic.objects.all().order_by("time")
         total = topics.count()
         process_info = ProcessInfo(total, use_last_rates=4)
-        count = 0
         start_time = time.time()
         next_status = start_time + 0.25
-        for topic in topics:
-            count += 1
+        for count, topic in enumerate(topics, 1):
+            if self.max_entries and count >= self.max_entries:
+                self.warn("Skip rest of topics because max_entries used!")
+                break
+
             if time.time() > next_status:
                 next_status = time.time() + 1
                 rest, eta, rate = process_info.update(count)
@@ -563,11 +575,13 @@ class Command(BaseCommand):
         posts = phpbb_Post.objects.all().order_by("time")
         total = posts.count()
         process_info = ProcessInfo(total, use_last_rates=4)
-        count = 0
         start_time = time.time()
         next_status = start_time + 0.25
-        for phpbb_post in posts:
-            count += 1
+        for count, phpbb_post in enumerate(posts, 1):
+            if self.max_entries and count >= self.max_entries:
+                self.warn("Skip rest of posts because max_entries used!")
+                break
+
             if time.time() > next_status:
                 next_status = time.time() + 1
                 rest, eta, rate = process_info.update(count)
@@ -674,7 +688,7 @@ class Command(BaseCommand):
         process_info = ProcessInfo(total, use_last_rates=4)
         start_time = time.time()
         next_status = time.time() + 0.25
-        for count, topic in enumerate(topics):
+        for count, topic in enumerate(topics, 1):
             if time.time() > next_status:
                 next_status = time.time() + 1
                 rest, eta, rate = process_info.update(count)
