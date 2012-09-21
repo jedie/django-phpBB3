@@ -116,23 +116,7 @@ class Command(BaseCommand):
 
         flush_djangobb = options.get("flush_djangobb", False)
         if flush_djangobb:
-            self.warn("Delete all DjangoBB data.")
-            if self.interactive:
-                confirm = raw_input("\nContinue? (yes/no): ")
-                while 1:
-                    if confirm.lower().startswith("n"):
-                        sys.exit("-1")
-                    if confirm.lower() != "yes":
-                        confirm = raw_input('Please enter either "yes" or "no": ')
-                        continue
-                    break
-
-            for ModelClass in (Category, Forum, Profile, Post, Topic, Attachment):
-                count = ModelClass.objects.all().count()
-                self.out(" *** Delete %i '%s' model entries..." % (count, ModelClass.__name__))
-                ModelClass.objects.all().delete()
-                self.out("OK\n")
-
+            self._flush_djangobb()
             return
 
         self.max_entries = options.get("max_entries")
@@ -202,6 +186,24 @@ class Command(BaseCommand):
         self.stdout.write("\n")
         self.stdout.flush()
 
+    def _flush_djangobb(self):
+        self.warn("Delete all DjangoBB data.\n")
+        if self.interactive:
+            confirm = raw_input("Continue? (yes/no): ")
+            while 1:
+                if confirm.lower().startswith("n"):
+                    sys.exit("-1")
+                if confirm.lower() != "yes":
+                    confirm = raw_input('Please enter either "yes" or "no": ')
+                    continue
+                break
+
+        for ModelClass in (Category, Forum, Profile, Post, Topic, Attachment):
+            count = ModelClass.objects.all().count()
+            self.out(" *** Delete %i '%s' model entries..." % (count, ModelClass.__name__))
+            ModelClass.objects.all().delete()
+            self.out("OK\n")
+
     def check_attachment_path(self):
         attachment_count = phpbb_Attachment.objects.count()
         self.out(self.style.NOTICE("This phpBB3 Forum has %i Attachment(s).\n" % attachment_count))
@@ -243,7 +245,7 @@ class Command(BaseCommand):
                 has_entries = True
                 self.err("ERROR: '%s' model has %i entries!\n" % (ModelClass.__name__, count))
         if has_entries:
-            self.warn("Maybe you have missed to add '--flush_djangobb' ?\n")
+            self.warn("Maybe you have missed to use '--flush_djangobb' ?\n")
             if self.interactive:
                 confirm = raw_input("\nContinue? (yes/no): ")
                 while 1:
@@ -641,7 +643,7 @@ class Command(BaseCommand):
                     "\n +++ ERROR: creating Post entry for phpBB3 post (ID: %s):\n"
                     "%s\n"
                 ) % (phpbb_post.id, err)
-                self.warn(msg)
+                self.out_overwrite(self.style.NOTICE(msg))
                 continue
 
             if phpbb_post.has_attachment():
