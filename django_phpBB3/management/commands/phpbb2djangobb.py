@@ -198,7 +198,7 @@ class Command(BaseCommand):
                     continue
                 break
 
-        for ModelClass in (Category, Forum, Profile, Post, Topic, Attachment):
+        for ModelClass in (Attachment, Post, Topic, Forum, Profile, Category):
             count = ModelClass.objects.all().count()
             self.out(" *** Delete %i '%s' model entries..." % (count, ModelClass.__name__))
             ModelClass.objects.all().delete()
