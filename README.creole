@@ -199,14 +199,21 @@ A nick will be accepted in login depend on the login form you use in your projec
 === troubleshooting ===
 
 ==== HTMLParseError while post migration ====
-Maybe you used a older Python Version than 2.7 In older versions the {{{HTMLParser}}} is not so robust as in 2.7.
-To create a virtualenv with a other Python Version do e.g.:
+Maybe you used a older Python Version than 2.7.3 In older versions the {{{HTMLParser}}} is not so robust as in 2.7.3
+Maybe default Python interpreter is 2.6, but 2.7 is installed to, than try:
 {{{
+# Display the exsiting Python version:
+~$ python --version # Default python
+Python 2.6.6
+~$ python2.7 --version # Try if 2.7 is available
+Python 2.7.3
+
+# Create env with 2.7:
 ~$ virtualenv -p python2.7 DjangoBB_env
 }}}
 Work-a-round if you can't create a virtualenv with a newer Python interpreter:
 set: {{{settings.DJANGOBB_SMILES_SUPPORT = False}}}
-See also: https://github.com/jedie/django-phpBB3/issues/14
+More Information here: https://github.com/jedie/django-phpBB3/issues/14
 
 ==== UnicodeEncodeError in the terminal while running migration ====
 Solution: You must set either your locale, or the ​PYTHONIOENCODING environment variable, according to your terminal's encoding — in most cases, utf-8.
