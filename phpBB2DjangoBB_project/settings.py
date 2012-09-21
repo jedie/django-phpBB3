@@ -73,7 +73,7 @@ MIDDLEWARE_CLASSES = (
     'djangobb_forum.middleware.UsersOnline',
 )
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'phpBB2DjangoBB_project.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'phpBB2DjangoBB_project.wsgi.application'
