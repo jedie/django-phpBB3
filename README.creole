@@ -241,7 +241,7 @@ The SQL schema files from phpBB can be found here:
 
 == history
 
-* v0.1.7.pre - 12.09.2012
+* v0.2.0 - 21.09.2012
 ** Speedup migration by disable haystack search index creation.
 ** Bugfix: Handle not existing phpBB users -> Map to Anonymous user.
 ** Add support for pudb debugger (optional) and fallback to pdb

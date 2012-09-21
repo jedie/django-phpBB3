@@ -1,6 +1,6 @@
 # coding: utf-8
 
-__version__ = (0, 1, 7, "pre")
+__version__ = (0, 2, 0)
 VERSION_STRING = '.'.join(str(part) for part in __version__)
 
 
