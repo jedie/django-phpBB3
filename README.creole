@@ -136,6 +136,13 @@ Run the migration with {{{./manage.py phpbb2djangobb}}}, e.g:
 
 === after migration ===
 
+**Important:** No phpBB forum permissions would be migrated, yet. So: Before you make a migrated Forum available to public, you must manually //hide// any //internal// forums, if exists!
+To limit a forum in DjangoBB, e.g.:
+* Create a new user group in django admin panel
+* Create a seperate djangobb category and add the creates user group
+* Move //internal// forums to the new category
+* To give a user the permissions to the //internal// forums: Edit the user and add the created user group.
+
 You must update the haystack search index with e.g.:
 {{{
 (DjangoBB_env).../phpBB2DjangoBB_project$ ./manage.py update_index --verbosity=2
@@ -180,6 +187,7 @@ Handling missing features in DjangoBB:
 
 TODO:
 
+* Handle forum permissions: Now all forums will be public, after migration!
 * Bugfix for user post count migration - https://github.com/jedie/django-phpBB3/issues/6
 * migrate user avatar - https://github.com/jedie/django-phpBB3/issues/7
 * add a separate command for migrate phpBB private messages to django-messages (very low priority, patches are welcome)
