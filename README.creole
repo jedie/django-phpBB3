@@ -182,7 +182,6 @@ Handling missing features in DjangoBB:
 * sub forums would be flatten
 * //ghost moved posts// are ignored (only the moved post would be created)
 * ForumWatch are ignored
-* All user must do a passwort reset. (We can't reuse the phpBB password hash)
 * Guest posts would be mapped to a new "Anonymous" user (has unusable password and no email address). Note: guest posts are planed in DjangoBB, see: http://support.djangobb.org/topic/98/
 
 TODO:
@@ -194,10 +193,28 @@ TODO:
 
 === migration - notes ====
 
+==== username ====
 The migration script copied the phpBB username 1:1 and doesn't cleanup anything.
 The django forms for creating/change a user will only limit with: {{{Letters, digits and @/./+/-/_ only}}}
 But the model fields is a simple {{{CharField}}}.
-A nick will be accepted in login depend on the login form you use in your project. 
+A nick will be accepted in login depend on the login form you use in your project.
+
+==== password ====
+We migrate the phpBB3 passwords and add a own password hasher.
+[[https://docs.djangoproject.com/en/1.4/topics/auth/#password-upgrading|Django upgrade the old password]] with the default hasher (PBKDF2) on the first login.
+For this, it's needed to add the phpBB3 password hasher to your settings, e.g.:
+{{{
+PASSWORD_HASHERS = (
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.BCryptPasswordHasher',
+    'django.contrib.auth.hashers.SHA1PasswordHasher',
+    'django.contrib.auth.hashers.MD5PasswordHasher',
+    'django.contrib.auth.hashers.CryptPasswordHasher',
+    'django_phpBB3.hashers.PhpBB3PasswordHasher',
+)
+}}}
+more info: https://docs.djangoproject.com/en/1.4/topics/auth/#how-django-stores-passwords
 
 === migration - open questions ====
 
@@ -249,6 +266,8 @@ The SQL schema files from phpBB can be found here:
 
 == history
 
+* v0.3.0.pre - 24.09.2012
+** migrate phpBB3 passwords
 * v0.2.1 - 21.09.2012
 ** Add "is_staff" flag to all "global moderators"
 ** Set "is_active" flag depent on "user_inactive_time"

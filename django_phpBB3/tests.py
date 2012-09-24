@@ -95,3 +95,20 @@ class TopicTest(TestCase):
         self.assertEqual(topic.clean_title(),
             'A "best practise" & questions.'
         )
+
+
+class UserPasswordTest(TestCase):
+    def test_clean_title(self):
+        from django.contrib.auth.models import User
+
+        # Create a user with a phpBB3 password
+        user = User.objects.create_user('test', 'test@domain.tld')
+        self.assertEqual(user.password, '!')
+        user.password = "phpBB3_md5$H$9dwN9omKahSh5YzR1R.I7/Q/pGJn5E0"
+        user.save()
+        self.assertEqual(user.password, "phpBB3_md5$H$9dwN9omKahSh5YzR1R.I7/Q/pGJn5E0")
+
+        # Test a "login"
+        self.assertTrue(user.check_password("12345678"))
+        # Django has update the password, after "login"
+        self.assertEqual(user.password[:20], "pbkdf2_sha256$10000$")

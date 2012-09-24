@@ -151,6 +151,17 @@ OLD_PHPBB_URL_PREFIX = "phpbb"
 # Exists the captcha_questions database table? FIXME: In which case does it exists?
 PHPBB_CAPTCHA_QUESTIONS_MODEL_EXIST = False
 
+# Add PhpBBPasswordHasher to the default hashers
+PASSWORD_HASHERS = (
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.BCryptPasswordHasher',
+    'django.contrib.auth.hashers.SHA1PasswordHasher',
+    'django.contrib.auth.hashers.MD5PasswordHasher',
+    'django.contrib.auth.hashers.CryptPasswordHasher',
+    'django_phpBB3.hashers.PhpBB3PasswordHasher',
+)
+
 #------------------------------------------------------------------------------
 
 try:

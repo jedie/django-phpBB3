@@ -45,6 +45,7 @@ from djangobb_forum.models import Category, Forum, Profile, TZ_CHOICES, Post, To
     Attachment
 from djangobb_forum import signals as djangobb_signals
 
+from django_phpBB3.hashers import PhpBB3PasswordHasher
 from django_phpBB3.models import Attachment as phpbb_Attachment
 from django_phpBB3.models import Forum as phpbb_Forum
 from django_phpBB3.models import Group as phpbb_Group
@@ -69,6 +70,9 @@ except ImportError:
 
 
 OUT_ENCODING = sys.stdout.encoding or sys.getfilesystemencoding()
+
+
+PHPBB_PASSWORD = "%s%%s" % PhpBB3PasswordHasher.algorithm
 
 
 def disable_auto_fields(model_class):
@@ -333,10 +337,15 @@ class Command(BaseCommand):
             is_moderator = phpbb_user.group in moderator_groups
             is_active = phpbb_user.inactive_time == 0
 
+
+            # Prefix the password, e.g.: "$H$9dwN..." -> "phpBB3_md5$H$9dwN..."
+            phpbb_password = PHPBB_PASSWORD % phpbb_user.password
+
             django_user, created = User.objects.get_or_create(
                 username=phpbb_user.username,
                 defaults={
                     "email":phpbb_user.email,
+                    "password": phpbb_password,
                     "is_staff": is_moderator,
                     "is_active": is_active,
                     "is_superuser": False,
@@ -354,6 +363,9 @@ class Command(BaseCommand):
                     self.out_overwrite(
                         u"\tUser '%s' exists." % smart_unicode(django_user.username)
                     )
+                if django_user.password in (None, "", "!"):
+                    # Update old migration
+                    django_user.password = phpbb_password
                 django_user.is_staff = is_moderator
                 django_user.is_active = is_active
                 django_user.save()
