@@ -266,8 +266,8 @@ The SQL schema files from phpBB can be found here:
 
 == history
 
-* v0.3.0.pre - 24.09.2012
-** migrate phpBB3 passwords
+* v0.3.0 - 25.09.2012
+** migrate phpBB3 passwords, too and add a PASSWORD_HASHERS for this, see below.
 * v0.2.1 - 21.09.2012
 ** Add "is_staff" flag to all "global moderators"
 ** Set "is_active" flag depent on "user_inactive_time"
